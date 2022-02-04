@@ -41,3 +41,13 @@ that this project is challenging enough to showcase my skills and help me
 get better at building software. I also think this project will translate 
 well to the next phases of the project, as its structure allows for the 
 easy addition of new features. 
+
+## User Stories
+
+- As a user, I want to be able to upload posts to a community
+- As a user, I want to be able to subscribe to communities and add that community to my list of communities to see the content I want
+- As a user, I want to be able to sort my feed by newest or by which posts have the most likes
+- As a user, I want to be able to customize my profile with a bio
+- As a user, I want to be able to like and comment under posts
+- As a user, I want to be able to save posts I really like to my account to view later
+

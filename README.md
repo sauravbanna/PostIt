@@ -41,5 +41,3 @@ that this project is challenging enough to showcase my skills and help me
 get better at building software. I also think this project will translate 
 well to the next phases of the project, as its structure allows for the 
 easy addition of new features. 
-
-An example of text with **bold** and *italic* fonts.  

@@ -47,6 +47,11 @@ public class User {
         return subscribedCommunities;
     }
 
+    // EFFECTS: adds the given community to user's subscribed communities
+    public void subscribeToCommunity(Community c) {
+        this.subscribedCommunities.add(c.getCommunityName());
+    }
+
     // REQUIRES: password is at least 8 characters long
     // MODIFIES: this
     // EFFECTS: sets user's password to given string

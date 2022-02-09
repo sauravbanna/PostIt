@@ -13,7 +13,6 @@ public abstract class Content {
     private String opName;
     private int likes;
     private int dislikes;
-    private int commentCount;
 
     // METHODS
 
@@ -24,7 +23,6 @@ public abstract class Content {
         this.opName = opName;
         this.likes = 0;
         this.dislikes = 0;
-        this.commentCount = 0;
 
     }
 
@@ -41,11 +39,6 @@ public abstract class Content {
     // EFFECTS: returns number of dislikes post has
     public int getDislikes() {
         return dislikes;
-    }
-
-    // EFFECTS: returns number of comments post has
-    public int getCommentCount() {
-        return commentCount;
     }
 
     // MODIFIES: this

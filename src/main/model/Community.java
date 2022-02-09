@@ -3,6 +3,7 @@ package model;
 import model.content.posts.Post;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Community {
@@ -13,7 +14,7 @@ public class Community {
     private String communityName;
     private String communityAbout;
     private int subCount;
-    private List<Post> posts;
+    private LinkedList<Post> posts;
 
     // METHODS
 
@@ -23,7 +24,30 @@ public class Community {
         this.communityName = name;
         this.communityAbout = about;
         this.subCount = 0;
-        this.posts = new ArrayList<Post>();
+        this.posts = new LinkedList<Post>();
     }
+
+    // EFFECTS: return the posts from this community
+    public LinkedList<Post> getPosts() {
+        return this.posts;
+    }
+
+    // EFFECTS: return the name of this community
+    public String getCommunityName() {
+        return communityName;
+    }
+
+    // EFFECTS: return the about section of this community
+    public String getCommunityAbout() {
+        return communityAbout;
+    }
+
+    // EFFECTS: return the subscriber count of this community
+    public int getSubCount() {
+        return subCount;
+    }
+
+
+
 
 }

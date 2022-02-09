@@ -16,4 +16,9 @@ public class TextPost extends Post {
         this.postBody = body;
     }
 
+    // EFFECTS: returns the post's body
+    public String getPostBody() {
+        return null;
+    }
+
 }

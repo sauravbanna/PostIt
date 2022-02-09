@@ -1,4 +1,6 @@
-package model.content;
+package model.content.othercontent;
+
+import model.content.Content;
 
 public class Comment extends Content {
 
@@ -14,6 +16,11 @@ public class Comment extends Content {
     public Comment(String opName, String body) {
         super(opName);
         this.body = body;
+    }
+
+    // EFFECTS: returns the comment's body
+    public String getBody() {
+        return null;
     }
 
 }

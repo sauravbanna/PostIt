@@ -1,18 +1,19 @@
 package model.content.posts;
 
-import model.content.Comment;
+import model.content.othercontent.Comment;
 import model.content.Content;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Post extends Content {
+public abstract class Post extends Content {
 
     // CONSTANTS
 
     // FIELDS
     private String title;
     private List<Comment> comments;
+    private int commentCount;
 
     // METHODS
 
@@ -22,13 +23,29 @@ public class Post extends Content {
         super(opName);
         this.title = title;
         this.comments = new ArrayList<Comment>();
+        this.commentCount = 0;
 
     }
 
     // MODIFIES: this
-    // EFFECTS: adds given comment to post's list of comments
+    // EFFECTS: adds given comment to post's list of comments and increase comment count by 1
     public void addComment(Comment c) {
 
+    }
+
+    // EFFECTS: returns number of comments post has
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    // EFFECTS: returns the title of the post
+    public String getTitle() {
+        return null;
+    }
+
+    // EFFECTS: returns the comments of the post
+    public List<Comment> getComments() {
+        return null;
     }
 
 }

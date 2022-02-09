@@ -17,8 +17,8 @@ public class TextPost extends Post {
     }
 
     // EFFECTS: returns the post's body
-    public String getPostBody() {
-        return null;
+    public String getBody() {
+        return postBody;
     }
 
 }

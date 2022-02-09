@@ -5,30 +5,27 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ContentTest {
+public abstract class ContentTest {
 
-    Content testPost;
+    Content testContent;
 
     @Test
     void testLike() {
-        assertEquals(0, testPost.getLikes());
-        testPost.like();
-        assertEquals(1, testPost.getLikes());
-        testPost.like();
-        assertEquals(2, testPost.getLikes());
+        assertEquals(0, testContent.getLikes());
+        testContent.like();
+        assertEquals(1, testContent.getLikes());
+        testContent.like();
+        assertEquals(2, testContent.getLikes());
     }
 
     @Test
     void testDislike() {
-        testPost.like();
-        testPost.like();
-        testPost.like();
-        assertEquals(3, testPost.getLikes());
-        testPost.dislike();
-        assertEquals(2, testPost.getLikes());
-        testPost.dislike();
-        assertEquals(1, testPost.getLikes());
-        testPost.dislike();
-        assertEquals(0, testPost.getLikes());
+        assertEquals(0, testContent.getDislikes());
+        testContent.dislike();
+        assertEquals(1, testContent.getDislikes());
+        testContent.dislike();
+        assertEquals(2, testContent.getDislikes());
+        testContent.dislike();
+        assertEquals(3, testContent.getDislikes());
     }
 }

@@ -9,19 +9,16 @@ import java.util.LinkedList;
 public class PostIt {
 
     // CONSTANTS
-    public final String VIEW_COMMUNITY_COMMAND = "/viewcommunity";
-    public final String MAKE_POST_COMMAND = "/post";
-    public final String LOGOUT_COMMAND = "/logout";
-    public final String SEARCH_COMMAND = "/search";
-    public final String LOGIN_COMMAND = "/login";
-    public final String HOME_COMMAND = "/home";
 
     public final String USER_PROFILE_STATE = "user";
+
+    public final String HOME_LAST_COMMUNITY = "home";
 
     // FIELDS
     private Boolean loggedIn;
     private String currentlyLoggedInUser;
     private String userState;
+    private String lastCommunity;
 
     private HashMap<String, User> usernamePasswords;
     private HashMap<String, Community> communities;

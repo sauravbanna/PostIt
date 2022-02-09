@@ -19,8 +19,8 @@ public class Comment extends Content {
     }
 
     // EFFECTS: returns the comment's body
-    public String getBody() {
-        return null;
+    public String getCommentBody() {
+        return this.body;
     }
 
 }

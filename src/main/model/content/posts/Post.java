@@ -22,7 +22,7 @@ public abstract class Post extends Content {
     public Post(String opName, String title) {
         super(opName);
         this.title = title;
-        this.comments = new ArrayList<Comment>();
+        this.comments = new ArrayList<>();
         this.commentCount = 0;
 
     }
@@ -30,7 +30,8 @@ public abstract class Post extends Content {
     // MODIFIES: this
     // EFFECTS: adds given comment to post's list of comments and increase comment count by 1
     public void addComment(Comment c) {
-
+        this.comments.add(c);
+        this.commentCount++;
     }
 
     // EFFECTS: returns number of comments post has
@@ -40,12 +41,14 @@ public abstract class Post extends Content {
 
     // EFFECTS: returns the title of the post
     public String getTitle() {
-        return null;
+        return title;
     }
 
     // EFFECTS: returns the comments of the post
     public List<Comment> getComments() {
-        return null;
+        return comments;
     }
+
+    public abstract String getBody();
 
 }

@@ -1,5 +1,8 @@
 package model;
 
+import javafx.geometry.Pos;
+import model.content.posts.Post;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,8 @@ public class User {
     private String password;
     private String bio;
     private List<String> subscribedCommunities;
+    private List<Post> likedPosts;
+    private List<Post> dislikedPosts;
 
     // METHODS
 
@@ -22,8 +27,9 @@ public class User {
         this.userName = name;
         this.password = password;
         this.bio = DEFAULT_BIO;
-        this.subscribedCommunities = new ArrayList<String>();
-
+        this.subscribedCommunities = new ArrayList<>();
+        this.likedPosts = new ArrayList<>();
+        this.dislikedPosts = new ArrayList<>();
     }
 
 
@@ -45,6 +51,40 @@ public class User {
     // EFFECTS: returns user's subscribed communities
     public List<String> getSubscribedCommunities() {
         return subscribedCommunities;
+    }
+
+    // EFFECTS: returns user's liked posts
+    public List<Post> getLikedPosts() {
+        return likedPosts;
+    }
+
+    // EFFECTS: returns user's disliked posts
+    public List<Post> getDislikedPosts() {
+        return dislikedPosts;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds the given post to user's liked posts
+    public void addLikedPost(Post p) {
+        this.likedPosts.add(p);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds the given post to user's disliked posts
+    public void addDislikedPost(Post p) {
+        this.dislikedPosts.add(p);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: removes the given post from user's disliked posts
+    public void removeDislikedPost(Post p) {
+        this.dislikedPosts.remove(p);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: removes the given post from user's liked posts
+    public void removeLikedPost(Post p) {
+        this.likedPosts.remove(p);
     }
 
     // EFFECTS: adds the given community to user's subscribed communities

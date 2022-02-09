@@ -44,12 +44,25 @@ public abstract class Content {
     // MODIFIES: this
     // EFFECTS: increase the number of likes on this content by 1
     public void like() {
-
+        this.likes++;
     }
 
     // MODIFIES: this
     // EFFECTS: increase the number of dislikes on this content by 1
     public void dislike() {
-
+        this.dislikes++;
     }
+
+    // MODIFIES: this
+    // EFFECTS: decrease the number of dislikes on this content by 1
+    public void undislike() {
+        this.dislikes--;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: decrease the number of likes on this content by 1
+    public void unlike() {
+        this.likes--;
+    }
+
 }

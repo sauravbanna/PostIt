@@ -92,7 +92,7 @@ public class User {
         this.subscribedCommunities.add(c.getCommunityName());
     }
 
-    // REQUIRES: password is at least 8 characters long
+    // REQUIRES: password is at least ui.PostIt.MIN_PASSWORD_LENGTH characters long
     // MODIFIES: this
     // EFFECTS: sets user's password to given string
     public void setPassword(String password) {

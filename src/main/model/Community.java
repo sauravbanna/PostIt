@@ -47,6 +47,11 @@ public class Community {
         return subCount;
     }
 
+    // EFFECTS: adds a post to the community
+    public void addPost(Post p) {
+        this.posts.add(p);
+    }
+
 
 
 

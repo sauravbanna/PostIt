@@ -11,8 +11,8 @@ public class TextPost extends Post {
 
     // REQUIRES: given name is a registered user
     // EFFECTS: creates a new Text Post with given poster name, title and body
-    public TextPost(String opName, String title, String body) {
-        super(opName, title);
+    public TextPost(String opName, String title, String body, String community) {
+        super(opName, title, community);
         this.postBody = body;
     }
 

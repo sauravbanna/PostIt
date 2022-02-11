@@ -85,14 +85,14 @@ public class Feed {
             switch (userChoice) {
                 case LIKE_COMMAND:
                     if (loggedIn) {
-                        likePost();
+                        System.out.println(currentUser.addLikedPost(currentPost));
                     }  else {
                         System.out.println("You have to be logged in to do that!");
                     }
                     break;
                 case DISLIKE_COMMAND:
                     if (loggedIn) {
-                        dislikePost();
+                        System.out.println(currentUser.addDislikedPost(currentPost));
                     }  else {
                         System.out.println("You have to be logged in to do that!");
                     }
@@ -163,74 +163,6 @@ public class Feed {
         }
 
         return null;
-    }
-
-    /*// MODIFIES: this
-    // EFFECTS: sorts feed according to current sort option
-    public void sortPosts(String sortChoice) {
-        switch (sortChoice) {
-            case NEW_SORT:
-                currentSort = NEW_SORT;
-
-                break;
-            case TOP_SORT:
-                currentSort = TOP_SORT;
-                break;
-            case DISLIKE_SORT:
-                currentSort = DISLIKE_SORT;
-                break;
-            case COMMENT_SORT:
-                currentSort = COMMENT_SORT;
-                break;
-            default:
-                System.out.println("Sorry, I didn't understand that, please sort by " + NEW_SORT + ", " + TOP_SORT
-                        + ", " + DISLIKE_SORT + ", or " + COMMENT_SORT);
-                sortChoice = input.nextLine();
-                sortPosts(sortChoice);
-                break;
-        }
-    }*/
-
-    // REQUIRES: user is logged in (loggedIn is true)
-    // MODIFIES: this
-    // EFFECTS: likes the current post (adds one like to its total) if post has not been previously liked
-    //          adds post to user's liked posts list
-    //          removes one dislike from post if post has been previously disliked
-    //          and removes it from user's disliked posts list
-    //          otherwise tells user that they have already liked the post
-    public void likePost() {
-        if (currentUser.getLikedPosts().contains(currentPost)) {
-            System.out.println("You've already liked this post before!");
-        } else {
-            System.out.println("Post added to liked posts");
-            if (currentUser.getDislikedPosts().contains(currentPost)) {
-                currentPost.unDislike();
-                currentUser.removeDislikedPost(currentPost);
-            }
-            currentPost.like();
-            currentUser.addLikedPost(currentPost);
-        }
-    }
-
-    // REQUIRES: user is logged in (loggedIn is true)
-    // MODIFIES: this
-    // EFFECTS: dislikes the current post (adds one dislike to its total) if post has not been previously disliked
-    //          adds post to user's disliked posts list
-    //          removes one like from post if post has been previously liked
-    //          and removes it from user's liked posts list
-    //          otherwise tells user that they have already disliked the post
-    public void dislikePost() {
-        if (currentUser.getDislikedPosts().contains(currentPost)) {
-            System.out.println("You've already disliked this post before!");
-        } else {
-            currentUser.addDislikedPost(currentPost);
-            if (currentUser.getLikedPosts().contains(currentPost)) {
-                currentPost.unLike();
-                currentUser.removeLikedPost(currentPost);
-            }
-            System.out.println("Post added to disliked posts");
-            currentPost.dislike();
-        }
     }
 
     // Methods to print things to console

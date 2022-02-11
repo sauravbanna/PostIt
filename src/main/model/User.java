@@ -63,32 +63,42 @@ public class User {
         return dislikedPosts;
     }
 
-    // REQUIRES: post is not already in user's liked posts or disliked posts
-    // MODIFIES: this
-    // EFFECTS: adds the given post to user's liked posts
-    public void addLikedPost(Post p) {
-        this.likedPosts.add(p);
+    // MODIFIES: this, Post
+    // EFFECTS: adds the given post to user's liked posts if not already in user's liked posts
+    //          and adds 1 like to post's like count
+    //          if post is in user's disliked posts, removes it from there
+    //          and reduces the post's dislikes by 1
+    public String addLikedPost(Post p) {
+        if (!likedPosts.contains(p)) {
+            if (dislikedPosts.contains(p)) {
+                dislikedPosts.remove(p);
+                p.unDislike();
+            }
+            p.like();
+            likedPosts.add(p);
+            return "Post added to liked posts";
+        } else {
+            return "You've already liked this post before!";
+        }
     }
 
-    // REQUIRES: post is not already in user's disliked posts or in user's liked posts
-    // MODIFIES: this
-    // EFFECTS: adds the given post to user's disliked posts
-    public void addDislikedPost(Post p) {
-        this.dislikedPosts.add(p);
-    }
-
-    // REQUIRES: post is in user's disliked posts
-    // MODIFIES: this
-    // EFFECTS: removes the given post from user's disliked posts
-    public void removeDislikedPost(Post p) {
-        this.dislikedPosts.remove(p);
-    }
-
-    // REQUIRES: post is in user's liked posts
-    // MODIFIES: this
-    // EFFECTS: removes the given post from user's liked posts
-    public void removeLikedPost(Post p) {
-        this.likedPosts.remove(p);
+    // MODIFIES: this, Post
+    // EFFECTS: adds the given post to user's disliked posts if not already in user's disliked posts
+    //          and adds 1 like to post's dislike count
+    //          if post is in user's liked posts, removes it from there
+    //          and reduces the post's likes by 1
+    public String addDislikedPost(Post p) {
+        if (!dislikedPosts.contains(p)) {
+            if (likedPosts.contains(p)) {
+                likedPosts.remove(p);
+                p.unLike();
+            }
+            p.dislike();
+            dislikedPosts.add(p);
+            return "Post added to disliked posts";
+        } else {
+            return "You've already disliked this post before!";
+        }
     }
 
     // REQUIRES: community is one that is already registered on the forum,

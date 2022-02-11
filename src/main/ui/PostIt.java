@@ -65,7 +65,7 @@ public class PostIt {
     }
 
     // EFFECTS: starts the forum for the user
-    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
+    @SuppressWarnings("methodlength")
     public void start() {
         System.out.println("Welcome to PostIt!");
         System.out.println("Type " + HOME_COMMAND + " to browse your home feed, "
@@ -171,7 +171,7 @@ public class PostIt {
     //          and is not SELF_PROFILE_COMMAND
     //          password is valid if it is >= 8 characters
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
-    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
+    @SuppressWarnings("methodlength")
     public String registerAccount() {
         System.out.println("You can always type "  + EXIT_COMMAND + " to cancel the registration.");
         System.out.println("Please enter your desired username between 1-" + MAX_USERNAME_LENGTH + " characters.");
@@ -425,7 +425,7 @@ public class PostIt {
     //          in a valid, existing community
     //          if user is not logged in, tells user that they have to log in
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
-    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
+    @SuppressWarnings("methodlength")
     public String makeTextPost() {
         if (loggedIn) {
             System.out.println("You can cancel making a post at anytime by typing " + EXIT_COMMAND);

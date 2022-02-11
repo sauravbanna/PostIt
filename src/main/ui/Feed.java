@@ -60,7 +60,7 @@ public class Feed {
     // MODIFIES: this
     // EFFECTS: starts displaying the feed to the user
     //SuppressWarnings:
-    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
+    @SuppressWarnings("methodlength")
     public String start() {
         //System.out.println("Currently sorting by: " + currentSort);
 

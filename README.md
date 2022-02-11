@@ -12,19 +12,16 @@ is not necessary to view posts. Logging in allows them to:
 - post content to the different communities
 - like or dislike posts
 - comment under posts
-- save posts to their account
+- create new communities
 
 Currently, users can only post text-based posts, but in the future, the 
 ability to post images will be added.
 
 A logged in user can choose what content they see in their feed by 
 subscribing to specific communities. Alternatively, they can visit a specific 
-community and view posts that are all related to that commmunity. They can 
-also sort the posts they see chronologically or by which ones have the 
-most likes. 
+community and view posts that are all related to that commmunity.
 
-Once logged in, a user can also view their profile and change their profile 
-picture, write a short bio, or look at posts they've liked or disliked.
+Once logged in, a user can also view their profile and write a short bio.
 
 ## Who will use it?
 
@@ -46,8 +43,9 @@ easy addition of new features.
 
 - As a user, I want to be able to upload posts to a community
 - As a user, I want to be able to subscribe to communities and add that community to my list of communities to see the content I want
-- As a user, I want to be able to sort my feed by newest or by which posts have the most likes
 - As a user, I want to be able to customize my profile with a bio
 - As a user, I want to be able to like and comment under posts
-- As a user, I want to be able to save posts I really like to my account to view later
+- As a user, I want to be able to create and add my own communities to PostIt based on my interests
+- As a user, I want to accurately keep track of all the posts I've liked and disliked 
+- As a user, I want to be able to view other user's profiles and bios
 

@@ -47,7 +47,7 @@ public class PostIt {
 
     // METHODS
 
-    // EFFECTS: creates a new instance of the PostIt forum, with loggedIn being false and no logged in user
+    // EFFECTS: creates a new instance of the PostIt forum, with loggedIn being false and no logged-in user
     //          instantiates the usernamePassword and communities as empty hashmaps
     //          instantiates the Scanner input to take in user input
     //          instantiates and adds communities from DEFAULT_COMMUNITIES with the default about section
@@ -173,7 +173,7 @@ public class PostIt {
     //          password is valid if it is >= 8 characters
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
     @SuppressWarnings("methodlength")
-    public String registerAccount() {
+    public String registerAccount() {  // fix
         System.out.println("You can always type "  + EXIT_COMMAND + " to cancel the registration.");
         System.out.println("Please enter your desired username between 1-" + MAX_USERNAME_LENGTH + " characters.");
         System.out.println("You can't change this later.");
@@ -301,20 +301,18 @@ public class PostIt {
             System.out.println("Please enter the name of the community you want to create: ");
 
             String communityName = input.nextLine();
-            if (communityName.equals(EXIT_COMMAND)) {
-                return NEXT_ACTION_COMMAND;
+            if (!communityName.equals(EXIT_COMMAND)) {
+                if (communities.containsKey(communityName)) {
+                    System.out.println("That community already exists! Please enter another name.");
+                    return createCommunity();
+                }
+                System.out.println("Please enter the about section for " + communityName + ":");
+                String aboutCommunity = input.nextLine();
+                if (!aboutCommunity.equals(EXIT_COMMAND)) {
+                    communities.put(communityName, new Community(communityName, aboutCommunity));
+                    System.out.println("Community successfully created!");
+                }
             }
-            if (communities.containsKey(communityName)) {
-                System.out.println("That community already exists! Please enter another name.");
-                return createCommunity();
-            }
-            System.out.println("Please enter the about section for " + communityName + ":");
-            String aboutCommunity = input.nextLine();
-            if (aboutCommunity.equals(EXIT_COMMAND)) {
-                return NEXT_ACTION_COMMAND;
-            }
-            communities.put(communityName, new Community(communityName, aboutCommunity));
-            System.out.println("Community successfully created!");
         } else {
             System.out.println("You have to be logged in to do that!");
         }
@@ -430,7 +428,7 @@ public class PostIt {
     //          if user is not logged in, tells user that they have to log in
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
     @SuppressWarnings("methodlength")
-    public String makeTextPost() {
+    public String makeTextPost() { //fix
         if (loggedIn) {
             System.out.println("You can cancel making a post at anytime by typing " + EXIT_COMMAND);
             System.out.println("Please enter what community you want to post in: ");
@@ -447,22 +445,18 @@ public class PostIt {
             System.out.println("Please enter your post's title:");
             String title = input.nextLine();
 
-            if (title.equals(EXIT_COMMAND)) {
-                return NEXT_ACTION_COMMAND;
+            if (!title.equals(EXIT_COMMAND)) {
+                System.out.println("Please enter your post body:");
+                String body = input.nextLine();
+                if (!body.equals(EXIT_COMMAND)) {
+                    Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice);
+                    communities.get(communityChoice).addPost(newPost);
+                    System.out.println("Successfully made post!");
+                }
             }
-            System.out.println("Please enter your post body:");
-            String body = input.nextLine();
-            if (body.equals(EXIT_COMMAND)) {
-                return NEXT_ACTION_COMMAND;
-            }
-            Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice);
-            communities.get(communityChoice).addPost(newPost);
-            System.out.println("Successfully made post!");
         } else {
             System.out.println("You have to be logged in to do that!");
         }
         return NEXT_ACTION_COMMAND;
     }
-
-
 }

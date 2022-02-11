@@ -61,7 +61,7 @@ public class Feed {
     // EFFECTS: starts displaying the feed to the user
     //SuppressWarnings:
     @SuppressWarnings("methodlength")
-    public String start() {
+    public String start() {  //fix
         //System.out.println("Currently sorting by: " + currentSort);
 
         if (userFeed.isEmpty()) {

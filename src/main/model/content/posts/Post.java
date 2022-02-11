@@ -58,5 +58,4 @@ public abstract class Post extends Content {
     }
 
     public abstract String getBody();
-
 }

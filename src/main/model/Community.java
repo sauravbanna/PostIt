@@ -2,9 +2,7 @@ package model;
 
 import model.content.posts.Post;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Community {
 
@@ -52,8 +50,4 @@ public class Community {
     public void addPost(Post p) {
         this.posts.add(p);
     }
-
-
-
-
 }

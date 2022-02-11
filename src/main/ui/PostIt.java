@@ -7,11 +7,13 @@ import model.content.posts.TextPost;
 
 import java.util.*;
 
+import static ui.Feed.showCommands;
+
 public class PostIt {
 
     // CONSTANTS
 
-    public static final String VIEW_COMMUNITY_COMMAND = "/view";
+    public static final String VIEW_COMMUNITY_COMMAND = "/visit";
     public static final String MAKE_POST_COMMAND = "/post";
     public static final String LOGOUT_COMMAND = "/logout";
     public static final String LOGIN_COMMAND = "/login";
@@ -19,21 +21,20 @@ public class PostIt {
     public static final String VIEW_USER_COMMAND = "/user";
     public static final String REGISTER_COMMAND = "/register";
     public static final String EXIT_COMMAND = "/exit";
-    public final String NEXT_ACTION_COMMAND = "action";
+    public static final String NEXT_ACTION_COMMAND = "action";
+    public static final String SHOW_AVAILABLE_COMMUNITIES = "/show";
+    public static final String SUBSCRIBE_TO_COMMUNITY_COMMAND = "/join";
+    public static final String HELP_COMMAND = "/help";
 
-    public final int MAX_USERNAME_LENGTH = 20;
-    public final int MIN_PASSWORD_LENGTH = 8;
+    public static final int MAX_USERNAME_LENGTH = 20;
+    public static final int MIN_PASSWORD_LENGTH = 8;
 
-    public final List<String> DEFAULT_COMMUNITIES = Arrays.asList("funny", "news", "mildlyinteresting", "canada", "sports", "gaming");
-
-    public final String USER_PROFILE_STATE = "user";
-
-    public final String HOME_LAST_COMMUNITY = "home";
+    public static final List<String> DEFAULT_COMMUNITIES =
+            Arrays.asList("funny", "news", "mildlyinteresting", "canada", "sports", "gaming");
 
     // FIELDS
     private Boolean loggedIn;
     private User currentlyLoggedInUser;
-    private String userState;
     private Feed activeFeed;
 
     private HashMap<String, User> usernamePasswords;
@@ -60,14 +61,25 @@ public class PostIt {
         System.out.println("Welcome to PostIt!");
         System.out.println("Type " + HOME_COMMAND + " to browse your home feed, "
                 + VIEW_COMMUNITY_COMMAND + " to view a specific community, "
+                + SHOW_AVAILABLE_COMMUNITIES + " to see all available communities, "
+                + "\n"
+                + SUBSCRIBE_TO_COMMUNITY_COMMAND + " to subscribe to a community, "
                 + VIEW_USER_COMMAND + " to view a user's profile, "
-                + LOGIN_COMMAND + " to log in to your account, and "
+                + LOGIN_COMMAND + " to log in to your account, "
+                + "\n"
+                + REGISTER_COMMAND + " to register an account, and "
                 + EXIT_COMMAND + " to exit the forum.");
         String userChoice = input.nextLine();
         while (true) {
             switch (userChoice) {
                 case HOME_COMMAND:
                     userChoice = showHomeFeed();
+                    break;
+                case SUBSCRIBE_TO_COMMUNITY_COMMAND:
+                    userChoice = subscribeToCommunity();
+                    break;
+                case SHOW_AVAILABLE_COMMUNITIES:
+                    userChoice = showAvailableCommunities();
                     break;
                 case VIEW_COMMUNITY_COMMAND:
                     userChoice = visitCommunity();
@@ -103,12 +115,28 @@ public class PostIt {
                         userChoice = input.nextLine();
                     }
                     break;
+                case HELP_COMMAND:
+                    showCommands();
+                    userChoice = NEXT_ACTION_COMMAND;
+                    break;
                 default:
                     System.out.println("Sorry, I didn't understand you, please enter a valid command.");
                     userChoice = input.nextLine();
                     break;
             }
         }
+    }
+
+    // EFFECTS: prints out the names of all currently existing communities
+    //          and returns the NEXT_ACTION_COMMAND
+    public String showAvailableCommunities() {
+        System.out.println("These are the currently available communities.");
+        for (String community : communities.keySet()) {
+            System.out.print(community + " ");
+        }
+        System.out.println();
+
+        return NEXT_ACTION_COMMAND;
     }
 
     // MODIFIES: this
@@ -174,7 +202,6 @@ public class PostIt {
 
         while (!(password.equals(usernamePasswords.get(username).getPassword()))) {
             System.out.println("That's the wrong password!");
-            System.out.println(usernamePasswords.get(username).getPassword());
             password = input.nextLine();
 
             if (password.equals(EXIT_COMMAND)) {
@@ -188,12 +215,13 @@ public class PostIt {
         System.out.println("Successfully logged in!");
 
         return NEXT_ACTION_COMMAND;
-
-
     }
 
     // EFFECTS: prints out the community's description of the given community
     public void printCommunityInfo(Community c) {
+        System.out.println("Welcome to the " + c.getCommunityName() + " community!");
+        System.out.println(c.getCommunityAbout());
+        System.out.println("Here are the posts from this community: ");
 
     }
 
@@ -204,9 +232,35 @@ public class PostIt {
         System.out.println("Subscribed Communities: " + u.getSubscribedCommunities());
     }
 
-    // EFFECTS:
-    public void subscribeToCommunity(Community c) {
+    // EFFECTS: if logged in, subscribes user to specified community
+    //          if valid community name is given
+    //          if not logged in, tells user to log in
+    public String subscribeToCommunity() {
+        if (loggedIn) {
+            System.out.println("Please enter the name of an "
+                    + "existing community that you would like to join.");
+            String communityChoice = input.nextLine();
 
+            if (communityChoice.equals(EXIT_COMMAND)) {
+                return NEXT_ACTION_COMMAND;
+            }
+
+            while (!communities.containsKey(communityChoice)) {
+                System.out.println("That's not an existing community!");
+                communityChoice = input.nextLine();
+                if (communityChoice.equals(EXIT_COMMAND)) {
+                    return NEXT_ACTION_COMMAND;
+                }
+            }
+
+            currentlyLoggedInUser.subscribeToCommunity(communities.get(communityChoice));
+            System.out.println("Successfully subscribed you to the "
+                    + communityChoice + " community!");
+        } else {
+            System.out.println("You have to be logged in to do that!");
+        }
+
+        return NEXT_ACTION_COMMAND;
     }
 
     // REQUIRES: DEFAULT_COMMUNITIES has at least 1 community
@@ -216,6 +270,7 @@ public class PostIt {
         System.out.println("This is your Home Feed!");
         LinkedList<Post> currentFeed = new LinkedList<>();
         if (loggedIn) {
+            System.out.println("Showing you posts from your favorite communities!");
             for (String community : currentlyLoggedInUser.getSubscribedCommunities()) {
                 currentFeed.addAll(communities.get(community).getPosts());
             }
@@ -225,6 +280,8 @@ public class PostIt {
                 return NEXT_ACTION_COMMAND;
             }
         } else {
+            System.out.println("Showing you posts from default communities, "
+                    + "log in to see posts from your favorite communities!");
             for (String community : DEFAULT_COMMUNITIES) {
                 currentFeed.addAll(communities.get(community).getPosts());
             }
@@ -247,7 +304,9 @@ public class PostIt {
         }
 
         if (communities.containsKey(userChoice)) {
-            activeFeed = new Feed(communities.get(userChoice).getPosts(), loggedIn, currentlyLoggedInUser);
+            printCommunityInfo(communities.get(userChoice));
+            activeFeed = new Feed(communities.get(userChoice).getPosts(),
+                    loggedIn, currentlyLoggedInUser);
             return activeFeed.start();
         } else {
             System.out.println("Sorry, that community was not found.");

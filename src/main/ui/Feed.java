@@ -15,19 +15,18 @@ public class Feed {
 
     // CONSTANTS 
     
-    public final String NEXT_COMMAND = "/next";
-    public final String LIKE_COMMAND = "/like";
-    public final String DISLIKE_COMMAND = "/dislike";
-    public final String COMMENT_COMMAND = "/comment";
-    public final String VIEW_COMMENTS_COMMAND = "/vc";
-    public final String HELP_COMMAND = "/help";
-    public final String BACK_COMMAND = "/back";
-    public final String SORT_COMMAND = "/sort";
+    public static final String NEXT_COMMAND = "/next";
+    public static final String LIKE_COMMAND = "/like";
+    public static final String DISLIKE_COMMAND = "/dislike";
+    public static final String COMMENT_COMMAND = "/comment";
+    public static final String VIEW_COMMENTS_COMMAND = "/vc";
+    public static final String BACK_COMMAND = "/back";
+    //public static final String SORT_COMMAND = "/sort";
 
     public static final String NEW_SORT = "NEW";
     public final String TOP_SORT = "TOP";
-    public final String COMMENT_SORT = "COMMENT";
-    public final String DISLIKE_SORT = "DISLIKE";
+    public final String COMMENT_SORT = "COMMENTS";
+    public final String DISLIKE_SORT = "DISLIKES";
 
     public final int NUM_COMMENTS_TO_SHOW = 5;
 
@@ -36,9 +35,9 @@ public class Feed {
     protected Boolean userFeedActive;
     private int feedPosition;
     private Post currentPost;
+    private String currentSort;
     private Boolean loggedIn;
     private User currentUser;
-    private Boolean liked;
 
     private Scanner input;
     
@@ -46,7 +45,7 @@ public class Feed {
 
     public Feed(LinkedList<Post> postList, Boolean loggedIn, User user) {
         userFeed = postList;
-        sortPosts(NEW_SORT);
+        //sortPosts(currentSort);
         userFeedActive = true;
         feedPosition = 0;
         input = new Scanner(System.in);
@@ -57,6 +56,13 @@ public class Feed {
     // MODIFIES: this
     // EFFECTS: starts displaying the feed to the user
     public String start() {
+        //System.out.println("Currently sorting by: " + currentSort);
+
+        if (userFeed.isEmpty()) {
+            System.out.println("There are no posts to show, what would you like to do?");
+            return input.nextLine();
+        }
+
         currentPost = userFeed.get(feedPosition);
         showPost(currentPost);
         String userChoice;
@@ -96,10 +102,13 @@ public class Feed {
                     }
                     break;
                 case NEXT_COMMAND:
-                    liked = null;
-                    feedPosition++;
-                    currentPost = userFeed.get(feedPosition);
-                    showPost(currentPost);
+                    if (feedPosition >= userFeed.size() - 1) {
+                        System.out.println("You've reached the end!");
+                    } else {
+                        feedPosition++;
+                        currentPost = userFeed.get(feedPosition);
+                        showPost(currentPost);
+                    }
                     break;
                 case VIEW_COMMENTS_COMMAND:
                     showComments(currentPost.getComments());
@@ -116,13 +125,17 @@ public class Feed {
                 case HELP_COMMAND:
                     showCommands();
                     break;
-                case SORT_COMMAND:
+                /*case SORT_COMMAND:
                     System.out.println("How would you like your posts sorted?");
                     System.out.println("You can sort by " + NEW_SORT + ", " + TOP_SORT
                             + ", " + DISLIKE_SORT + ", or " + COMMENT_SORT);
                     String sortChoice = input.nextLine();
+                    System.out.println("Sorting posts ...");
                     sortPosts(sortChoice);
-                    break;
+                    currentPost = null;
+                    feedPosition = 0;
+                    start();
+                    break;*/
                 case EXIT_COMMAND:
                 case VIEW_COMMUNITY_COMMAND:
                 case MAKE_POST_COMMAND:
@@ -130,10 +143,12 @@ public class Feed {
                 case LOGOUT_COMMAND:
                 case REGISTER_COMMAND:
                 case VIEW_USER_COMMAND:
+                case SUBSCRIBE_TO_COMMUNITY_COMMAND:
                 case HOME_COMMAND:
                     return userChoice;
                 default:
-                    System.out.println("Sorry, I didn't understand you.");
+                    System.out.println("Sorry, I didn't understand you. You can type " + HELP_COMMAND
+                            + " to get a full list of commands.");
                     break;
 
             }
@@ -142,17 +157,22 @@ public class Feed {
         return null;
     }
 
-    // MODIFIES: this
+    /*// MODIFIES: this
     // EFFECTS: sorts feed according to current sort option
     public void sortPosts(String sortChoice) {
         switch (sortChoice) {
             case NEW_SORT:
+                currentSort = NEW_SORT;
+
                 break;
             case TOP_SORT:
+                currentSort = TOP_SORT;
                 break;
             case DISLIKE_SORT:
+                currentSort = DISLIKE_SORT;
                 break;
             case COMMENT_SORT:
+                currentSort = COMMENT_SORT;
                 break;
             default:
                 System.out.println("Sorry, I didn't understand that, please sort by " + NEW_SORT + ", " + TOP_SORT
@@ -161,7 +181,7 @@ public class Feed {
                 sortPosts(sortChoice);
                 break;
         }
-    }
+    }*/
 
     // REQUIRES: user is logged in (loggedIn is true)
     // MODIFIES: this
@@ -208,7 +228,8 @@ public class Feed {
     // Methods to print things to console
 
     // EFFECTS: prints out the list of available commands for the feed
-    public void showCommands() {
+    public static void showCommands() {
+        System.out.println("Here are all the commands available: ");
         System.out.println(NEXT_COMMAND + " to view the next post");
         System.out.println(LIKE_COMMAND + " to like a post");
         System.out.println(DISLIKE_COMMAND + " to dislike a post");
@@ -219,11 +240,13 @@ public class Feed {
         System.out.println(EXIT_COMMAND + " to exit the forum");
         System.out.println(VIEW_COMMUNITY_COMMAND + " to view a specific community");
         System.out.println(MAKE_POST_COMMAND + " to make a post");
+        System.out.println(SUBSCRIBE_TO_COMMUNITY_COMMAND + " to subscribe to a community");
+        System.out.println(VIEW_USER_COMMAND + " to view a specific user's profile");
         System.out.println(LOGIN_COMMAND + " to log in to PostIt");
         System.out.println(LOGOUT_COMMAND + " to log out of PostIt");
         System.out.println(REGISTER_COMMAND + " to register an account");
         System.out.println(HOME_COMMAND + " to go to the home feed");
-        System.out.println(SORT_COMMAND + " to sort the feed");
+        //System.out.println(SORT_COMMAND + " to sort the feed");
 
     }
 

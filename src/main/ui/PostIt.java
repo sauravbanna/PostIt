@@ -64,6 +64,7 @@ public class PostIt {
         currentlyLoggedInUser = null;
     }
 
+    // MODIFIES: this
     // EFFECTS: starts the forum for the user
     @SuppressWarnings("methodlength")
     public void start() {
@@ -257,6 +258,7 @@ public class PostIt {
         System.out.println("Subscribed Communities: " + u.getSubscribedCommunities());
     }
 
+    // MODIFIES: this
     // EFFECTS: if logged in, subscribes user to specified community
     //          if valid community name is given
     //          if not logged in, tells user to log in
@@ -349,6 +351,7 @@ public class PostIt {
         return activeFeed.start();
     }
 
+    // MODIFIES: this
     // EFFECTS: prompts user to type in a community name
     //          if valid community name, shows user posts of that community
     //          if invalid, tells user that community was not found and returns the next command
@@ -421,6 +424,7 @@ public class PostIt {
         return NEXT_ACTION_COMMAND;
     }
 
+    // MODIFIES: this
     // EFFECTS: if user is logged in, makes a post according to user specifications
     //          in a valid, existing community
     //          if user is not logged in, tells user that they have to log in

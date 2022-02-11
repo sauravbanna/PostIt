@@ -18,13 +18,13 @@ public class Community {
 
     // METHODS
 
-    // EFFECTS: creates a new community with the given name and about
+    // EFFECTS: creates a new community with the given name and about section
     //          with 0 posts and no subscribers
     public Community(String name, String about) {
         this.communityName = name;
         this.communityAbout = about;
         this.subCount = 0;
-        this.posts = new LinkedList<Post>();
+        this.posts = new LinkedList<>();
     }
 
     // EFFECTS: return the posts from this community
@@ -47,6 +47,7 @@ public class Community {
         return subCount;
     }
 
+    // MODIFIES: this
     // EFFECTS: adds a post to the community
     public void addPost(Post p) {
         this.posts.add(p);

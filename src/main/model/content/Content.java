@@ -16,7 +16,7 @@ public abstract class Content {
 
     // METHODS
 
-    // REQUIRES: given name is a registered user
+    // REQUIRES: given name is a registered user on PostIt
     // EFFECTS: creates a new Post with given poster name
     //          with 0 likes, dislikes and comments
     public Content(String opName) {
@@ -53,15 +53,17 @@ public abstract class Content {
         this.dislikes++;
     }
 
+    // REQUIRES: dislikes > 0
     // MODIFIES: this
     // EFFECTS: decrease the number of dislikes on this content by 1
-    public void undislike() {
+    public void unDislike() {
         this.dislikes--;
     }
 
+    // REQUIRES: likes > 0
     // MODIFIES: this
     // EFFECTS: decrease the number of likes on this content by 1
-    public void unlike() {
+    public void unLike() {
         this.likes--;
     }
 

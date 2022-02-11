@@ -1,6 +1,8 @@
 package model;
 
 
+import model.content.posts.Post;
+import model.content.posts.TextPost;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,5 +67,75 @@ class UserTest {
         testUser.setPassword("strongpassword");
 
         assertEquals("strongpassword", testUser.getPassword());
+    }
+
+    @Test
+    void testAddLikedPost() {
+        Post testPost1 = new TextPost("someUser", "wow", "amazing", "gaming");
+        Post testPost2 = new TextPost("someOtherUser", "wow2", "amazing2", "news");
+
+        assertTrue(testUser.getLikedPosts().isEmpty());
+
+        testUser.addLikedPost(testPost1);
+
+        assertEquals(1, testUser.getLikedPosts().size());
+
+        testUser.addLikedPost(testPost2);
+
+        assertEquals(2, testUser.getLikedPosts().size());
+    }
+
+    @Test
+    void testAddDislikedPost() {
+        Post testPost1 = new TextPost("someUser", "wow", "amazing", "gaming");
+        Post testPost2 = new TextPost("someOtherUser", "wow2", "amazing2", "news");
+
+        assertTrue(testUser.getDislikedPosts().isEmpty());
+
+        testUser.addDislikedPost(testPost1);
+
+        assertEquals(1, testUser.getDislikedPosts().size());
+
+        testUser.addDislikedPost(testPost2);
+
+        assertEquals(2, testUser.getDislikedPosts().size());
+    }
+
+    @Test
+    void testRemoveLikedPost() {
+        Post testPost1 = new TextPost("someUser", "wow", "amazing", "gaming");
+        Post testPost2 = new TextPost("someOtherUser", "wow2", "amazing2", "news");
+
+        testUser.addLikedPost(testPost1);
+        testUser.addLikedPost(testPost2);
+
+        assertEquals(2, testUser.getLikedPosts().size());
+
+        testUser.removeLikedPost(testPost1);
+
+        assertEquals(1, testUser.getLikedPosts().size());
+
+        testUser.removeLikedPost(testPost2);
+
+        assertEquals(0, testUser.getLikedPosts().size());
+    }
+
+    @Test
+    void testRemoveDislikedPost() {
+        Post testPost1 = new TextPost("someUser", "wow", "amazing", "gaming");
+        Post testPost2 = new TextPost("someOtherUser", "wow2", "amazing2", "news");
+
+        testUser.addDislikedPost(testPost1);
+        testUser.addDislikedPost(testPost2);
+
+        assertEquals(2, testUser.getDislikedPosts().size());
+
+        testUser.removeDislikedPost(testPost1);
+
+        assertEquals(1, testUser.getDislikedPosts().size());
+
+        testUser.removeDislikedPost(testPost2);
+
+        assertEquals(0, testUser.getDislikedPosts().size());
     }
 }

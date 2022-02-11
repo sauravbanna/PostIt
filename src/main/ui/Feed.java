@@ -24,11 +24,11 @@ public class Feed {
     //public static final String SORT_COMMAND = "/sort";
 
     public static final String NEW_SORT = "NEW";
-    public final String TOP_SORT = "TOP";
-    public final String COMMENT_SORT = "COMMENTS";
-    public final String DISLIKE_SORT = "DISLIKES";
+    public static final String TOP_SORT = "TOP";
+    public static final String COMMENT_SORT = "COMMENTS";
+    public static final String DISLIKE_SORT = "DISLIKES";
 
-    public final int NUM_COMMENTS_TO_SHOW = 5;
+    public static final int NUM_COMMENTS_TO_SHOW = 5;
 
     // FIELDS
     protected LinkedList<Post> userFeed;
@@ -36,13 +36,16 @@ public class Feed {
     private int feedPosition;
     private Post currentPost;
     private String currentSort;
-    private Boolean loggedIn;
-    private User currentUser;
+    private final Boolean loggedIn;
+    private final User currentUser;
 
     private Scanner input;
     
     // METHODS
 
+    // EFFECTS: creates a new Feed with the given list of posts, whether the user is logged in or not,
+    //          the current user (null if not logged in), with feedPosition at 0, userFeedActive set to True,
+    //          and with the Scanner object input instantiated to read user input
     public Feed(LinkedList<Post> postList, Boolean loggedIn, User user) {
         userFeed = postList;
         //sortPosts(currentSort);
@@ -53,8 +56,11 @@ public class Feed {
         this.currentUser = user;
     }
 
+
     // MODIFIES: this
     // EFFECTS: starts displaying the feed to the user
+    //SuppressWarnings:
+    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
     public String start() {
         //System.out.println("Currently sorting by: " + currentSort);
 
@@ -138,8 +144,10 @@ public class Feed {
                     break;*/
                 case EXIT_COMMAND:
                 case VIEW_COMMUNITY_COMMAND:
+                case SHOW_AVAILABLE_COMMUNITIES:
                 case MAKE_POST_COMMAND:
                 case LOGIN_COMMAND:
+                case CREATE_COMMUNITY_COMMAND:
                 case LOGOUT_COMMAND:
                 case REGISTER_COMMAND:
                 case VIEW_USER_COMMAND:
@@ -189,18 +197,18 @@ public class Feed {
     //          adds post to user's liked posts list
     //          removes one dislike from post if post has been previously disliked
     //          and removes it from user's disliked posts list
-    //          otherwise does nothing
+    //          otherwise tells user that they have already liked the post
     public void likePost() {
         if (currentUser.getLikedPosts().contains(currentPost)) {
             System.out.println("You've already liked this post before!");
         } else {
             System.out.println("Post added to liked posts");
-            currentPost.like();
-            currentUser.addLikedPost(currentPost);
             if (currentUser.getDislikedPosts().contains(currentPost)) {
-                currentPost.undislike();
+                currentPost.unDislike();
                 currentUser.removeDislikedPost(currentPost);
             }
+            currentPost.like();
+            currentUser.addLikedPost(currentPost);
         }
     }
 
@@ -210,18 +218,18 @@ public class Feed {
     //          adds post to user's disliked posts list
     //          removes one like from post if post has been previously liked
     //          and removes it from user's liked posts list
-    //          otherwise does nothing
+    //          otherwise tells user that they have already disliked the post
     public void dislikePost() {
         if (currentUser.getDislikedPosts().contains(currentPost)) {
             System.out.println("You've already disliked this post before!");
         } else {
-            System.out.println("Post added to disliked posts");
-            currentPost.dislike();
             currentUser.addDislikedPost(currentPost);
             if (currentUser.getLikedPosts().contains(currentPost)) {
-                currentPost.unlike();
+                currentPost.unLike();
                 currentUser.removeLikedPost(currentPost);
             }
+            System.out.println("Post added to disliked posts");
+            currentPost.dislike();
         }
     }
 
@@ -239,6 +247,7 @@ public class Feed {
         System.out.println(BACK_COMMAND + " to go to the previous post");
         System.out.println(EXIT_COMMAND + " to exit the forum");
         System.out.println(VIEW_COMMUNITY_COMMAND + " to view a specific community");
+        System.out.println(CREATE_COMMUNITY_COMMAND + " to create a new community");
         System.out.println(MAKE_POST_COMMAND + " to make a post");
         System.out.println(SUBSCRIBE_TO_COMMUNITY_COMMAND + " to subscribe to a community");
         System.out.println(VIEW_USER_COMMAND + " to view a specific user's profile");
@@ -246,11 +255,13 @@ public class Feed {
         System.out.println(LOGOUT_COMMAND + " to log out of PostIt");
         System.out.println(REGISTER_COMMAND + " to register an account");
         System.out.println(HOME_COMMAND + " to go to the home feed");
+        System.out.println(SHOW_AVAILABLE_COMMUNITIES + " to see all existing communities on PostIt");
         //System.out.println(SORT_COMMAND + " to sort the feed");
 
     }
 
-    // EFFECTS: prints out the given post with its title, body, user who post, and likes / dislikes / comments numbers
+    // EFFECTS: prints out the given post with its title, body, user who posted it, community it was posted in
+    //          and number of likes / dislikes / comments
     public void showPost(Post p) {
         System.out.println(p.getTitle());
         System.out.println("Posted by: " + p.getOpName());
@@ -265,7 +276,7 @@ public class Feed {
     }
 
     // EFFECTS: prints out the first numCommentsToShow comments from the given list with their user who posted,
-    //          comment body, and like / dislike number
+    //          comment body, and like / dislike numbers
     public void showComments(List<Comment> commentList) {
         int currentCommentCount = 0;
 
@@ -292,7 +303,7 @@ public class Feed {
         }
     }
 
-    // EFFECTS: prints out the given comment
+    // EFFECTS: prints out the given comment with user who posted it and comment body
     public void showComment(Comment c) {
         System.out.println(c.getOpName() + " says: ");
         System.out.println(c.getCommentBody());

@@ -28,4 +28,34 @@ public abstract class ContentTest {
         testContent.dislike();
         assertEquals(3, testContent.getDislikes());
     }
+
+    @Test
+    void testUnDislike() {
+        testContent.dislike();
+        testContent.dislike();
+        testContent.dislike();
+
+        assertEquals(3, testContent.getDislikes());
+        testContent.unDislike();
+        assertEquals(2, testContent.getDislikes());
+        testContent.unDislike();
+        assertEquals(1, testContent.getDislikes());
+        testContent.unDislike();
+        assertEquals(0, testContent.getDislikes());
+    }
+
+    @Test
+    void testUnLike() {
+        testContent.like();
+        testContent.like();
+        testContent.like();
+
+        assertEquals(3, testContent.getLikes());
+        testContent.unLike();
+        assertEquals(2, testContent.getLikes());
+        testContent.unLike();
+        assertEquals(1, testContent.getLikes());
+        testContent.unLike();
+        assertEquals(0, testContent.getLikes());
+    }
 }

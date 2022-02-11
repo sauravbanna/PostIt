@@ -9,7 +9,7 @@ import java.util.List;
 public class User {
 
     // CONSTANTS
-    public final String DEFAULT_BIO = "No bio yet...";
+    public static final String DEFAULT_BIO = "No bio yet...";
 
     // FIELDS
     private String userName;
@@ -63,30 +63,36 @@ public class User {
         return dislikedPosts;
     }
 
+    // REQUIRES: post is not already in user's liked posts or disliked posts
     // MODIFIES: this
     // EFFECTS: adds the given post to user's liked posts
     public void addLikedPost(Post p) {
         this.likedPosts.add(p);
     }
 
+    // REQUIRES: post is not already in user's disliked posts or in user's liked posts
     // MODIFIES: this
     // EFFECTS: adds the given post to user's disliked posts
     public void addDislikedPost(Post p) {
         this.dislikedPosts.add(p);
     }
 
+    // REQUIRES: post is in user's disliked posts
     // MODIFIES: this
     // EFFECTS: removes the given post from user's disliked posts
     public void removeDislikedPost(Post p) {
         this.dislikedPosts.remove(p);
     }
 
+    // REQUIRES: post is in user's liked posts
     // MODIFIES: this
     // EFFECTS: removes the given post from user's liked posts
     public void removeLikedPost(Post p) {
         this.likedPosts.remove(p);
     }
 
+    // REQUIRES: community is one that is already registered on the forum,
+    //           and community is not already in subscribedCommunities
     // EFFECTS: adds the given community to user's subscribed communities
     public void subscribeToCommunity(Community c) {
         this.subscribedCommunities.add(c.getCommunityName());

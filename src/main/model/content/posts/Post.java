@@ -19,7 +19,7 @@ public abstract class Post extends Content {
 
     // METHODS
 
-    // REQUIRES: given name is a registered user, given community is a existing community on PostIt
+    // REQUIRES: given name is a registered user, given community is an existing community on PostIt
     // EFFECTS: creates a new Post with given poster name and title
     public Post(String opName, String title, String community) {
         super(opName);

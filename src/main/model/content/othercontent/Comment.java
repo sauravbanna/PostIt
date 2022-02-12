@@ -11,6 +11,7 @@ public class Comment extends Content {
 
     // METHODS
 
+    // Constructor
     // REQUIRES: given username is a registered user
     // EFFECTS: creates a comment with the given username posting and the given body
     public Comment(String opName, String body) {

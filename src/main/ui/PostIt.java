@@ -34,6 +34,10 @@ public class PostIt {
 
     public static final List<String> DEFAULT_COMMUNITIES =
             Arrays.asList("funny", "news", "mildlyinteresting", "canada", "sports", "gaming");
+    public static final List<String> EXIT_FEED_COMMANDS =
+            Arrays.asList(VIEW_COMMUNITY_COMMAND, MAKE_POST_COMMAND, LOGIN_COMMAND, LOGOUT_COMMAND,
+                    HOME_COMMAND, VIEW_USER_COMMAND, REGISTER_COMMAND, EXIT_COMMAND, SHOW_AVAILABLE_COMMUNITIES,
+                    SUBSCRIBE_TO_COMMUNITY_COMMAND, CREATE_COMMUNITY_COMMAND);
 
     // FIELDS
 
@@ -45,8 +49,11 @@ public class PostIt {
     private HashMap<String, Community> communities;
     private Scanner input;
 
+    private String userInput;
+
     // METHODS
 
+    // Constructor
     // EFFECTS: creates a new instance of the PostIt forum, with loggedIn being false and no logged-in user
     //          instantiates the usernamePassword and communities as empty hashmaps
     //          instantiates the Scanner input to take in user input
@@ -80,75 +87,120 @@ public class PostIt {
                 + CREATE_COMMUNITY_COMMAND + " to create a new community, "
                 + REGISTER_COMMAND + " to register an account, and "
                 + EXIT_COMMAND + " to exit the forum.");
-        String userChoice = input.nextLine();
+        userInput = input.nextLine();
         while (true) {
-            switch (userChoice) {
+            switch (userInput) {
                 case HOME_COMMAND:
-                    userChoice = showHomeFeed();
+                    userInput = showHomeFeed();
                     break;
                 case SUBSCRIBE_TO_COMMUNITY_COMMAND:
-                    userChoice = subscribeToCommunity();
+                    userInput = subscribeToCommunity();
                     break;
                 case SHOW_AVAILABLE_COMMUNITIES:
-                    userChoice = showAvailableCommunities();
+                    userInput = showAvailableCommunities();
                     break;
                 case CREATE_COMMUNITY_COMMAND:
-                    userChoice = createCommunity();
+                    userInput = createCommunity();
                     break;
                 case VIEW_COMMUNITY_COMMAND:
-                    userChoice = visitCommunity();
+                    userInput = visitCommunity();
                     break;
                 case VIEW_USER_COMMAND:
-                    userChoice = viewUser();
+                    userInput = viewUser();
                     break;
                 case LOGIN_COMMAND:
-                    if (loggedIn) {
-                        System.out.println("You're already logged in!");
-                        userChoice = NEXT_ACTION_COMMAND;
-                    } else {
-                        userChoice = logIntoAccount();
-                    }
-
+                    userInput = loginCheck();
                     break;
                 case LOGOUT_COMMAND:
-                    if (!loggedIn) {
-                        System.out.println("You're not logged in!");
-                    } else {
-                        System.out.println("Successfully logged out!");
-                        loggedIn = false;
-                        currentlyLoggedInUser = null;
-                        activeFeed = null;
-                    }
-                    userChoice = NEXT_ACTION_COMMAND;
+                    userInput = logOut();
                     break;
                 case MAKE_POST_COMMAND:
-                    userChoice = makeTextPost();
+                    userInput = makeTextPost();
                     break;
                 case REGISTER_COMMAND:
-                    userChoice = registerAccount();
+                    userInput = registerCheckIfLoggedIn();
                     break;
                 case EXIT_COMMAND:
                     System.out.println("Thanks for using PostIt!");
                     System.exit(0);
                     break;
                 case NEXT_ACTION_COMMAND:
-                    if (activeFeed != null) {
-                        System.out.println("Resuming your previous feed ...");
-                        userChoice = activeFeed.start();
-                    } else {
-                        System.out.println("What would you like to do next?");
-                        userChoice = input.nextLine();
-                    }
+                    userInput = nextAction();
                     break;
                 case HELP_COMMAND:
                     showCommands();
-                    userChoice = NEXT_ACTION_COMMAND;
+                    userInput = NEXT_ACTION_COMMAND;
                     break;
                 default:
                     System.out.println("Sorry, I didn't understand you, please enter a valid command.");
-                    userChoice = input.nextLine();
+                    userInput = input.nextLine();
                     break;
             }
+        }
+    }
+
+    // EFFECTS: checks if user if already logged in, if yes, lets user know and returns NEXT_ACTIOB_COMMAND
+    //          else, starts the log in process
+    public String loginCheck() {
+        if (loggedIn) {
+            System.out.println("You're already logged in!");
+            return NEXT_ACTION_COMMAND;
+        } else {
+            return logIntoAccount();
+        }
+    }
+
+    // EFFECTS: if active feed doesn't exist, asks user what they want to do next
+    //          returns user input
+    //          if active feed exists, starts active feed again
+    public String nextAction() {
+        if (activeFeed != null) {
+            System.out.println("Resuming your previous feed ...");
+            return activeFeed.start();
+        } else {
+            System.out.println("What would you like to do next?");
+            return input.nextLine();
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: if user is logged in, logs them out and clears the feed
+    //          if user is not logged in, tells them that they are not
+    public String logOut() {
+        if (!loggedIn) {
+            System.out.println("You're not logged in!");
+        } else {
+            System.out.println("Successfully logged out!");
+            loggedIn = false;
+            currentlyLoggedInUser = null;
+            activeFeed = null;
+        }
+        return NEXT_ACTION_COMMAND;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: checks if user is logged in or not
+    //          if logged in, asks user if they want to log out and register a new account
+    //          if yes, starts registration process
+    //          if no or invalid input, returns NEXT_ACTION_COMMAND
+    //          if user is not logged in, starts registration process
+    public String registerCheckIfLoggedIn() {
+        if (loggedIn) {
+            System.out.println("You're already logged in, do you want to log out? (Y/N)");
+            userInput = input.nextLine();
+            if (userInput.equals("Y")) {
+                logOut();
+                return registerAccount();
+            } else {
+                if (userInput.equals("N")) {
+                    System.out.println("Ok, cancelling registration ... ");
+                } else {
+                    System.out.println("Sorry, I didn't understand what you said.");
+                }
+                return NEXT_ACTION_COMMAND;
+            }
+        } else {
+            return registerAccount();
         }
     }
 
@@ -172,35 +224,58 @@ public class PostIt {
     //          and is not SELF_PROFILE_COMMAND
     //          password is valid if it is >= 8 characters
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
-    @SuppressWarnings("methodlength")
-    public String registerAccount() {  // fix
+    public String registerAccount() {
         System.out.println("You can always type "  + EXIT_COMMAND + " to cancel the registration.");
         System.out.println("Please enter your desired username between 1-" + MAX_USERNAME_LENGTH + " characters.");
         System.out.println("You can't change this later.");
-        String username;
-        do {
-            username = input.nextLine();
-            if (username.equals(EXIT_COMMAND)) {
-                return NEXT_ACTION_COMMAND;
+        if (checkUsernameInput()) {
+            String username = userInput;
+            System.out.println("Please enter a password longer than " + MIN_PASSWORD_LENGTH + " characters.");
+            if (checkPasswordInput()) {
+                String password = userInput;
+                usernamePasswords.put(username, new User(username, password));
+                System.out.println("Successfully registered your account! Log in by typing " + LOGIN_COMMAND);
             }
-            if (isInvalid(username)) {
+        }
+        return NEXT_ACTION_COMMAND;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: takes in a username as input from user and if valid, returns true
+    //          username valid according to isValid()
+    //          if not, loops until user enters valid input
+    //          returns false if user enters EXIT_COMMAND
+    public Boolean checkUsernameInput() {
+        do {
+            userInput = input.nextLine();
+            if (userInput.equals(EXIT_COMMAND)) {
+                return false;
+            }
+            if (isInvalid(userInput)) {
                 System.out.println("Please enter a valid username, or that username already exists.");
             }
-        } while (isInvalid(username));
-        System.out.println("Please enter a password longer than " + MIN_PASSWORD_LENGTH + " characters.");
-        String password;
+        } while (isInvalid(userInput));
+
+        return true;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: takes in a password as input from user and if valid, returns true
+    //          password valud if length > MIN_PASSWORD_LENGTH
+    //          if not, loops until user enters valid input
+    //          returns false if user enters EXIT_COMMAND
+    public Boolean checkPasswordInput() {
         do {
-            password = input.nextLine();
-            if (password.equals(EXIT_COMMAND)) {
-                return NEXT_ACTION_COMMAND;
+            userInput = input.nextLine();
+            if (userInput.equals(EXIT_COMMAND)) {
+                return false;
             }
-            if (password.length() < MIN_PASSWORD_LENGTH) {
-                System.out.println("Please enter a valid password.");
+            if (userInput.length() < MIN_PASSWORD_LENGTH) {
+                System.out.println("Please enter a password longer than " + MIN_PASSWORD_LENGTH + " characters.");
             }
-        } while (password.length() < MIN_PASSWORD_LENGTH);
-        usernamePasswords.put(username, new User(username, password));
-        System.out.println("Successfully registered your account! Log in by typing " + LOGIN_COMMAND);
-        return NEXT_ACTION_COMMAND;
+        } while (userInput.length() < MIN_PASSWORD_LENGTH);
+
+        return true;
     }
 
     // EFFECTS: returns true if the given username is invalid, false if valid
@@ -223,24 +298,36 @@ public class PostIt {
             return NEXT_ACTION_COMMAND;
         }
         System.out.println("Please enter your password: ");
-        String password;
-        do {
-            password = input.nextLine();
-            if (password.equals(EXIT_COMMAND)) {
-                return NEXT_ACTION_COMMAND;
-            }
-            if (!(password.equals(usernamePasswords.get(username).getPassword()))) {
-                System.out.println("That's the wrong password!.");
-            }
-        } while (!(password.equals(usernamePasswords.get(username).getPassword())));
+        if (checkPasswordWhenLogin(username)) {
+            loggedIn = true;
+            currentlyLoggedInUser = usernamePasswords.get(username);
+            activeFeed = null;
 
-        loggedIn = true;
-        currentlyLoggedInUser = usernamePasswords.get(username);
-        activeFeed = null;
-
-        System.out.println("Successfully logged in!");
-
+            System.out.println("Successfully logged in!");
+        }
         return NEXT_ACTION_COMMAND;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: checks the user entered password when logging in
+    //          returns false if user enters EXIT_COMMAND or user-entered username is not registered
+    //          prompt user to enter password again if wrong password
+    //          returns true once right password is entered
+    public Boolean checkPasswordWhenLogin(String username) {
+        do {
+            userInput = input.nextLine();
+            if (userInput.equals(EXIT_COMMAND)) {
+                return false;
+            }
+            if (!usernamePasswords.containsKey(username)) {
+                System.out.println("That username doesn't exist!");
+                return false;
+            }
+            if (!(userInput.equals(usernamePasswords.get(username).getPassword()))) {
+                System.out.println("That's the wrong password!");
+            }
+        } while (!(userInput.equals(usernamePasswords.get(username).getPassword())));
+        return true;
     }
 
     // EFFECTS: prints out the community info of the given community
@@ -267,26 +354,39 @@ public class PostIt {
         if (loggedIn) {
             System.out.println("Please enter the name of an "
                     + "existing community that you would like to join.");
-            String communityChoice;
-            do {
-                communityChoice = input.nextLine();
-                if (communityChoice.equals(EXIT_COMMAND)) {
-                    return NEXT_ACTION_COMMAND;
-                }
-                if (!communities.containsKey(communityChoice)) {
-                    System.out.println("That's not an existing community!");
-                }
-                if (currentlyLoggedInUser.getSubscribedCommunities().contains(communityChoice)) {
-                    System.out.println("You're already subscribed to this community!");
-                }
-            } while (!communities.containsKey(communityChoice)
-                    || currentlyLoggedInUser.getSubscribedCommunities().contains(communityChoice));
-            currentlyLoggedInUser.subscribeToCommunity(communities.get(communityChoice));
-            System.out.println("Successfully subscribed you to the " + communityChoice + " community!");
+            if (communitySubscribeCheck()) {
+                System.out.println("Successfully subscribed you to the " + userInput + " community!");
+            }
         } else {
             System.out.println("You have to be logged in to do that!");
         }
         return NEXT_ACTION_COMMAND;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: asks user to enter a community name, if user enters EXIT_COMMAND, returns false
+    //          if user enters a non-existent community, prompts user to re-enter community name
+    //          if user enters a cummintiy they've already subscribed to, prompts user to re-enter community name
+    //          returns true once valid community name is entered
+    public Boolean communitySubscribeCheck() {
+        do {
+            userInput = input.nextLine();
+            if (userInput.equals(EXIT_COMMAND)) {
+                return false;
+            }
+            if (!communities.containsKey(userInput)) {
+                System.out.println("That's not an existing community! Type " + EXIT_COMMAND
+                        + " and use " + SHOW_AVAILABLE_COMMUNITIES
+                        + " to see all available communities.");
+            }
+            if (currentlyLoggedInUser.getSubscribedCommunities().contains(userInput)) {
+                System.out.println("You're already subscribed to this community!");
+            }
+        } while (!communities.containsKey(userInput)
+                || currentlyLoggedInUser.getSubscribedCommunities().contains(userInput));
+        currentlyLoggedInUser.subscribeToCommunity(communities.get(userInput));
+
+        return true;
     }
 
     // MODIFIES: this
@@ -321,6 +421,7 @@ public class PostIt {
     }
 
     // REQUIRES: DEFAULT_COMMUNITIES has at least 1 community
+    // MODIFIES: this
     // EFFECTS: if user is logged in, shows user posts from their subscribed communities
     //          if user is not logged in, shows user posts from default communities
     //          returns NEXT_ACTION_COMMAND if there are no posts to show
@@ -357,19 +458,20 @@ public class PostIt {
     public String visitCommunity() {
         System.out.println("Please enter the name of the community you want to visit.");
         System.out.println("Type " + EXIT_COMMAND + " to cancel.");
-        String userChoice = input.nextLine();
+        userInput = input.nextLine();
 
-        if (userChoice.equals(EXIT_COMMAND)) {
+        if (userInput.equals(EXIT_COMMAND)) {
             return NEXT_ACTION_COMMAND;
         }
 
-        if (communities.containsKey(userChoice)) {
-            printCommunityInfo(communities.get(userChoice));
-            activeFeed = new Feed(communities.get(userChoice).getPosts(),
+        if (communities.containsKey(userInput)) {
+            printCommunityInfo(communities.get(userInput));
+            activeFeed = new Feed(communities.get(userInput).getPosts(),
                     loggedIn, currentlyLoggedInUser);
             return activeFeed.start();
         } else {
-            System.out.println("Sorry, that community was not found.");
+            System.out.println("Sorry, that community was not found. Use " + SHOW_AVAILABLE_COMMUNITIES
+                    + " to see all available communities.");
             return NEXT_ACTION_COMMAND;
         }
     }
@@ -382,11 +484,11 @@ public class PostIt {
         activeFeed = null;
         System.out.println("Please enter the name of a registered user who's profile you want to view, "
                 + "or " + SELF_PROFILE_COMMAND + " for your own profile");
-        String userName = input.nextLine();
+        userInput = input.nextLine();
 
-        if (usernamePasswords.containsKey(userName)) {
-            printUserInfo(usernamePasswords.get(userName));
-        } else if (userName.equals(SELF_PROFILE_COMMAND)) {
+        if (usernamePasswords.containsKey(userInput)) {
+            printUserInfo(usernamePasswords.get(userInput));
+        } else if (userInput.equals(SELF_PROFILE_COMMAND)) {
             printUserInfo(currentlyLoggedInUser);
             return editProfile();
         } else {
@@ -404,9 +506,9 @@ public class PostIt {
     public String editProfile() {
         System.out.println("Type " + EDIT_PROFILE_COMMAND + " to edit your profile, "
                 + "or any other command to do something else.");
-        String userChoice = input.nextLine();
+        userInput = input.nextLine();
 
-        if (userChoice.equals(EDIT_PROFILE_COMMAND)) {
+        if (userInput.equals(EDIT_PROFILE_COMMAND)) {
             System.out.println("Please enter your new bio: ");
             System.out.println("Type " + EXIT_COMMAND + " to exit.");
             String newBio = input.nextLine();
@@ -416,7 +518,7 @@ public class PostIt {
                 System.out.println("Bio successfully updated!");
             }
         } else {
-            return userChoice;
+            return userInput;
         }
 
         return NEXT_ACTION_COMMAND;
@@ -427,36 +529,46 @@ public class PostIt {
     //          in a valid, existing community
     //          if user is not logged in, tells user that they have to log in
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
-    @SuppressWarnings("methodlength")
-    public String makeTextPost() { //fix
+    public String makeTextPost() {
         if (loggedIn) {
             System.out.println("You can cancel making a post at anytime by typing " + EXIT_COMMAND);
             System.out.println("Please enter what community you want to post in: ");
-            String communityChoice;
-            do {
-                communityChoice = input.nextLine();
-                if (communityChoice.equals(EXIT_COMMAND)) {
-                    return NEXT_ACTION_COMMAND;
-                }
-                if (!communities.containsKey(communityChoice)) {
-                    System.out.println("Please enter the name of a valid, existing community.");
-                }
-            } while (!communities.containsKey(communityChoice));
-            System.out.println("Please enter your post's title:");
-            String title = input.nextLine();
-
-            if (!title.equals(EXIT_COMMAND)) {
-                System.out.println("Please enter your post body:");
-                String body = input.nextLine();
-                if (!body.equals(EXIT_COMMAND)) {
-                    Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice);
-                    communities.get(communityChoice).addPost(newPost);
-                    System.out.println("Successfully made post!");
+            if (checkCommunityInput()) {
+                String communityChoice = userInput;
+                System.out.println("Please enter your post's title:");
+                String title = input.nextLine();
+                if (!title.equals(EXIT_COMMAND)) {
+                    System.out.println("Please enter your post body:");
+                    String body = input.nextLine();
+                    if (!body.equals(EXIT_COMMAND)) {
+                        Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice);
+                        communities.get(communityChoice).addPost(newPost);
+                        System.out.println("Successfully made post!");
+                    }
                 }
             }
         } else {
             System.out.println("You have to be logged in to do that!");
         }
         return NEXT_ACTION_COMMAND;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: takes in a community name as input from user and if valid, returns true
+    //          valid if community exists on PostIt
+    //          if not, loops until user enters valid input
+    //          returns false if user enters EXIT_COMMAND
+    public Boolean checkCommunityInput() {
+        do {
+            userInput = input.nextLine();
+            if (userInput.equals(EXIT_COMMAND)) {
+                return false;
+            }
+            if (!communities.containsKey(userInput)) {
+                System.out.println("Please enter the name of a valid, existing community.");
+            }
+        } while (!communities.containsKey(userInput));
+
+        return true;
     }
 }

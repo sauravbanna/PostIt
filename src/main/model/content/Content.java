@@ -16,6 +16,7 @@ public abstract class Content {
 
     // METHODS
 
+    // Constructor
     // REQUIRES: given name is a registered user on PostIt
     // EFFECTS: creates a new Post with given poster name
     //          with 0 likes, dislikes and comments

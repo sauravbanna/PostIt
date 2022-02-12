@@ -16,6 +16,7 @@ public class Community {
 
     // METHODS
 
+    // Constructor
     // EFFECTS: creates a new community with the given name and about section
     //          with 0 posts and no subscribers
     public Community(String name, String about) {

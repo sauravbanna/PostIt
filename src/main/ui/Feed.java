@@ -43,6 +43,7 @@ public class Feed {
     
     // METHODS
 
+    // Constructor
     // EFFECTS: creates a new Feed with the given list of posts, whether the user is logged in or not,
     //          the current user (null if not logged in), with feedPosition at 0, userFeedActive set to True,
     //          and with the Scanner object input instantiated to read user input
@@ -59,20 +60,15 @@ public class Feed {
 
     // MODIFIES: this
     // EFFECTS: starts displaying the feed to the user
-    //SuppressWarnings:
     @SuppressWarnings("methodlength")
-    public String start() {  //fix
-        //System.out.println("Currently sorting by: " + currentSort);
-
+    public String start() {
         if (userFeed.isEmpty()) {
             System.out.println("There are no posts to show, what would you like to do?");
             return input.nextLine();
         }
-
         currentPost = userFeed.get(feedPosition);
         showPost(currentPost);
         String userChoice;
-
         while (userFeedActive) {
             System.out.println("You can " + LIKE_COMMAND + ", " + DISLIKE_COMMAND + ", " + COMMENT_COMMAND
                     + ", view the " + NEXT_COMMAND + " post, or " + VIEW_COMMENTS_COMMAND + " to see "
@@ -81,88 +77,109 @@ public class Feed {
 
             userChoice = input.nextLine();
 
-
             switch (userChoice) {
                 case LIKE_COMMAND:
-                    if (loggedIn) {
-                        System.out.println(currentUser.addLikedPost(currentPost));
-                    }  else {
-                        System.out.println("You have to be logged in to do that!");
-                    }
+                    like();
                     break;
                 case DISLIKE_COMMAND:
-                    if (loggedIn) {
-                        System.out.println(currentUser.addDislikedPost(currentPost));
-                    }  else {
-                        System.out.println("You have to be logged in to do that!");
-                    }
+                    dislike();
                     break;
                 case COMMENT_COMMAND:
-                    if (loggedIn) {
-                        System.out.println("Please type your comment and press enter when done:");
-                        String comment = input.nextLine();
-                        currentPost.addComment(new Comment(currentUser.getUserName(), comment));
-                        System.out.println("Your comment has been posted!");
-                    }  else {
-                        System.out.println("You have to be logged in to do that!");
-                    }
+                    comment();
                     break;
                 case NEXT_COMMAND:
-                    if (feedPosition >= userFeed.size() - 1) {
-                        System.out.println("You've reached the end!");
-                    } else {
-                        feedPosition++;
-                        currentPost = userFeed.get(feedPosition);
-                        showPost(currentPost);
-                    }
+                    next();
                     break;
                 case VIEW_COMMENTS_COMMAND:
                     showComments(currentPost.getComments());
                     break;
                 case BACK_COMMAND:
-                    if (feedPosition > 0) {
-                        feedPosition--;
-                        currentPost = userFeed.get(feedPosition);
-                        showPost(currentPost);
-                    } else {
-                        System.out.println("You've reached the beginning!");
-                    }
+                    back();
                     break;
                 case HELP_COMMAND:
                     showCommands();
                     break;
-                /*case SORT_COMMAND:
-                    System.out.println("How would you like your posts sorted?");
-                    System.out.println("You can sort by " + NEW_SORT + ", " + TOP_SORT
-                            + ", " + DISLIKE_SORT + ", or " + COMMENT_SORT);
-                    String sortChoice = input.nextLine();
-                    System.out.println("Sorting posts ...");
-                    sortPosts(sortChoice);
-                    currentPost = null;
-                    feedPosition = 0;
-                    start();
-                    break;*/
-                case EXIT_COMMAND:
-                case VIEW_COMMUNITY_COMMAND:
-                case SHOW_AVAILABLE_COMMUNITIES:
-                case MAKE_POST_COMMAND:
-                case LOGIN_COMMAND:
-                case CREATE_COMMUNITY_COMMAND:
-                case LOGOUT_COMMAND:
-                case REGISTER_COMMAND:
-                case VIEW_USER_COMMAND:
-                case SUBSCRIBE_TO_COMMUNITY_COMMAND:
-                case HOME_COMMAND:
-                    return userChoice;
                 default:
-                    System.out.println("Sorry, I didn't understand you. You can type " + HELP_COMMAND
-                            + " to get a full list of commands.");
-                    break;
-
+                    return defaultInput(userChoice);
             }
         }
+        return NEXT_ACTION_COMMAND;
+    }
 
-        return null;
+    // EFFECTS: checks 1. if input is either a command that requires exiting the feed
+    //          or 2. the input is invalid
+    //          returns the corresponding command if case 1, returns NEXT_ACTION_COMMAND if case 2
+    public String defaultInput(String input) {
+        if (EXIT_FEED_COMMANDS.contains(input)) {
+            return input;
+        } else {
+            System.out.println("Sorry, I didn't understand you. You can type " + HELP_COMMAND
+                    + " to get a full list of commands.");
+            return NEXT_ACTION_COMMAND;
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: if user is logged in, adds current post to user's liked post
+    //          otherwise, tells user to log in
+    public void like() {
+        if (loggedIn) {
+            System.out.println(currentUser.addLikedPost(currentPost));
+        }  else {
+            System.out.println("You have to be logged in to do that!");
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: if user is logged in, adds current post to user's disliked post
+    //          otherwise, tells user to log in
+    public void dislike() {
+        if (loggedIn) {
+            System.out.println(currentUser.addDislikedPost(currentPost));
+        }  else {
+            System.out.println("You have to be logged in to do that!");
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: if user is logged in, prompts user to enter a comment
+    //          adds comment user entered to current post's comments
+    //          otherwise, tells user to log in
+    public void comment() {
+        if (loggedIn) {
+            System.out.println("Please type your comment and press enter when done:");
+            String comment = input.nextLine();
+            currentPost.addComment(new Comment(currentUser.getUserName(), comment));
+            System.out.println("Your comment has been posted!");
+        }  else {
+            System.out.println("You have to be logged in to do that!");
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: if feedPosition < size of userFeed - 1, increments it by 1 and shows post at that position in feed
+    //          else, tells user they've reached the end of the feed
+    public void next() {
+        if (feedPosition >= userFeed.size() - 1) {
+            System.out.println("You've reached the end!");
+        } else {
+            feedPosition++;
+            currentPost = userFeed.get(feedPosition);
+            showPost(currentPost);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: if feedPosition > 0, decrements it by 1 and shows post at that position in feed
+    //          else, tells user they've reached the beginning of the feed
+    public void back() {
+        if (feedPosition > 0) {
+            feedPosition--;
+            currentPost = userFeed.get(feedPosition);
+            showPost(currentPost);
+        } else {
+            System.out.println("You've reached the beginning!");
+        }
     }
 
     // Methods to print things to console

@@ -21,6 +21,7 @@ public class User {
 
     // METHODS
 
+    // Constructor
     // EFFECTS: creates a user with the given username and password
     //          with a default bio and no subscribed communities
     public User(String name, String password) {

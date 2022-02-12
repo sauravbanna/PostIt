@@ -132,7 +132,8 @@ public class PostIt {
                     userInput = NEXT_ACTION_COMMAND;
                     break;
                 default:
-                    System.out.println("Sorry, I didn't understand you, please enter a valid command.");
+                    System.out.println("Sorry, I didn't understand you, please enter a valid command. Type "
+                            + HELP_COMMAND + " to see all available commands.");
                     userInput = input.nextLine();
                     break;
             }

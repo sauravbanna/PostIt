@@ -70,9 +70,9 @@ public class Feed {
         showPost(currentPost);
         String userChoice;
         while (userFeedActive) {
-            System.out.println("You can " + LIKE_COMMAND + ", " + DISLIKE_COMMAND + ", " + COMMENT_COMMAND
-                    + ", view the " + NEXT_COMMAND + " post, or " + VIEW_COMMENTS_COMMAND + " to see "
-                    + NUM_COMMENTS_TO_SHOW + " comments.");
+            System.out.println("Type " + LIKE_COMMAND + " to like, " + DISLIKE_COMMAND + " to dislike, "
+                    + COMMENT_COMMAND + " to view the comments, " + NEXT_COMMAND + " to see the next post, or "
+                    + VIEW_COMMENTS_COMMAND  + " to see " + NUM_COMMENTS_TO_SHOW + " comments.");
             System.out.println("Type " + HELP_COMMAND + " for a full list of commands.");
 
             userChoice = input.nextLine();

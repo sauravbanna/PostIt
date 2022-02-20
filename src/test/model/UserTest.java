@@ -35,14 +35,14 @@ class UserTest {
     void testSubscribeToCommunity() {
         assertTrue(testUser.getSubscribedCommunities().isEmpty());
 
-        Community community1 = new Community("funny", "funny stuff");
+        Community community1 = new Community("funny", "funny stuff", null);
 
         testUser.subscribeToCommunity(community1);
 
         assertEquals(1, testUser.getSubscribedCommunities().size());
         assertEquals("funny", testUser.getSubscribedCommunities().get(0));
 
-        Community community2 = new Community("news", "The latest news");
+        Community community2 = new Community("news", "The latest news", null);
         testUser.subscribeToCommunity(community2);
 
         assertEquals(2, testUser.getSubscribedCommunities().size());

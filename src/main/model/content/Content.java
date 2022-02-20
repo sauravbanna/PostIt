@@ -1,9 +1,10 @@
 package model.content;
 
-import java.util.ArrayList;
-import java.util.List;
+import persistence.Writable;
 
-public abstract class Content {
+// The most basic piece of content on PostIt, with just a username, number of likes and dislikes
+// This Content can be liked or disliked
+public abstract class Content implements Writable {
 
     // CONSTANTS
 

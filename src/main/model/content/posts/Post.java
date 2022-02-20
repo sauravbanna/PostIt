@@ -6,6 +6,8 @@ import model.content.Content;
 import java.util.ArrayList;
 import java.util.List;
 
+// A subclass of Content with a username who posted, a title, a community that is was posted in,
+// an abstract body, a list of comments, and number of likes, dislikes, and comments
 public abstract class Post extends Content {
 
     // CONSTANTS

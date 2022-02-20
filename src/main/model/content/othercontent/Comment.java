@@ -1,7 +1,9 @@
 package model.content.othercontent;
 
 import model.content.Content;
+import org.json.JSONObject;
 
+// A comment with a username who posted and a body
 public class Comment extends Content {
 
     // CONSTANTS
@@ -22,6 +24,11 @@ public class Comment extends Content {
     // EFFECTS: returns the comment's body
     public String getCommentBody() {
         return this.body;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        return null;
     }
 
 }

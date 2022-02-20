@@ -1,12 +1,18 @@
 package model;
 
-import javafx.geometry.Pos;
 import model.content.posts.Post;
+import org.json.JSONObject;
+import persistence.Writable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class User {
+// A user on PostIt with a registered username and password, an about section, a list of
+// subscribed communities, and lists of posts they've liked and disliked
+// A User can like and disliked posts, comment under posts, subscribe to communities and change
+// their bio
+public class User implements Writable {
 
     // CONSTANTS
     public static final String DEFAULT_BIO = "No bio yet...";
@@ -18,6 +24,7 @@ public class User {
     private List<String> subscribedCommunities;
     private List<Post> likedPosts;
     private List<Post> dislikedPosts;
+    private LinkedList<Post> userPosts;
 
     // METHODS
 
@@ -31,6 +38,7 @@ public class User {
         this.subscribedCommunities = new ArrayList<>();
         this.likedPosts = new ArrayList<>();
         this.dislikedPosts = new ArrayList<>();
+        this.userPosts = new LinkedList<>();
     }
 
 
@@ -104,9 +112,11 @@ public class User {
 
     // REQUIRES: community is one that is already registered on the forum,
     //           and community is not already in subscribedCommunities
+    // MODIFIES: this, Community
     // EFFECTS: adds the given community to user's subscribed communities
     public void subscribeToCommunity(Community c) {
         this.subscribedCommunities.add(c.getCommunityName());
+        c.addSubscriber();
     }
 
     // REQUIRES: password is at least ui.PostIt.MIN_PASSWORD_LENGTH characters long
@@ -122,7 +132,21 @@ public class User {
         this.bio = bio;
     }
 
+    // REQUIRES: user who posted the post is this user
+    // MODIFIES: this
+    // EFFECTS: adds given post to list of user-made posts
+    public void addUserPost(Post p) {
+        this.userPosts.add(p);
+    }
 
+    // EFFECTS: returns a list of posts that this user has made
+    public LinkedList<Post> getUserPosts() {
+        return this.userPosts;
+    }
 
-
+    @Override
+    // EFFECTS: returns this user's information as a JSON Object
+    public JSONObject toJson() {
+        return null;
+    }
 }

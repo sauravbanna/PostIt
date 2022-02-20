@@ -4,13 +4,16 @@ import model.User;
 import model.content.othercontent.Comment;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
+import static model.PostIt.*;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import static ui.PostIt.*;
+import static ui.PostItApp.*;
 
+
+// A Feed of posts that the user can view one by one, like, dislike, or comment on
 public class Feed {
 
     // CONSTANTS 

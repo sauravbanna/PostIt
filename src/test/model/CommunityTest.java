@@ -10,7 +10,7 @@ public class CommunityTest {
 
     @BeforeEach
     void runBefore() {
-        testCommunity = new Community("funnypics", "The place to post funny pictures.");
+        testCommunity = new Community("funnypics", "The place to post funny pictures.", null);
     }
 
     @Test

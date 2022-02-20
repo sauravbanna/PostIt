@@ -1,74 +1,35 @@
 package ui;
 
+import exceptions.EmptyFeedException;
 import model.Community;
+import model.PostIt;
 import model.User;
-import model.content.posts.Post;
-import model.content.posts.TextPost;
 
 import java.util.*;
 
+import static model.PostIt.*;
 import static ui.Feed.showCommands;
 
-public class PostIt {
+
+// A forum where a user can register an account and login / logout
+// Contains communities that the user can create, post to, visit and view the posts of
+// as well as user profiles of the user and other registered users
+public class PostItApp {
 
     // CONSTANTS
 
-    public static final String VIEW_COMMUNITY_COMMAND = "/visit";
-    public static final String MAKE_POST_COMMAND = "/post";
-    public static final String LOGOUT_COMMAND = "/logout";
-    public static final String LOGIN_COMMAND = "/login";
-    public static final String HOME_COMMAND = "/home";
-    public static final String VIEW_USER_COMMAND = "/user";
-    public static final String REGISTER_COMMAND = "/register";
-    public static final String EXIT_COMMAND = "/exit";
-    public static final String NEXT_ACTION_COMMAND = "action";
-    public static final String SHOW_AVAILABLE_COMMUNITIES = "/show";
-    public static final String SUBSCRIBE_TO_COMMUNITY_COMMAND = "/join";
-    public static final String CREATE_COMMUNITY_COMMAND = "/create";
-    public static final String HELP_COMMAND = "/help";
-    public static final String EDIT_PROFILE_COMMAND = "/edit";
-    public static final String SELF_PROFILE_COMMAND = "me";
-
-    public static final int MAX_USERNAME_LENGTH = 20;
-    public static final int MIN_PASSWORD_LENGTH = 8;
-
-    public static final List<String> DEFAULT_COMMUNITIES =
-            Arrays.asList("funny", "news", "mildlyinteresting", "canada", "sports", "gaming");
-    public static final List<String> EXIT_FEED_COMMANDS =
-            Arrays.asList(VIEW_COMMUNITY_COMMAND, MAKE_POST_COMMAND, LOGIN_COMMAND, LOGOUT_COMMAND,
-                    HOME_COMMAND, VIEW_USER_COMMAND, REGISTER_COMMAND, EXIT_COMMAND, SHOW_AVAILABLE_COMMUNITIES,
-                    SUBSCRIBE_TO_COMMUNITY_COMMAND, CREATE_COMMUNITY_COMMAND);
-
     // FIELDS
-
-    private Boolean loggedIn;
-    private User currentlyLoggedInUser;
-    private Feed activeFeed;
-
-    private HashMap<String, User> usernamePasswords;
-    private HashMap<String, Community> communities;
     private Scanner input;
-
     private String userInput;
+    private PostIt postIt;
 
     // METHODS
 
     // Constructor
-    // EFFECTS: creates a new instance of the PostIt forum, with loggedIn being false and no logged-in user
-    //          instantiates the usernamePassword and communities as empty hashmaps
-    //          instantiates the Scanner input to take in user input
-    //          instantiates and adds communities from DEFAULT_COMMUNITIES with the default about section
-    public PostIt() {
-        loggedIn = false;
-        usernamePasswords = new HashMap<>();
-        communities = new HashMap<>();
+    // EFFECTS: creates a new PostIt Forum and instantiates the Scanner input to take in user input
+    public PostItApp() {
+        postIt = new PostIt();
         input = new Scanner(System.in);
-
-        for (String community : DEFAULT_COMMUNITIES) {
-            communities.put(community, new Community(community, "This is a default community."));
-        }
-
-        currentlyLoggedInUser = null;
     }
 
     // MODIFIES: this
@@ -143,7 +104,7 @@ public class PostIt {
     // EFFECTS: checks if user if already logged in, if yes, lets user know and returns NEXT_ACTIOB_COMMAND
     //          else, starts the log in process
     public String loginCheck() {
-        if (loggedIn) {
+        if (postIt.getLoggedIn()) {
             System.out.println("You're already logged in!");
             return NEXT_ACTION_COMMAND;
         } else {
@@ -155,9 +116,9 @@ public class PostIt {
     //          returns user input
     //          if active feed exists, starts active feed again
     public String nextAction() {
-        if (activeFeed != null) {
+        if (postIt.getActiveFeed() != null) {
             System.out.println("Resuming your previous feed ...");
-            return activeFeed.start();
+            return postIt.getActiveFeed().start();
         } else {
             System.out.println("What would you like to do next?");
             return input.nextLine();
@@ -168,13 +129,11 @@ public class PostIt {
     // EFFECTS: if user is logged in, logs them out and clears the feed
     //          if user is not logged in, tells them that they are not
     public String logOut() {
-        if (!loggedIn) {
+        if (!postIt.getLoggedIn()) {
             System.out.println("You're not logged in!");
         } else {
             System.out.println("Successfully logged out!");
-            loggedIn = false;
-            currentlyLoggedInUser = null;
-            activeFeed = null;
+            postIt.logOut();
         }
         return NEXT_ACTION_COMMAND;
     }
@@ -186,7 +145,7 @@ public class PostIt {
     //          if no or invalid input, returns NEXT_ACTION_COMMAND
     //          if user is not logged in, starts registration process
     public String registerCheckIfLoggedIn() {
-        if (loggedIn) {
+        if (postIt.getLoggedIn()) {
             System.out.println("You're already logged in, do you want to log out? (Y/N)");
             userInput = input.nextLine();
             if (userInput.equals("Y")) {
@@ -209,7 +168,7 @@ public class PostIt {
     //          and returns the NEXT_ACTION_COMMAND
     public String showAvailableCommunities() {
         System.out.println("These are the currently available communities.");
-        for (String community : communities.keySet()) {
+        for (String community : postIt.getCommunities().keySet()) {
             System.out.print(community + " ");
         }
         System.out.println();
@@ -234,7 +193,7 @@ public class PostIt {
             System.out.println("Please enter a password longer than " + MIN_PASSWORD_LENGTH + " characters.");
             if (checkPasswordInput()) {
                 String password = userInput;
-                usernamePasswords.put(username, new User(username, password));
+                postIt.addUser(username, new User(username, password));
                 System.out.println("Successfully registered your account! Log in by typing " + LOGIN_COMMAND);
             }
         }
@@ -262,7 +221,7 @@ public class PostIt {
 
     // MODIFIES: this
     // EFFECTS: takes in a password as input from user and if valid, returns true
-    //          password valud if length > MIN_PASSWORD_LENGTH
+    //          password valued if length > MIN_PASSWORD_LENGTH
     //          if not, loops until user enters valid input
     //          returns false if user enters EXIT_COMMAND
     public Boolean checkPasswordInput() {
@@ -284,7 +243,8 @@ public class PostIt {
     //          and is not SELF_PROFILE_COMMAND
     public Boolean isInvalid(String username) {
         return (username.length() < 1 || username.length() > MAX_USERNAME_LENGTH
-                || usernamePasswords.containsKey(username) || username.equals(SELF_PROFILE_COMMAND));
+                || postIt.getUsernamePasswords().containsKey(username)
+                || username.equals(SELF_PROFILE_COMMAND));
     }
 
     // MODIFIES: this
@@ -300,10 +260,7 @@ public class PostIt {
         }
         System.out.println("Please enter your password: ");
         if (checkPasswordWhenLogin(username)) {
-            loggedIn = true;
-            currentlyLoggedInUser = usernamePasswords.get(username);
-            activeFeed = null;
-
+            postIt.login(username);
             System.out.println("Successfully logged in!");
         }
         return NEXT_ACTION_COMMAND;
@@ -320,14 +277,14 @@ public class PostIt {
             if (userInput.equals(EXIT_COMMAND)) {
                 return false;
             }
-            if (!usernamePasswords.containsKey(username)) {
+            if (!postIt.getUsernamePasswords().containsKey(username)) {
                 System.out.println("That username doesn't exist!");
                 return false;
             }
-            if (!(userInput.equals(usernamePasswords.get(username).getPassword()))) {
+            if (!(userInput.equals(postIt.getUsernamePasswords().get(username).getPassword()))) {
                 System.out.println("That's the wrong password!");
             }
-        } while (!(userInput.equals(usernamePasswords.get(username).getPassword())));
+        } while (!(userInput.equals(postIt.getUsernamePasswords().get(username).getPassword())));
         return true;
     }
 
@@ -335,8 +292,9 @@ public class PostIt {
     public void printCommunityInfo(Community c) {
         System.out.println("Welcome to the " + c.getCommunityName() + " community!");
         System.out.println(c.getCommunityAbout());
+        System.out.println("Current Subscribers: " + c.getSubCount());
+        System.out.println("Created by: " + c.getCreator());
         System.out.println("Here are the posts from this community: ");
-
     }
 
     // EFFECTS: print out the user info of the given user
@@ -352,7 +310,7 @@ public class PostIt {
     //          if not logged in, tells user to log in
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
     public String subscribeToCommunity() {
-        if (loggedIn) {
+        if (postIt.getLoggedIn()) {
             System.out.println("Please enter the name of an "
                     + "existing community that you would like to join.");
             if (communitySubscribeCheck()) {
@@ -375,17 +333,18 @@ public class PostIt {
             if (userInput.equals(EXIT_COMMAND)) {
                 return false;
             }
-            if (!communities.containsKey(userInput)) {
+            if (!postIt.getCommunities().containsKey(userInput)) {
                 System.out.println("That's not an existing community! Type " + EXIT_COMMAND
                         + " and use " + SHOW_AVAILABLE_COMMUNITIES
                         + " to see all available communities.");
             }
-            if (currentlyLoggedInUser.getSubscribedCommunities().contains(userInput)) {
+            if (postIt.getCurrentUser().getSubscribedCommunities().contains(userInput)) {
                 System.out.println("You're already subscribed to this community!");
             }
-        } while (!communities.containsKey(userInput)
-                || currentlyLoggedInUser.getSubscribedCommunities().contains(userInput));
-        currentlyLoggedInUser.subscribeToCommunity(communities.get(userInput));
+        } while (!postIt.getCommunities().containsKey(userInput)
+                || postIt.getCurrentUser().getSubscribedCommunities().contains(userInput));
+
+        postIt.getCurrentUser().subscribeToCommunity(postIt.getCommunities().get(userInput));
 
         return true;
     }
@@ -397,20 +356,20 @@ public class PostIt {
     //          if not logged in, tells user to log in
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
     public String createCommunity() {
-        if (loggedIn) {
+        if (postIt.getLoggedIn()) {
             System.out.println("You can cancel making a community at anytime by typing " + EXIT_COMMAND);
             System.out.println("Please enter the name of the community you want to create: ");
 
             String communityName = input.nextLine();
             if (!communityName.equals(EXIT_COMMAND)) {
-                if (communities.containsKey(communityName)) {
+                if (postIt.getCommunities().containsKey(communityName)) {
                     System.out.println("That community already exists! Please enter another name.");
                     return createCommunity();
                 }
                 System.out.println("Please enter the about section for " + communityName + ":");
                 String aboutCommunity = input.nextLine();
                 if (!aboutCommunity.equals(EXIT_COMMAND)) {
-                    communities.put(communityName, new Community(communityName, aboutCommunity));
+                    postIt.addCommunity(communityName, aboutCommunity);
                     System.out.println("Community successfully created!");
                 }
             }
@@ -428,27 +387,18 @@ public class PostIt {
     //          returns NEXT_ACTION_COMMAND if there are no posts to show
     public String showHomeFeed() {
         System.out.println("This is your Home Feed!");
-        LinkedList<Post> currentFeed = new LinkedList<>();
-        if (loggedIn) {
+        if (postIt.getLoggedIn()) {
             System.out.println("Showing you posts from your favorite communities!");
-            for (String community : currentlyLoggedInUser.getSubscribedCommunities()) {
-                currentFeed.addAll(communities.get(community).getPosts());
-            }
-
-            if (currentFeed.size() == 0) {
-                System.out.println("There are no posts to show, please subscribe to some communities!");
-                return NEXT_ACTION_COMMAND;
-            }
         } else {
             System.out.println("Showing you posts from default communities, "
                     + "log in to see posts from your favorite communities!");
-            for (String community : DEFAULT_COMMUNITIES) {
-                currentFeed.addAll(communities.get(community).getPosts());
-            }
         }
-
-        activeFeed = new Feed(currentFeed, loggedIn, currentlyLoggedInUser);
-        return activeFeed.start();
+        try {
+            return postIt.startHomeFeed();
+        } catch (EmptyFeedException e) {
+            System.out.println("There are no posts to show, please subscribe to some communities!");
+            return NEXT_ACTION_COMMAND;
+        }
     }
 
     // MODIFIES: this
@@ -465,11 +415,9 @@ public class PostIt {
             return NEXT_ACTION_COMMAND;
         }
 
-        if (communities.containsKey(userInput)) {
-            printCommunityInfo(communities.get(userInput));
-            activeFeed = new Feed(communities.get(userInput).getPosts(),
-                    loggedIn, currentlyLoggedInUser);
-            return activeFeed.start();
+        if (postIt.getCommunities().containsKey(userInput)) {
+            printCommunityInfo(postIt.getCommunities().get(userInput));
+            return postIt.showCommunity(userInput);
         } else {
             System.out.println("Sorry, that community was not found. Use " + SHOW_AVAILABLE_COMMUNITIES
                     + " to see all available communities.");
@@ -482,21 +430,44 @@ public class PostIt {
     //          else, tells user that the user was not found
     //          returns NEXT_ACTION_COMMAND at the end
     public String viewUser() {
-        activeFeed = null;
+        postIt.clearActiveFeed();
         System.out.println("Please enter the name of a registered user who's profile you want to view, "
                 + "or " + SELF_PROFILE_COMMAND + " for your own profile");
         userInput = input.nextLine();
 
-        if (usernamePasswords.containsKey(userInput)) {
-            printUserInfo(usernamePasswords.get(userInput));
+        if (postIt.getUsernamePasswords().containsKey(userInput)) {
+            User chosenUser = postIt.getUsernamePasswords().get(userInput);
+            printUserInfo(chosenUser);
+            return viewUserPosts(chosenUser);
         } else if (userInput.equals(SELF_PROFILE_COMMAND)) {
-            printUserInfo(currentlyLoggedInUser);
-            return editProfile();
+            if (postIt.getLoggedIn()) {
+                printUserInfo(postIt.getCurrentUser());
+                return editProfile();
+            } else {
+                System.out.println("You're not logged in! "
+                        + "Register an account with " + REGISTER_COMMAND + " and login with "
+                        + LOGIN_COMMAND);
+            }
         } else {
             System.out.println("Sorry, that user was not found.");
         }
 
         return NEXT_ACTION_COMMAND;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: prompts user to view the current user's posts,
+    public String viewUserPosts(User u) {
+        System.out.println("Type " + VIEW_USER_POSTS + " to view this user's posts, "
+                + "or any other command to do something else.");
+        userInput = input.nextLine();
+
+        if (userInput.equals(VIEW_USER_POSTS)) {
+            System.out.println("Showing you " + u.getUserName() + "'s posts...");
+            return postIt.viewUserPosts(u);
+        } else {
+            return userInput;
+        }
     }
 
     // MODIFIES: this
@@ -506,6 +477,7 @@ public class PostIt {
     //          returns NEXT_ACTION_COMMAND at the end
     public String editProfile() {
         System.out.println("Type " + EDIT_PROFILE_COMMAND + " to edit your profile, "
+                + VIEW_USER_POSTS + " to view your own posts, "
                 + "or any other command to do something else.");
         userInput = input.nextLine();
 
@@ -515,9 +487,12 @@ public class PostIt {
             String newBio = input.nextLine();
 
             if (!newBio.equals(EXIT_COMMAND)) {
-                currentlyLoggedInUser.setBio(newBio);
+                postIt.updateBio(newBio);
                 System.out.println("Bio successfully updated!");
             }
+        } else if (userInput.equals(VIEW_USER_POSTS)) {
+            System.out.println("Showing you your own posts...");
+            return postIt.viewUserPosts(postIt.getCurrentUser());
         } else {
             return userInput;
         }
@@ -531,7 +506,7 @@ public class PostIt {
     //          if user is not logged in, tells user that they have to log in
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
     public String makeTextPost() {
-        if (loggedIn) {
+        if (postIt.getLoggedIn()) {
             System.out.println("You can cancel making a post at anytime by typing " + EXIT_COMMAND);
             System.out.println("Please enter what community you want to post in: ");
             if (checkCommunityInput()) {
@@ -542,8 +517,7 @@ public class PostIt {
                     System.out.println("Please enter your post body:");
                     String body = input.nextLine();
                     if (!body.equals(EXIT_COMMAND)) {
-                        Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice);
-                        communities.get(communityChoice).addPost(newPost);
+                        postIt.makeTextPost(title, body, communityChoice);
                         System.out.println("Successfully made post!");
                     }
                 }
@@ -565,10 +539,10 @@ public class PostIt {
             if (userInput.equals(EXIT_COMMAND)) {
                 return false;
             }
-            if (!communities.containsKey(userInput)) {
+            if (!postIt.getCommunities().containsKey(userInput)) {
                 System.out.println("Please enter the name of a valid, existing community.");
             }
-        } while (!communities.containsKey(userInput));
+        } while (!postIt.getCommunities().containsKey(userInput));
 
         return true;
     }

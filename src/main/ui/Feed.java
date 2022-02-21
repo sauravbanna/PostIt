@@ -1,5 +1,6 @@
 package ui;
 
+import model.PostIt;
 import model.User;
 import model.content.othercontent.Comment;
 import model.content.posts.Post;
@@ -34,13 +35,14 @@ public class Feed {
     public static final int NUM_COMMENTS_TO_SHOW = 5;
 
     // FIELDS
-    protected LinkedList<Post> userFeed;
+    protected List<Integer> userFeed;
     protected Boolean userFeedActive;
     private int feedPosition;
     private Post currentPost;
     private String currentSort;
     private final Boolean loggedIn;
     private final User currentUser;
+    private PostIt postIt;
 
     private Scanner input;
     
@@ -50,14 +52,14 @@ public class Feed {
     // EFFECTS: creates a new Feed with the given list of posts, whether the user is logged in or not,
     //          the current user (null if not logged in), with feedPosition at 0, userFeedActive set to True,
     //          and with the Scanner object input instantiated to read user input
-    public Feed(LinkedList<Post> postList, Boolean loggedIn, User user) {
+    public Feed(List<Integer> postList, Boolean loggedIn, User user, PostIt forum) {
         userFeed = postList;
-        //sortPosts(currentSort);
         userFeedActive = true;
         feedPosition = 0;
         input = new Scanner(System.in);
         this.loggedIn = loggedIn;
         this.currentUser = user;
+        this.postIt = forum;
     }
 
 
@@ -69,7 +71,7 @@ public class Feed {
             System.out.println("There are no posts to show, what would you like to do?");
             return input.nextLine();
         }
-        currentPost = userFeed.get(feedPosition);
+        currentPost = postIt.getPosts().get(userFeed.get(feedPosition));
         showPost(currentPost);
         String userChoice;
         while (userFeedActive) {
@@ -167,7 +169,7 @@ public class Feed {
             System.out.println("You've reached the end!");
         } else {
             feedPosition++;
-            currentPost = userFeed.get(feedPosition);
+            currentPost = postIt.getPosts().get(userFeed.get(feedPosition));
             showPost(currentPost);
         }
     }
@@ -178,7 +180,7 @@ public class Feed {
     public void back() {
         if (feedPosition > 0) {
             feedPosition--;
-            currentPost = userFeed.get(feedPosition);
+            currentPost = postIt.getPosts().get(userFeed.get(feedPosition));
             showPost(currentPost);
         } else {
             System.out.println("You've reached the beginning!");

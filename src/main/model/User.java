@@ -24,7 +24,7 @@ public class User implements Writable {
     private List<String> subscribedCommunities;
     private List<Post> likedPosts;
     private List<Post> dislikedPosts;
-    private LinkedList<Post> userPosts;
+    private List<Integer> userPosts;
 
     // METHODS
 
@@ -134,13 +134,13 @@ public class User implements Writable {
 
     // REQUIRES: user who posted the post is this user
     // MODIFIES: this
-    // EFFECTS: adds given post to list of user-made posts
-    public void addUserPost(Post p) {
-        this.userPosts.add(p);
+    // EFFECTS: adds given post id to list of user-made posts
+    public void addUserPost(Integer postId) {
+        this.userPosts.add(postId);
     }
 
-    // EFFECTS: returns a list of posts that this user has made
-    public LinkedList<Post> getUserPosts() {
+    // EFFECTS: returns a list of post ids of posts that this user has made
+    public List<Integer> getUserPosts() {
         return this.userPosts;
     }
 

@@ -16,6 +16,7 @@ public abstract class Post extends Content {
     private String title;
     private List<Comment> comments;
     private int commentCount;
+    private int id;
 
     private String community;
 
@@ -24,12 +25,13 @@ public abstract class Post extends Content {
     // Constructor
     // REQUIRES: given name is a registered user, given community is an existing community on PostIt
     // EFFECTS: creates a new Post with given poster name and title
-    public Post(String opName, String title, String community) {
+    public Post(String opName, String title, String community, int id) {
         super(opName);
         this.title = title;
         this.comments = new ArrayList<>();
         this.commentCount = 0;
         this.community = community;
+        this.id = id;
 
     }
 

@@ -16,8 +16,8 @@ public class TextPost extends Post {
     // Constructor
     // REQUIRES: given name is a registered user, given community is an existing community on PostIt
     // EFFECTS: creates a new Text Post with given poster name, title and body
-    public TextPost(String opName, String title, String body, String community) {
-        super(opName, title, community);
+    public TextPost(String opName, String title, String body, String community, int id) {
+        super(opName, title, community, id);
         this.postBody = body;
     }
 

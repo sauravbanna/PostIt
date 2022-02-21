@@ -3,17 +3,18 @@ package model;
 import exceptions.EmptyFeedException;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
+import org.json.JSONObject;
+import persistence.Writable;
 import ui.Feed;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 // An object that contains the PostIt forum's communities, posts, users,
-public class PostIt {
+public class PostIt implements Writable {
 
     // CONSTANTS
+
+    public static final int MAX_ID = 1000000;
 
     public static final String VIEW_COMMUNITY_COMMAND = "/visit";
     public static final String MAKE_POST_COMMAND = "/post";
@@ -50,6 +51,7 @@ public class PostIt {
 
     private HashMap<String, User> usernamePasswords;
     private HashMap<String, Community> communities;
+    private static HashMap<Integer, Post> posts;
 
     // METHODS
 
@@ -60,6 +62,7 @@ public class PostIt {
         loggedIn = false;
         usernamePasswords = new HashMap<>();
         communities = new HashMap<>();
+        posts = new HashMap<>();
 
         for (String community : DEFAULT_COMMUNITIES) {
             communities.put(community, new Community(community, "This is a default community.", null));
@@ -119,7 +122,7 @@ public class PostIt {
     // REQUIRES: given user is a registered member of PostIt
     // EFFECTS: displays the posts of the given user
     public String viewUserPosts(User u) {
-        Feed userPosts = new Feed(u.getUserPosts(), loggedIn, currentlyLoggedInUser);
+        Feed userPosts = new Feed(u.getUserPosts(), loggedIn, currentlyLoggedInUser, this);
         return userPosts.start();
     }
 
@@ -129,9 +132,14 @@ public class PostIt {
     //          with poster being the current user, and adds it to current user's and
     //          community's posts
     public void makeTextPost(String title, String body, String communityChoice) {
-        Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice);
-        communities.get(communityChoice).addPost(newPost);
-        currentlyLoggedInUser.addUserPost(newPost);
+        int randomId = 0;
+        while (posts.containsKey(randomId)) {
+            randomId = (int)(Math.random() * MAX_ID);
+        }
+        Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice, randomId);
+        posts.put(randomId, newPost);
+        communities.get(communityChoice).addPost(randomId);
+        currentlyLoggedInUser.addUserPost(randomId);
     }
 
     // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True
@@ -147,6 +155,7 @@ public class PostIt {
     //          the currently logged in user to the list of communities on the forum
     public void addCommunity(String name, String about) {
         this.communities.put(name, new Community(name, about, currentlyLoggedInUser.getUserName()));
+
     }
 
     // EFFECTS: starts the user's home feed
@@ -154,7 +163,7 @@ public class PostIt {
     //          if not logged in, shows posts from default communities
     //          throws EmptyFeedException if feed is empty
     public String startHomeFeed() throws EmptyFeedException {
-        LinkedList<Post> currentFeed = new LinkedList<>();
+        List<Integer> currentFeed = new ArrayList<>();
         if (loggedIn) {
             for (String community : currentlyLoggedInUser.getSubscribedCommunities()) {
                 currentFeed.addAll(communities.get(community).getPosts());
@@ -169,7 +178,7 @@ public class PostIt {
             }
         }
 
-        activeFeed = new Feed(currentFeed, loggedIn, currentlyLoggedInUser);
+        activeFeed = new Feed(currentFeed, loggedIn, currentlyLoggedInUser, this);
         return activeFeed.start();
     }
 
@@ -178,7 +187,7 @@ public class PostIt {
     //          and starts the feed
     public String showCommunity(String userInput) {
         activeFeed = new Feed(communities.get(userInput).getPosts(),
-                loggedIn, currentlyLoggedInUser);
+                loggedIn, currentlyLoggedInUser, this);
         return activeFeed.start();
     }
 
@@ -186,5 +195,28 @@ public class PostIt {
     // EFFECTS: clears the active feed
     public void clearActiveFeed() {
         this.activeFeed = null;
+    }
+
+    // EFFECTS: returns the map of all the posts and their ids
+    public HashMap<Integer, Post> getPosts() {
+        return this.posts;
+    }
+
+
+    @Override
+    public JSONObject toJson() {
+        return null;
+    }
+
+    public JSONObject postsToJson() {
+        return null;
+    }
+
+    public JSONObject communitiesToJson() {
+        return null;
+    }
+
+    public JSONObject usersToJson() {
+        return null;
     }
 }

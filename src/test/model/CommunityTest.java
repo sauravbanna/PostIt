@@ -6,38 +6,42 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CommunityTest {
 
-    Community testCommunity;
+    Community testCommunityDefault;
+    Community testCommunityUserCreated;
 
     @BeforeEach
     void runBefore() {
-        testCommunity = new Community("funnypics", "The place to post funny pictures.", null);
+        testCommunityDefault = new Community("funnypics", "The place to post funny pictures.", null);
+        testCommunityUserCreated = new Community("anotherCommunity", "A user-created community", "someUser");
     }
 
     @Test
     void testConstructor() {
-        assertEquals("funnypics", testCommunity.getCommunityName());
-        assertEquals("The place to post funny pictures.", testCommunity.getCommunityAbout());
-        assertEquals(0, testCommunity.getSubCount());
-        assertTrue(testCommunity.getPosts().isEmpty());
+        assertEquals("funnypics", testCommunityDefault.getCommunityName());
+        assertEquals("The place to post funny pictures.", testCommunityDefault.getCommunityAbout());
+        assertEquals(0, testCommunityDefault.getSubCount());
+        assertTrue(testCommunityDefault.getPosts().isEmpty());
+        assertEquals("PostIt", testCommunityDefault.getCreator());
+        assertEquals("someUser", testCommunityUserCreated.getCreator());
     }
 
     @Test
     void testAddPost() {
-        assertTrue(testCommunity.getPosts().isEmpty());
+        assertTrue(testCommunityDefault.getPosts().isEmpty());
 
-        testCommunity.addPost(new TextPost("someUser", "someTitle", "someBody", "gaming"));
+        testCommunityDefault.addPost();
 
-        assertEquals(1, testCommunity.getPosts().size());
-        assertEquals("someUser", testCommunity.getPosts().get(0).getOpName());
-        assertEquals("someTitle", testCommunity.getPosts().get(0).getTitle());
-        assertEquals("gaming", testCommunity.getPosts().get(0).getCommunity());
+        assertEquals(1, testCommunityDefault.getPosts().size());
+        assertEquals("someUser", testCommunityDefault.getPosts().get(0).getOpName());
+        assertEquals("someTitle", testCommunityDefault.getPosts().get(0).getTitle());
+        assertEquals("gaming", testCommunityDefault.getPosts().get(0).getCommunity());
 
-        testCommunity.addPost(new TextPost("someOtherUser", "someOtherTitle",
+        testCommunityDefault.addPost(new TextPost("someOtherUser", "someOtherTitle",
                 "someOtherBody", "news"));
 
-        assertEquals(2, testCommunity.getPosts().size());
-        assertEquals("someOtherUser", testCommunity.getPosts().get(1).getOpName());
-        assertEquals("someOtherTitle", testCommunity.getPosts().get(1).getTitle());
-        assertEquals("news", testCommunity.getPosts().get(1).getCommunity());
+        assertEquals(2, testCommunityDefault.getPosts().size());
+        assertEquals("someOtherUser", testCommunityDefault.getPosts().get(1).getOpName());
+        assertEquals("someOtherTitle", testCommunityDefault.getPosts().get(1).getTitle());
+        assertEquals("news", testCommunityDefault.getPosts().get(1).getCommunity());
     }
 }

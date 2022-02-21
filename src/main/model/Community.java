@@ -4,20 +4,22 @@ import model.content.posts.Post;
 import org.json.JSONObject;
 import persistence.Writable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 // A group on PostIt with a community name, about section, subscriber count, and list of Posts
 // that user can post to and view the posts of
 public class Community implements Writable {
 
     // CONSTANTS
-    public final String DEFAULT_CREATOR = "PostIt";
+    public static final String DEFAULT_CREATOR = "PostIt";
 
     // FIELDS
     private String communityName;
     private String communityAbout;
     private int subCount;
-    private LinkedList<Post> posts;
+    private List<Integer> posts;
     private String creator;
 
     // METHODS
@@ -29,7 +31,7 @@ public class Community implements Writable {
         this.communityName = name;
         this.communityAbout = about;
         this.subCount = 0;
-        this.posts = new LinkedList<>();
+        this.posts = new ArrayList<>();
         if (creator != null) {
             this.creator = creator;
         } else {
@@ -38,7 +40,7 @@ public class Community implements Writable {
     }
 
     // EFFECTS: return the posts from this community
-    public LinkedList<Post> getPosts() {
+    public List<Integer> getPosts() {
         return this.posts;
     }
 
@@ -58,9 +60,9 @@ public class Community implements Writable {
     }
 
     // MODIFIES: this
-    // EFFECTS: adds a post to the community
-    public void addPost(Post p) {
-        this.posts.add(p);
+    // EFFECTS: adds a post's post id to the community
+    public void addPost(Integer postId) {
+        this.posts.add(postId);
     }
 
     // MODIFIES: this

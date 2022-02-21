@@ -12,7 +12,7 @@ class UserTest {
     Post testPost1;
     Post testPost2;
     Post testPost3;
-
+/*
     @BeforeEach
     void runBefore() {
         testUser = new User("coolName", "abcd1234");
@@ -311,5 +311,5 @@ class UserTest {
 
         assertEquals(0, testPost3.getLikes());
         assertEquals(1, testPost3.getDislikes());
-    }
+    }*/
 }

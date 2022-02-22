@@ -65,7 +65,7 @@ public class PostIt implements Writable {
         posts = new HashMap<>();
 
         for (String community : DEFAULT_COMMUNITIES) {
-            communities.put(community, new Community(community, "This is a default community.", null));
+            communities.put(community, new Community(community, null, null));
         }
 
         currentlyLoggedInUser = null;
@@ -94,7 +94,7 @@ public class PostIt implements Writable {
         return this.communities;
     }
 
-    // REQUIRES: given user has already been registered with a valid username and password
+    // REQUIRES: given user has a valid username and password
     // MODIFIES: this
     // EFFECTS: adds the given username and user to the map of registered users
     public void addUser(String username, User user) {
@@ -106,8 +106,9 @@ public class PostIt implements Writable {
         return this.usernamePasswords;
     }
 
+    // REQUIRES: given username is a registered user on PostIt
     // MODIFIES: this
-    //
+    // EFFECTS: logs the user with the given username into the forum and sets active feed to null
     public void login(String username) {
         loggedIn = true;
         currentlyLoggedInUser = usernamePasswords.get(username);

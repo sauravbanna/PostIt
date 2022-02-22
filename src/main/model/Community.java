@@ -14,6 +14,7 @@ public class Community implements Writable {
 
     // CONSTANTS
     public static final String DEFAULT_CREATOR = "PostIt";
+    public static final String DEFAULT_ABOUT_SECTION = "This is a default community.";
 
     // FIELDS
     private String communityName;
@@ -32,6 +33,11 @@ public class Community implements Writable {
         this.communityAbout = about;
         this.subCount = 0;
         this.posts = new ArrayList<>();
+        if (about != null) {
+            this.communityAbout = about;
+        } else {
+            this.communityAbout = DEFAULT_ABOUT_SECTION;
+        }
         if (creator != null) {
             this.creator = creator;
         } else {

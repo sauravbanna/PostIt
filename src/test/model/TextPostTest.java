@@ -9,11 +9,11 @@ public class TextPostTest extends PostTest {
 
     TextPost testTextPost;
 
-    /*@BeforeEach
+    @BeforeEach
     void runBefore() {
-        testPost = new TextPost("someOtherUser", "My Second Post", "This is my post!", "funny");
-        testTextPost = new TextPost("someUser", "My First Post", "Here is my Post!", "sports");
-        testContent = new TextPost("thirdUser", "Another Post", "Here is my third post!", "gaming");
+        testPost = new TextPost("someOtherUser", "My Second Post", "This is my post!", "funny", 0);
+        testTextPost = new TextPost("someUser", "My First Post", "Here is my Post!", "sports", 1);
+        testContent = new TextPost("thirdUser", "Another Post", "Here is my third post!", "gaming", 2);
     }
 
     @Test
@@ -26,7 +26,8 @@ public class TextPostTest extends PostTest {
         assertEquals(0, testTextPost.getDislikes());
         assertEquals(0, testTextPost.getCommentCount());
         assertTrue(testTextPost.getComments().isEmpty());
-    }*/
+        assertEquals(1, testTextPost.getId());
+    }
 
 
 

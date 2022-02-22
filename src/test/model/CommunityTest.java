@@ -29,19 +29,14 @@ public class CommunityTest {
     void testAddPost() {
         assertTrue(testCommunityDefault.getPosts().isEmpty());
 
-        testCommunityDefault.addPost();
+        testCommunityDefault.addPost(0);
 
         assertEquals(1, testCommunityDefault.getPosts().size());
-        assertEquals("someUser", testCommunityDefault.getPosts().get(0).getOpName());
-        assertEquals("someTitle", testCommunityDefault.getPosts().get(0).getTitle());
-        assertEquals("gaming", testCommunityDefault.getPosts().get(0).getCommunity());
+        assertEquals(0, testCommunityDefault.getPosts().get(0));
 
-        testCommunityDefault.addPost(new TextPost("someOtherUser", "someOtherTitle",
-                "someOtherBody", "news"));
+        testCommunityDefault.addPost(1);
 
         assertEquals(2, testCommunityDefault.getPosts().size());
-        assertEquals("someOtherUser", testCommunityDefault.getPosts().get(1).getOpName());
-        assertEquals("someOtherTitle", testCommunityDefault.getPosts().get(1).getTitle());
-        assertEquals("news", testCommunityDefault.getPosts().get(1).getCommunity());
+        assertEquals(1, testCommunityDefault.getPosts().get(1));
     }
 }

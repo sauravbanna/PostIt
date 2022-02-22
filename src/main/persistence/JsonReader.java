@@ -6,40 +6,59 @@ package persistence;
 import model.Community;
 import model.PostIt;
 import model.User;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class JsonReader {
 
     // CONSTANTS
 
     // FIELDS
+    private String fileLocation;
 
     // METHODS
 
-    public JsonReader() {
+    public JsonReader(String fileLocation) {
+        this.fileLocation = fileLocation;
+    }
+
+    public PostIt read() throws IOException {
+        String data = readFile(fileLocation);
+        JSONObject forum = new JSONObject(data);
+        return readPostIt(forum);
+    }
+
+    private String readFile(String source) throws IOException {
 
     }
 
-    public PostIt addCommunities() {
+    private PostIt readPostIt(JSONObject jsonObject) {
+
+    }
+
+
+    private PostIt addCommunities() {
         return null;
     }
 
-    public PostIt addCommunity() {
+    private PostIt addCommunity() {
         return null;
     }
 
-    public PostIt addUsers() {
+    private PostIt addUsers() {
         return null;
     }
 
-    public PostIt addUser() {
+    private PostIt addUser() {
         return null;
     }
 
-    public PostIt addPosts() {
+    private PostIt addPosts() {
         return null;
     }
 
-    public PostIt addPost() {
+    private PostIt addPost() {
         return null;
     }
 

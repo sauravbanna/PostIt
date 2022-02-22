@@ -1,6 +1,7 @@
 package persistence;
 
 import model.PostIt;
+import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -17,32 +18,21 @@ public class JsonWriter {
 
     private static final int INDENT_FACTOR = 4;
     private PrintWriter writer;
-    private String communities;
-    private String posts;
-    private String users;
+    private String fileLocation;
 
     // METHODS
 
-    public JsonWriter(String communities, String users, String posts) {
-        this.communities = communities;
-        this.users = users;
-        this.posts = posts;
+    public JsonWriter(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 
-    public void openPostsWriter() throws FileNotFoundException {
-        writer = new PrintWriter(posts);
-    }
-
-    public void openCommunitiesWriter() throws FileNotFoundException {
-        writer = new PrintWriter(communities);
-    }
-
-    public void openUsersWriter() throws FileNotFoundException {
-        writer = new PrintWriter(users);
+    public void openWriter() throws FileNotFoundException {
+        writer = new PrintWriter(fileLocation);
     }
 
     public void saveForum(PostIt postIt) {
-
+        JSONObject forum = postIt.toJson();
+        writer.print(forum.toString(INDENT_FACTOR));
     }
 
     public void close() {

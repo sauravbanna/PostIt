@@ -4,7 +4,9 @@ import exceptions.EmptyFeedException;
 import model.Community;
 import model.PostIt;
 import model.User;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 import static model.PostIt.*;
@@ -17,11 +19,13 @@ import static ui.Feed.showCommands;
 public class PostItApp {
 
     // CONSTANTS
+    public static final String FORUM_DATA = "./data/forum.json";
 
     // FIELDS
     private Scanner input;
     private String userInput;
     private PostIt postIt;
+    private JsonWriter jsonWriter;
 
     // METHODS
 
@@ -30,6 +34,7 @@ public class PostItApp {
     public PostItApp() {
         postIt = new PostIt();
         input = new Scanner(System.in);
+        jsonWriter = new JsonWriter(FORUM_DATA);
     }
 
     // MODIFIES: this
@@ -82,8 +87,7 @@ public class PostItApp {
                     userInput = registerCheckIfLoggedIn();
                     break;
                 case EXIT_COMMAND:
-                    System.out.println("Thanks for using PostIt!");
-                    System.exit(0);
+                    userInput = exitForum();
                     break;
                 case NEXT_ACTION_COMMAND:
                     userInput = nextAction();
@@ -110,6 +114,28 @@ public class PostItApp {
         } else {
             return logIntoAccount();
         }
+    }
+
+    public String exitForum() {
+        try {
+            jsonWriter.openWriter();
+            jsonWriter.saveForum(postIt);
+            jsonWriter.close();
+        } catch (FileNotFoundException fe) {
+            System.out.println("Unable to save your posts during this session, are you sure you want to exit? (Y/N)");
+            userInput = input.nextLine();
+            while (!userInput.equals("Y") && !userInput.equals("N")) {
+                System.out.println("Sorry, I didn't understand you, please type Y to exit or N to not exit.");
+                userInput = input.nextLine();
+            }
+            if (userInput.equals("N")) {
+                return NEXT_ACTION_COMMAND;
+            }
+        }
+        System.out.println("Thanks for using PostIt!");
+        postIt.clearActiveFeed();
+        System.exit(0);
+        return null;
     }
 
     // EFFECTS: if active feed doesn't exist, asks user what they want to do next
@@ -394,7 +420,7 @@ public class PostItApp {
                     + "log in to see posts from your favorite communities!");
         }
         try {
-            return postIt.startHomeFeed();
+            return postIt.startHomeFeed().start();
         } catch (EmptyFeedException e) {
             System.out.println("There are no posts to show, please subscribe to some communities!");
             return NEXT_ACTION_COMMAND;
@@ -417,7 +443,7 @@ public class PostItApp {
 
         if (postIt.getCommunities().containsKey(userInput)) {
             printCommunityInfo(postIt.getCommunities().get(userInput));
-            return postIt.showCommunity(userInput);
+            return postIt.showCommunity(userInput).start();
         } else {
             System.out.println("Sorry, that community was not found. Use " + SHOW_AVAILABLE_COMMUNITIES
                     + " to see all available communities.");
@@ -464,7 +490,8 @@ public class PostItApp {
 
         if (userInput.equals(VIEW_USER_POSTS)) {
             System.out.println("Showing you " + u.getUserName() + "'s posts...");
-            return postIt.viewUserPosts(u);
+            Feed userPosts = new Feed(u.getPosts(), postIt.getLoggedIn(), postIt.getCurrentUser(), postIt);
+            return userPosts.start();
         } else {
             return userInput;
         }
@@ -492,7 +519,9 @@ public class PostItApp {
             }
         } else if (userInput.equals(VIEW_USER_POSTS)) {
             System.out.println("Showing you your own posts...");
-            return postIt.viewUserPosts(postIt.getCurrentUser());
+            Feed userPosts = new Feed(postIt.getCurrentUser().getPosts(), postIt.getLoggedIn(),
+                    postIt.getCurrentUser(), postIt);
+            return userPosts.start();
         } else {
             return userInput;
         }
@@ -517,7 +546,10 @@ public class PostItApp {
                     System.out.println("Please enter your post body:");
                     String body = input.nextLine();
                     if (!body.equals(EXIT_COMMAND)) {
-                        postIt.makeTextPost(title, body, communityChoice);
+                        Boolean postMade = postIt.makeTextPost(title, body, communityChoice);
+                        while (!postMade) {
+                            postMade = postIt.makeTextPost(title, body, communityChoice);
+                        }
                         System.out.println("Successfully made post!");
                     }
                 }

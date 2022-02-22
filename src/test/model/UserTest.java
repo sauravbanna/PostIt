@@ -12,13 +12,13 @@ class UserTest {
     Post testPost1;
     Post testPost2;
     Post testPost3;
-/*
+
     @BeforeEach
     void runBefore() {
         testUser = new User("coolName", "abcd1234");
-        testPost1 = new TextPost("someUser", "someTitle", "someBody", "gaming");
-        testPost2 = new TextPost("someOtherUser", "someOtherTitle", "someOtherBody", "news");
-        testPost3 = new TextPost("thirdUser", "thirdTitle", "thirdBody", "sports");
+        testPost1 = new TextPost("someUser", "someTitle", "someBody", "gaming", 0);
+        testPost2 = new TextPost("someOtherUser", "someOtherTitle", "someOtherBody", "news", 1);
+        testPost3 = new TextPost("thirdUser", "thirdTitle", "thirdBody", "sports", 2);
     }
 
     @Test
@@ -121,9 +121,7 @@ class UserTest {
 
         assertEquals(1, testUser.getLikedPosts().size());
         assertTrue(testUser.getDislikedPosts().isEmpty());
-        assertEquals("someUser", testUser.getLikedPosts().get(0).getOpName());
-        assertEquals("someTitle", testUser.getLikedPosts().get(0).getTitle());
-        assertEquals("gaming", testUser.getLikedPosts().get(0).getCommunity());
+        assertEquals(0, testUser.getLikedPosts().get(0));
 
         assertEquals("Post added to liked posts", testUser.addLikedPost(testPost2));
 
@@ -131,9 +129,7 @@ class UserTest {
 
         assertEquals(2, testUser.getLikedPosts().size());
         assertTrue(testUser.getDislikedPosts().isEmpty());
-        assertEquals("someOtherUser", testUser.getLikedPosts().get(1).getOpName());
-        assertEquals("someOtherTitle", testUser.getLikedPosts().get(1).getTitle());
-        assertEquals("news", testUser.getLikedPosts().get(1).getCommunity());
+        assertEquals(1, testUser.getLikedPosts().get(1));
 
         assertEquals("Post added to liked posts", testUser.addLikedPost(testPost3));
 
@@ -141,9 +137,7 @@ class UserTest {
 
         assertEquals(3, testUser.getLikedPosts().size());
         assertTrue(testUser.getDislikedPosts().isEmpty());
-        assertEquals("thirdUser", testUser.getLikedPosts().get(2).getOpName());
-        assertEquals("thirdTitle", testUser.getLikedPosts().get(2).getTitle());
-        assertEquals("sports", testUser.getLikedPosts().get(2).getCommunity());
+        assertEquals(2, testUser.getLikedPosts().get(2));
     }
 
     @Test
@@ -240,9 +234,7 @@ class UserTest {
 
         assertEquals(1, testUser.getDislikedPosts().size());
         assertTrue(testUser.getLikedPosts().isEmpty());
-        assertEquals("someUser", testUser.getDislikedPosts().get(0).getOpName());
-        assertEquals("someTitle", testUser.getDislikedPosts().get(0).getTitle());
-        assertEquals("gaming", testUser.getDislikedPosts().get(0).getCommunity());
+        assertEquals(0, testUser.getDislikedPosts().get(0));
 
         assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost2));
 
@@ -250,9 +242,7 @@ class UserTest {
 
         assertEquals(2, testUser.getDislikedPosts().size());
         assertTrue(testUser.getLikedPosts().isEmpty());
-        assertEquals("someOtherUser", testUser.getDislikedPosts().get(1).getOpName());
-        assertEquals("someOtherTitle", testUser.getDislikedPosts().get(1).getTitle());
-        assertEquals("news", testUser.getDislikedPosts().get(1).getCommunity());
+        assertEquals(1, testUser.getDislikedPosts().get(1));
 
         assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost3));
 
@@ -260,9 +250,7 @@ class UserTest {
 
         assertEquals(3, testUser.getDislikedPosts().size());
         assertTrue(testUser.getLikedPosts().isEmpty());
-        assertEquals("thirdUser", testUser.getDislikedPosts().get(2).getOpName());
-        assertEquals("thirdTitle", testUser.getDislikedPosts().get(2).getTitle());
-        assertEquals("sports", testUser.getDislikedPosts().get(2).getCommunity());
+        assertEquals(2, testUser.getDislikedPosts().get(2));
     }
 
     @Test
@@ -311,5 +299,5 @@ class UserTest {
 
         assertEquals(0, testPost3.getLikes());
         assertEquals(1, testPost3.getDislikes());
-    }*/
+    }
 }

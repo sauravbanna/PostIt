@@ -7,6 +7,7 @@ import org.json.JSONObject;
 public class Comment extends Content {
 
     // CONSTANTS
+    public static final String BODY_KEY = "body";
 
     // FIELDS
     private String body;
@@ -28,7 +29,9 @@ public class Comment extends Content {
 
     @Override
     public JSONObject toJson() {
-        return null;
+        JSONObject comment = super.toJson();
+        comment.put(BODY_KEY, body);
+        return comment;
     }
 
 }

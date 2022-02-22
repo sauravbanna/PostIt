@@ -264,4 +264,20 @@ public class Feed {
         System.out.println();
     }
 
+    public List<Integer> getUserFeed() {
+        return userFeed;
+    }
+
+    public Boolean getLoggedIn() {
+        return loggedIn;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public PostIt getPostIt() {
+        return postIt;
+    }
+
 }

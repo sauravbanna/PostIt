@@ -3,6 +3,7 @@ package model;
 import exceptions.EmptyFeedException;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 import ui.Feed;
@@ -13,6 +14,12 @@ import java.util.*;
 public class PostIt implements Writable {
 
     // CONSTANTS
+    public static final String POSTS_KEY = "posts";
+    public static final String ACTIVE_USER_KEY = "user";
+    public static final String USERS_KEY = "users";
+    public static final String COMMUNITIES_KEY = "communities";
+    public static final String LOGGED_IN_KEY = "loggedIn";
+    public static final String NULL_USER = "null";
 
     public static final int MAX_ID = 1000000;
 
@@ -120,27 +127,24 @@ public class PostIt implements Writable {
         return this.currentlyLoggedInUser;
     }
 
-    // REQUIRES: given user is a registered member of PostIt
-    // EFFECTS: displays the posts of the given user
-    public String viewUserPosts(User u) {
-        Feed userPosts = new Feed(u.getUserPosts(), loggedIn, currentlyLoggedInUser, this);
-        return userPosts.start();
-    }
-
-    // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True
+    // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True,
+    //           and given community exists on PostIt
     // MODIFIES: this
-    // EFFECTS: creates a new text post with the given title and body in the given community,
+    // EFFECTS: creates a new text post with the given title and body with a unique id in the given community,
     //          with poster being the current user, and adds it to current user's and
     //          community's posts
-    public void makeTextPost(String title, String body, String communityChoice) {
-        int randomId = 0;
-        while (posts.containsKey(randomId)) {
-            randomId = (int)(Math.random() * MAX_ID);
+    //          returns true if post successfull made, returns false if generated id already exists
+    public Boolean makeTextPost(String title, String body, String communityChoice) {
+        int randomId = (int)(Math.random() * MAX_ID);
+        if (posts.containsKey(randomId)) {
+            return false;
+        } else {
+            Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice, randomId);
+            posts.put(randomId, newPost);
+            communities.get(communityChoice).addPost(randomId);
+            currentlyLoggedInUser.addUserPost(randomId);
+            return true;
         }
-        Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice, randomId);
-        posts.put(randomId, newPost);
-        communities.get(communityChoice).addPost(randomId);
-        currentlyLoggedInUser.addUserPost(randomId);
     }
 
     // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True
@@ -151,6 +155,7 @@ public class PostIt implements Writable {
     }
 
     // REQUIRES: user is logged in (loggedIn is true) and currentlyLoggedInUser != null
+    //           and given community name doesn't already exist on PostIt
     // MODIFIES: this
     // EFFECTS: adds a community with the given name and about section, created by
     //          the currently logged in user to the list of communities on the forum
@@ -159,11 +164,12 @@ public class PostIt implements Writable {
 
     }
 
-    // EFFECTS: starts the user's home feed
-    //          if logged in, shows posts from user's subscribed communities
-    //          if not logged in, shows posts from default communities
+    // MODIFIES: this
+    // EFFECTS: returns the user's home feed
+    //          if logged in, returns feed with posts from user's subscribed communities
     //          throws EmptyFeedException if feed is empty
-    public String startHomeFeed() throws EmptyFeedException {
+    //          if not logged in, returns feed with posts from default communities
+    public Feed startHomeFeed() throws EmptyFeedException {
         List<Integer> currentFeed = new ArrayList<>();
         if (loggedIn) {
             for (String community : currentlyLoggedInUser.getSubscribedCommunities()) {
@@ -180,16 +186,17 @@ public class PostIt implements Writable {
         }
 
         activeFeed = new Feed(currentFeed, loggedIn, currentlyLoggedInUser, this);
-        return activeFeed.start();
+        return activeFeed;
     }
 
+    // REQUIRES: given communityName is a name of a registered community on PostIt
     // MODIFIES: this
     // EFFECTS: adds posts from the community with the given name to the active feed
-    //          and starts the feed
-    public String showCommunity(String userInput) {
-        activeFeed = new Feed(communities.get(userInput).getPosts(),
+    //          and returns the feed
+    public Feed showCommunity(String communityName) {
+        activeFeed = new Feed(communities.get(communityName).getPosts(),
                 loggedIn, currentlyLoggedInUser, this);
-        return activeFeed.start();
+        return activeFeed;
     }
 
     // MODIFIES: this
@@ -206,18 +213,46 @@ public class PostIt implements Writable {
 
     @Override
     public JSONObject toJson() {
-        return null;
+        JSONObject forum = new JSONObject();
+        forum.put(LOGGED_IN_KEY, loggedIn);
+        if (currentlyLoggedInUser != null) {
+            forum.put(ACTIVE_USER_KEY, currentlyLoggedInUser.toJson());
+        } else {
+            forum.put(ACTIVE_USER_KEY, NULL_USER);
+        }
+        forum.put(USERS_KEY, usersToJson());
+        forum.put(COMMUNITIES_KEY, communitiesToJson());
+        forum.put(POSTS_KEY, postsToJson());
+        return forum;
     }
 
-    public JSONObject postsToJson() {
-        return null;
+    private JSONArray postsToJson() {
+        JSONArray posts = new JSONArray();
+
+        for (Post p : this.posts.values()) {
+            posts.put(p.toJson());
+        }
+
+        return posts;
     }
 
-    public JSONObject communitiesToJson() {
-        return null;
+    private JSONArray communitiesToJson() {
+        JSONArray communities = new JSONArray();
+
+        for (Community c : this.communities.values()) {
+            communities.put(c.toJson());
+        }
+
+        return communities;
     }
 
-    public JSONObject usersToJson() {
-        return null;
+    private JSONArray usersToJson() {
+        JSONArray users = new JSONArray();
+
+        for (User u : this.usernamePasswords.values()) {
+            users.put(u.toJson());
+        }
+
+        return users;
     }
 }

@@ -1,5 +1,6 @@
 package model.content;
 
+import org.json.JSONObject;
 import persistence.Writable;
 
 // The most basic piece of content on PostIt, with just a username, number of likes and dislikes
@@ -7,7 +8,9 @@ import persistence.Writable;
 public abstract class Content implements Writable {
 
     // CONSTANTS
-
+    public static final String OP_NAME_KEY = "opName";
+    public static final String LIKES_KEY = "likes";
+    public static final String DISLIKES_KEY = "dislikes";
 
 
     // FIELDS
@@ -67,6 +70,15 @@ public abstract class Content implements Writable {
     // EFFECTS: decrease the number of likes on this content by 1
     public void unLike() {
         this.likes--;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject content = new JSONObject();
+        content.put(OP_NAME_KEY, opName);
+        content.put(LIKES_KEY, likes);
+        content.put(DISLIKES_KEY, dislikes);
+        return content;
     }
 
 }

@@ -1,30 +1,38 @@
 package model;
 
+import model.content.othercontent.Comment;
 import model.content.posts.Post;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 // A user on PostIt with a registered username and password, an about section, a list of
 // subscribed communities, and lists of posts they've liked and disliked
 // A User can like and disliked posts, comment under posts, subscribe to communities and change
 // their bio
-public class User implements Writable {
+public class User extends PostCollections implements Writable {
 
     // CONSTANTS
     public static final String DEFAULT_BIO = "No bio yet...";
+
+    public static final String USERNAME_KEY = "username";
+    public static final String PASSWORD_KEY = "password";
+    public static final String BIO_KEY = "bio";
+    public static final String SUBSCRIBED_COMMUNITIES_KEY = "subscribedCommunities";
+    public static final String LIKED_POSTS_KEY = "likedPosts";
+    public static final String DISLIKED_POSTS_KEY = "dislikedPosts";
 
     // FIELDS
     private String userName;
     private String password;
     private String bio;
     private List<String> subscribedCommunities;
-    private List<Post> likedPosts;
-    private List<Post> dislikedPosts;
-    private List<Integer> userPosts;
+    private List<Integer> likedPosts;
+    private List<Integer> dislikedPosts;
+
 
     // METHODS
 
@@ -32,13 +40,13 @@ public class User implements Writable {
     // EFFECTS: creates a user with the given username and password
     //          with a default bio and no subscribed communities
     public User(String name, String password) {
+        super();
         this.userName = name;
         this.password = password;
         this.bio = DEFAULT_BIO;
         this.subscribedCommunities = new ArrayList<>();
         this.likedPosts = new ArrayList<>();
         this.dislikedPosts = new ArrayList<>();
-        this.userPosts = new LinkedList<>();
     }
 
 
@@ -63,12 +71,12 @@ public class User implements Writable {
     }
 
     // EFFECTS: returns user's liked posts
-    public List<Post> getLikedPosts() {
+    public List<Integer> getLikedPosts() {
         return likedPosts;
     }
 
     // EFFECTS: returns user's disliked posts
-    public List<Post> getDislikedPosts() {
+    public List<Integer> getDislikedPosts() {
         return dislikedPosts;
     }
 
@@ -78,13 +86,13 @@ public class User implements Writable {
     //          if post is in user's disliked posts, removes it from there
     //          and reduces the post's dislikes by 1
     public String addLikedPost(Post p) {
-        if (!likedPosts.contains(p)) {
-            if (dislikedPosts.contains(p)) {
-                dislikedPosts.remove(p);
+        if (!likedPosts.contains(Integer.valueOf(p.getId()))) {
+            if (dislikedPosts.contains(Integer.valueOf(p.getId()))) {
+                dislikedPosts.remove(Integer.valueOf(p.getId()));
                 p.unDislike();
             }
             p.like();
-            likedPosts.add(p);
+            likedPosts.add(Integer.valueOf(p.getId()));
             return "Post added to liked posts";
         } else {
             return "You've already liked this post before!";
@@ -97,13 +105,13 @@ public class User implements Writable {
     //          if post is in user's liked posts, removes it from there
     //          and reduces the post's likes by 1
     public String addDislikedPost(Post p) {
-        if (!dislikedPosts.contains(p)) {
-            if (likedPosts.contains(p)) {
-                likedPosts.remove(p);
+        if (!dislikedPosts.contains(Integer.valueOf(p.getId()))) {
+            if (likedPosts.contains(Integer.valueOf(p.getId()))) {
+                likedPosts.remove(Integer.valueOf(p.getId()));
                 p.unLike();
             }
             p.dislike();
-            dislikedPosts.add(p);
+            dislikedPosts.add(Integer.valueOf(p.getId()));
             return "Post added to disliked posts";
         } else {
             return "You've already disliked this post before!";
@@ -136,17 +144,30 @@ public class User implements Writable {
     // MODIFIES: this
     // EFFECTS: adds given post id to list of user-made posts
     public void addUserPost(Integer postId) {
-        this.userPosts.add(postId);
-    }
-
-    // EFFECTS: returns a list of post ids of posts that this user has made
-    public List<Integer> getUserPosts() {
-        return this.userPosts;
+        super.addPosts(postId);
     }
 
     @Override
     // EFFECTS: returns this user's information as a JSON Object
     public JSONObject toJson() {
-        return null;
+        JSONObject user = new JSONObject();
+        user.put(USERNAME_KEY, userName);
+        user.put(PASSWORD_KEY, password);
+        user.put(BIO_KEY, bio);
+        user.put(SUBSCRIBED_COMMUNITIES_KEY, communitiesToJson());
+        user.put(LIKED_POSTS_KEY, postsToJson(likedPosts));
+        user.put(DISLIKED_POSTS_KEY, postsToJson(dislikedPosts));
+        user.put(POSTS_KEY, postsToJson(getPosts()));
+        return user;
+    }
+
+    private JSONArray communitiesToJson() {
+        JSONArray communities = new JSONArray();
+
+        for (String c : this.subscribedCommunities) {
+            communities.put(c);
+        }
+
+        return communities;
     }
 }

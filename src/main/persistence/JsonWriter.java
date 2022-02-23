@@ -7,9 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 
-// CITATION
-// JsonSerializationDemo from CPSC 210
-
 public class JsonWriter {
 
     // CONSTANTS
@@ -22,19 +19,27 @@ public class JsonWriter {
 
     // METHODS
 
+    // Method taken from JSONReader class in
+    // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     public JsonWriter(String fileLocation) {
         this.fileLocation = fileLocation;
     }
 
+    // Method taken from JSONReader class in
+    // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     public void openWriter() throws FileNotFoundException {
         writer = new PrintWriter(fileLocation);
     }
 
+    // Method taken from JSONReader class in
+    // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     public void saveForum(PostIt postIt) {
         JSONObject forum = postIt.toJson();
         writer.print(forum.toString(INDENT_FACTOR));
     }
 
+    // Method taken from JSONReader class in
+    // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
     public void close() {
         writer.close();
     }

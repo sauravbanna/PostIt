@@ -9,8 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-// CITATION
-// JsonSerializationDemo from CPSC 210
+
 
 // A subclass of Content with a username who posted, a title, a community that is was posted in, a unique id number
 // an abstract body, a list of comments, and number of likes, dislikes, and comments

@@ -210,6 +210,26 @@ public class PostIt implements Writable {
         return this.posts;
     }
 
+    public void setLoggedIn(Boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    public void setCurrentlyLoggedInUser(User currentlyLoggedInUser) {
+        this.currentlyLoggedInUser = currentlyLoggedInUser;
+    }
+
+    public void setUsernamePasswords(HashMap<String, User> usernamePasswords) {
+        this.usernamePasswords = usernamePasswords;
+    }
+
+    public void setCommunities(HashMap<String, Community> communities) {
+        this.communities = communities;
+    }
+
+    public void setPosts(HashMap<Integer, Post> posts) {
+        PostIt.posts = posts;
+    }
+
 
     @Override
     public JSONObject toJson() {

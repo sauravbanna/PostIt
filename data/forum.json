@@ -6,8 +6,8 @@
         "bio": "No bio yet...",
         "dislikedPosts": [],
         "posts": [
-            18313,
-            52941
+            19766,
+            26768
         ],
         "subscribedCommunities": [],
         "username": "1"
@@ -17,10 +17,10 @@
             "comments": [],
             "opName": "1",
             "dislikes": 0,
-            "textBody": "body1",
-            "id": 18313,
-            "title": "title1",
-            "community": "newCommunity",
+            "textBody": "body2",
+            "id": 26768,
+            "title": "title2",
+            "community": "funny",
             "likes": 0,
             "commentCount": 0
         },
@@ -28,10 +28,10 @@
             "comments": [],
             "opName": "1",
             "dislikes": 0,
-            "textBody": "body2",
-            "id": 52941,
-            "title": "title2",
-            "community": "funny",
+            "textBody": "body1",
+            "id": 19766,
+            "title": "title1",
+            "community": "newCommunity",
             "likes": 0,
             "commentCount": 0
         }
@@ -42,8 +42,8 @@
         "bio": "No bio yet...",
         "dislikedPosts": [],
         "posts": [
-            18313,
-            52941
+            19766,
+            26768
         ],
         "subscribedCommunities": [],
         "username": "1"
@@ -68,7 +68,7 @@
             "subs": 0,
             "name": "newCommunity",
             "about": "some about section",
-            "posts": [18313]
+            "posts": [19766]
         },
         {
             "creator": "PostIt",
@@ -89,7 +89,7 @@
             "subs": 0,
             "name": "funny",
             "about": "This is a default community.",
-            "posts": [52941]
+            "posts": [26768]
         },
         {
             "creator": "PostIt",

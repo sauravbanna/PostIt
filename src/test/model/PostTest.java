@@ -2,12 +2,9 @@ package model;
 
 import model.content.othercontent.Comment;
 import model.content.posts.Post;
-import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.*;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class PostTest extends ContentTest {
 
@@ -35,10 +32,6 @@ public abstract class PostTest extends ContentTest {
 
         assertEquals(2, testPost.getCommentCount());
         assertEquals(2, testPost.getComments().size());
-
-        List<Comment> bro = testPost.getComments();
-
-        Comment justAdded = testPost.getComments().get(1);
 
         assertEquals("user2", testPost.getComments().get(1).getOpName());
         assertEquals("also wow", testPost.getComments().get(1).getCommentBody());

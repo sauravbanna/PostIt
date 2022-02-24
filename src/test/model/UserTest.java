@@ -6,7 +6,7 @@ import model.content.posts.TextPost;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserTest {
+class UserTest extends PostCollectionsTest {
 
     User testUser;
     Post testPost1;
@@ -19,13 +19,14 @@ class UserTest {
         testPost1 = new TextPost("someUser", "someTitle", "someBody", "gaming", 0);
         testPost2 = new TextPost("someOtherUser", "someOtherTitle", "someOtherBody", "news", 1);
         testPost3 = new TextPost("thirdUser", "thirdTitle", "thirdBody", "sports", 2);
+        testPostCollection = new User("someName", "somePassword");
     }
 
     @Test
     void testConstructor() {
         assertEquals("coolName", testUser.getUserName());
         assertEquals("abcd1234", testUser.getPassword());
-        assertEquals(testUser.DEFAULT_BIO, testUser.getBio());
+        assertEquals(User.DEFAULT_BIO, testUser.getBio());
         assertTrue(testUser.getSubscribedCommunities().isEmpty());
         assertTrue(testUser.getDislikedPosts().isEmpty());
         assertTrue(testUser.getLikedPosts().isEmpty());
@@ -51,7 +52,7 @@ class UserTest {
 
     @Test
     void testSetBio() {
-        assertEquals(testUser.DEFAULT_BIO, testUser.getBio());
+        assertEquals(User.DEFAULT_BIO, testUser.getBio());
 
         testUser.setBio("I am a cool person");
 
@@ -300,4 +301,6 @@ class UserTest {
         assertEquals(0, testPost3.getLikes());
         assertEquals(1, testPost3.getDislikes());
     }
+
+
 }

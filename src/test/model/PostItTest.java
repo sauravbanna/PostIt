@@ -23,7 +23,7 @@ public class PostItTest {
         testPostIt.login(testUser.getUserName());
 
         testPostIt.addDefaultCommunitiesCheck();
-        communityChoice = testPostIt.DEFAULT_COMMUNITIES.get(0);
+        communityChoice = PostIt.DEFAULT_COMMUNITIES.get(0);
     }
 
     @Test
@@ -209,5 +209,42 @@ public class PostItTest {
 
         assertNull(testPostIt.getActiveFeed());
     }
+
+    @Test
+    void testAddDefaultCommunitiesCheckNotAdded() {
+        testPostIt = new PostIt();
+        for (String s : PostIt.DEFAULT_COMMUNITIES) {
+            assertFalse(testPostIt.getCommunities().containsKey(s));
+        }
+
+        testPostIt.addDefaultCommunitiesCheck();
+
+        for (String s : PostIt.DEFAULT_COMMUNITIES) {
+            assertTrue(testPostIt.getCommunities().containsKey(s));
+            assertEquals(s, testPostIt.getCommunities().get(s).getCommunityName());
+            assertEquals(Community.DEFAULT_ABOUT_SECTION, testPostIt.getCommunities().get(s).getCommunityAbout());
+            assertEquals(Community.DEFAULT_CREATOR, testPostIt.getCommunities().get(s).getCreator());
+        }
+    }
+
+    @Test
+    void testAddDefaultCommunitiesCheckAlreadyAdded() {
+        for (String s : PostIt.DEFAULT_COMMUNITIES) {
+            assertTrue(testPostIt.getCommunities().containsKey(s));
+            assertEquals(s, testPostIt.getCommunities().get(s).getCommunityName());
+            assertEquals(Community.DEFAULT_ABOUT_SECTION, testPostIt.getCommunities().get(s).getCommunityAbout());
+            assertEquals(Community.DEFAULT_CREATOR, testPostIt.getCommunities().get(s).getCreator());
+        }
+
+        testPostIt.addDefaultCommunitiesCheck();
+
+        for (String s : PostIt.DEFAULT_COMMUNITIES) {
+            assertTrue(testPostIt.getCommunities().containsKey(s));
+            assertEquals(s, testPostIt.getCommunities().get(s).getCommunityName());
+            assertEquals(Community.DEFAULT_ABOUT_SECTION, testPostIt.getCommunities().get(s).getCommunityAbout());
+            assertEquals(Community.DEFAULT_CREATOR, testPostIt.getCommunities().get(s).getCreator());
+        }
+    }
+
 
 }

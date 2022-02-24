@@ -1,6 +1,5 @@
 package model.content.posts;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import model.content.othercontent.Comment;
 import model.content.Content;
 import org.json.JSONArray;

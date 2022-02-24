@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-// A group on PostIt with a community name, about section, subscriber count, creator name, and list of Posts
-// that user can post to and view the posts of
+// A group on PostIt with a community name, about section, subscriber count, creator name, and list of post ids
+// that user can view and post to
 public class Community extends PostCollections implements Writable {
 
     // CONSTANTS
@@ -42,7 +42,6 @@ public class Community extends PostCollections implements Writable {
     public Community(String name, String about, String creator) {
         super();
         this.communityName = name;
-        this.communityAbout = about;
         this.subCount = 0;
         if (about != null) {
             this.communityAbout = about;
@@ -88,6 +87,13 @@ public class Community extends PostCollections implements Writable {
     // EFFECTS: returns the creator name of the community
     public String getCreator() {
         return this.creator;
+    }
+
+    // REQUIRES: given subcount >= 0
+    // MODIFIES: this
+    // EFFECTS: sets the community's subcount to the given number
+    public void setSubCount(int subCount) {
+        this.subCount = subCount;
     }
 
     @Override

@@ -4,9 +4,11 @@ import exceptions.EmptyFeedException;
 import model.Community;
 import model.PostIt;
 import model.User;
+import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 import static model.PostIt.*;
@@ -26,21 +28,24 @@ public class PostItApp {
     private String userInput;
     private PostIt postIt;
     private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     // METHODS
 
     // Constructor
     // EFFECTS: creates a new PostIt Forum and instantiates the Scanner input to take in user input
     public PostItApp() {
-        postIt = new PostIt();
         input = new Scanner(System.in);
         jsonWriter = new JsonWriter(FORUM_DATA);
+        jsonReader = new JsonReader(FORUM_DATA);
     }
 
     // MODIFIES: this
     // EFFECTS: starts the forum for the user
     @SuppressWarnings("methodlength")
-    public void start() {
+    public void start() throws IOException {
+        postIt = jsonReader.read();
+        postIt.addDefaultCommunitiesCheck();
         System.out.println("Welcome to PostIt!");
         System.out.println("Type " + HOME_COMMAND + " to browse your home feed, "
                 + VIEW_COMMUNITY_COMMAND + " to view a specific community, "
@@ -116,6 +121,13 @@ public class PostItApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: tries to exit the forum and save the forum to file
+    //          if successful, clears active feed and exits
+    //          if save is unsucessful due to file not being found
+    //          asks user if they still want to exit and have their work be deleted
+    //          if yes, exits. if no, returns NEXT_ACTION_COMMAND
+    //          prompts user to give input again if invalid input is entered
     public String exitForum() {
         try {
             jsonWriter.openWriter();
@@ -138,6 +150,7 @@ public class PostItApp {
         return null;
     }
 
+    // MODIFIES: this
     // EFFECTS: if active feed doesn't exist, asks user what they want to do next
     //          returns user input
     //          if active feed exists, starts active feed again
@@ -423,6 +436,7 @@ public class PostItApp {
             return postIt.startHomeFeed().start();
         } catch (EmptyFeedException e) {
             System.out.println("There are no posts to show, please subscribe to some communities!");
+            postIt.clearActiveFeed();
             return NEXT_ACTION_COMMAND;
         }
     }

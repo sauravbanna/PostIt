@@ -21,8 +21,6 @@ public class PostIt implements Writable {
     public static final String LOGGED_IN_KEY = "loggedIn";
     public static final String NULL_USER = "null";
 
-    public static final int MAX_ID = 1000000;
-
     public static final String VIEW_COMMUNITY_COMMAND = "/visit";
     public static final String MAKE_POST_COMMAND = "/post";
     public static final String LOGOUT_COMMAND = "/logout";
@@ -59,6 +57,7 @@ public class PostIt implements Writable {
     private HashMap<String, User> usernamePasswords;
     private HashMap<String, Community> communities;
     private static HashMap<Integer, Post> posts;
+    private int maxId;
 
     // METHODS
 
@@ -70,12 +69,8 @@ public class PostIt implements Writable {
         usernamePasswords = new HashMap<>();
         communities = new HashMap<>();
         posts = new HashMap<>();
-
-        for (String community : DEFAULT_COMMUNITIES) {
-            communities.put(community, new Community(community, null, null));
-        }
-
         currentlyLoggedInUser = null;
+        maxId = 100000;
     }
 
     // EFFECTS: returns the active feed of the forum
@@ -135,7 +130,7 @@ public class PostIt implements Writable {
     //          community's posts
     //          returns true if post successfull made, returns false if generated id already exists
     public Boolean makeTextPost(String title, String body, String communityChoice) {
-        int randomId = (int)(Math.random() * MAX_ID);
+        int randomId = (int)(Math.random() * maxId);
         if (posts.containsKey(randomId)) {
             return false;
         } else {
@@ -200,6 +195,18 @@ public class PostIt implements Writable {
     }
 
     // MODIFIES: this
+    // EFFECTS: checks for every default community name if that community exists on PostIt
+    //          if exists, does nothing
+    //          if not, adds that community to PostIt with default creator and about section
+    public void addDefaultCommunitiesCheck() {
+        for (String community : DEFAULT_COMMUNITIES) {
+            if (!communities.containsKey(community)) {
+                communities.put(community, new Community(community, null, null));
+            }
+        }
+    }
+
+    // MODIFIES: this
     // EFFECTS: clears the active feed
     public void clearActiveFeed() {
         this.activeFeed = null;
@@ -210,22 +217,43 @@ public class PostIt implements Writable {
         return this.posts;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets the loggedIn status to the given Boolean
     public void setLoggedIn(Boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
 
+    // REQUIRES: given user is a registered user on PostIt
+    // MODIFIES: this
+    // EFFECTS: sets the current user to the given user
     public void setCurrentlyLoggedInUser(User currentlyLoggedInUser) {
         this.currentlyLoggedInUser = currentlyLoggedInUser;
     }
 
+    // REQUIRES: map contains registered users on PostIt
+    //           each username must match with the corresponding user
+    // MODIFIES: this
+    // EFFECTS: sets the map of usernames and users to the given map
     public void setUsernamePasswords(HashMap<String, User> usernamePasswords) {
         this.usernamePasswords = usernamePasswords;
     }
 
+    public void setMaxId(int maxId) {
+        this.maxId = maxId;
+    }
+
+    // REQUIRES: map contains registered communities on PostIt
+    //           each community name must match to the corresponding community
+    // MODIFIES: this
+    // EFFECTS: sets the map of community names and communities to the given map
     public void setCommunities(HashMap<String, Community> communities) {
         this.communities = communities;
     }
 
+    // REQUIRES: map contains posts made by registered users on PostIt
+    //           each id must match to the corresponding post
+    // MODIFIES: this
+    // EFFECTS: sets the map of usernames and users to the given map
     public void setPosts(HashMap<Integer, Post> posts) {
         PostIt.posts = posts;
     }
@@ -246,6 +274,7 @@ public class PostIt implements Writable {
         return forum;
     }
 
+    // EFFECTS: returns the posts on the forum as a JSONArray
     private JSONArray postsToJson() {
         JSONArray posts = new JSONArray();
 
@@ -256,6 +285,7 @@ public class PostIt implements Writable {
         return posts;
     }
 
+    // EFFECTS: returns the communities on the forum as a JSONArray
     private JSONArray communitiesToJson() {
         JSONArray communities = new JSONArray();
 
@@ -266,6 +296,7 @@ public class PostIt implements Writable {
         return communities;
     }
 
+    // EFFECTS: returns the users on the forum as a JSONArray
     private JSONArray usersToJson() {
         JSONArray users = new JSONArray();
 

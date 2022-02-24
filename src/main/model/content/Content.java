@@ -72,6 +72,27 @@ public abstract class Content implements Writable {
         this.likes--;
     }
 
+    // REQUIRES: given name is a registered username on PostIt
+    // MODIFIES: this
+    // EFFECTS: sets the poster name of this content to the given name
+    public void setOpName(String opName) {
+        this.opName = opName;
+    }
+
+    // REQUIRES: given likes >= 0
+    // MODIFIES: this
+    // EFFECTS: sets the content's likes to the given number
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    // REQUIRES: given dislikes >= 0
+    // MODIFIES: this
+    // EFFECTS: sets the content's dislikes to the given number
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject content = new JSONObject();

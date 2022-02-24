@@ -48,4 +48,7 @@ easy addition of new features.
 - As a user, I want to be able to create and add my own communities to PostIt based on my interests
 - As a user, I want to accurately keep track of all the posts I've liked and disliked 
 - As a user, I want to be able to view other user's profiles and bios
+- As a user, I want to be able to save the posts I create to the forum and access them again
+- As a user, I want to be able to save my logged in state and still be logged in when I close the forum and open it again
+- As a user, I want to be able to visit communities I create when I reopen the forum
 

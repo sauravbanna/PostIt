@@ -9,9 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-// A subclass of Content with a username who posted, a title, a community that is was posted in, a unique id number
+// A subclass of Content with a username who posted, a title, a community that it was posted in, a unique id number
 // an abstract body, a list of comments, and number of likes, dislikes, and comments
 public abstract class Post extends Content {
 
@@ -79,6 +77,19 @@ public abstract class Post extends Content {
         return id;
     }
 
+    // REQUIRES: commentCount >= 0
+    // MODIFIES: this
+    // EFFECTS: sets the post's comment count to the given number
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets the comments of this post to the given list of comments
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
     // EFFECTS: returns the body of the post
     public abstract String getBody();
 
@@ -93,6 +104,7 @@ public abstract class Post extends Content {
         return post;
     }
 
+    // EFFECTS: returns this post's comments as a JSONArray
     private JSONArray commentsToJson() {
         JSONArray comments = new JSONArray();
 
@@ -101,6 +113,5 @@ public abstract class Post extends Content {
         }
 
         return comments;
-
     }
 }

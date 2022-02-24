@@ -25,12 +25,6 @@ public class Feed {
     public static final String COMMENT_COMMAND = "/comment";
     public static final String VIEW_COMMENTS_COMMAND = "/vc";
     public static final String BACK_COMMAND = "/back";
-    //public static final String SORT_COMMAND = "/sort";
-
-    public static final String NEW_SORT = "NEW";
-    public static final String TOP_SORT = "TOP";
-    public static final String COMMENT_SORT = "COMMENTS";
-    public static final String DISLIKE_SORT = "DISLIKES";
 
     public static final int NUM_COMMENTS_TO_SHOW = 5;
 
@@ -39,7 +33,6 @@ public class Feed {
     protected Boolean userFeedActive;
     private int feedPosition;
     private Post currentPost;
-    private String currentSort;
     private final Boolean loggedIn;
     private final User currentUser;
     private PostIt postIt;
@@ -264,18 +257,22 @@ public class Feed {
         System.out.println();
     }
 
+    // EFFECTS: returns the current feed
     public List<Integer> getUserFeed() {
         return userFeed;
     }
 
+    // EFFECTS: returns the current logged in status
     public Boolean getLoggedIn() {
         return loggedIn;
     }
 
+    // EFFECTS: returns the current user
     public User getCurrentUser() {
         return currentUser;
     }
 
+    // EFFECTS: returns the current PostIt forum that feed is displaying in
     public PostIt getPostIt() {
         return postIt;
     }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // A user on PostIt with a registered username and password, an about section, a list of
-// subscribed communities, and lists of posts they've liked and disliked
+// subscribed communities, and lists of post ids that they've made, liked and disliked
 // A User can like and disliked posts, comment under posts, subscribe to communities and change
 // their bio
 public class User extends PostCollections implements Writable {
@@ -141,14 +141,39 @@ public class User extends PostCollections implements Writable {
     }
 
     // REQUIRES: user who posted the post is this user
+    //           post id belongs to a valid post on PostIt
     // MODIFIES: this
     // EFFECTS: adds given post id to list of user-made posts
     public void addUserPost(Integer postId) {
         super.addPosts(postId);
     }
 
+    // REQUIRES: given list of post ids belong to posts made by registered users on PostIt
+    //           list must not have duplicates
+    // MODIFIES: this
+    // EFFECTS: sets the liked posts of this user to the given list of post ids
+    public void setLikedPosts(List<Integer> likedPosts) {
+        this.likedPosts = likedPosts;
+    }
+
+    // REQUIRES: given list of post ids belong to posts made by registered users on PostIt
+    //           list must not have duplicates
+    // MODIFIES: this
+    // EFFECTS: sets the disliked posts of this user to the given list of post ids
+    public void setDislikedPosts(List<Integer> dislikedPosts) {
+        this.dislikedPosts = dislikedPosts;
+    }
+
+    // REQUIRES: given list of community names are registered communities on PostIt
+    //           list must not have duplicates
+    //           communities must all have >= 1 subscriber
+    // MODIFIES: this
+    // EFFECTS: sets the subscribed communities of this user to the given list
+    public void setSubscribedCommunities(List<String> subscribedCommunities) {
+        this.subscribedCommunities = subscribedCommunities;
+    }
+
     @Override
-    // EFFECTS: returns this user's information as a JSON Object
     public JSONObject toJson() {
         JSONObject user = new JSONObject();
         user.put(USERNAME_KEY, userName);
@@ -161,6 +186,7 @@ public class User extends PostCollections implements Writable {
         return user;
     }
 
+    // EFFECTS: returns the names of the subscribed communities of this user as a JSONArray
     private JSONArray communitiesToJson() {
         JSONArray communities = new JSONArray();
 

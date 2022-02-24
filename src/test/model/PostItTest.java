@@ -22,6 +22,7 @@ public class PostItTest {
         testPostIt.addUser(testUser.getUserName(), testUser);
         testPostIt.login(testUser.getUserName());
 
+        testPostIt.addDefaultCommunitiesCheck();
         communityChoice = testPostIt.DEFAULT_COMMUNITIES.get(0);
     }
 
@@ -32,15 +33,7 @@ public class PostItTest {
         assertTrue(testPostIt.getUsernamePasswords().isEmpty());
         assertEquals(0, testPostIt.getPosts().size());
         assertTrue(testPostIt.getPosts().isEmpty());
-
-        assertEquals(testPostIt.DEFAULT_COMMUNITIES.size(), testPostIt.getCommunities().size());
-
-        for (String s : testPostIt.DEFAULT_COMMUNITIES) {
-            assertTrue(testPostIt.getCommunities().containsKey(s));
-            assertEquals(s, testPostIt.getCommunities().get(s).getCommunityName());
-        }
-
-        assertEquals(null, testPostIt.getCurrentUser());
+        assertNull(testPostIt.getCurrentUser());
 
     }
 
@@ -49,15 +42,15 @@ public class PostItTest {
         testPostIt.logOut();
 
         assertFalse(testPostIt.getLoggedIn());
-        assertEquals(null, testPostIt.getCurrentUser());
-        assertEquals(null, testPostIt.getActiveFeed());
+        assertNull(testPostIt.getCurrentUser());
+        assertNull(testPostIt.getActiveFeed());
     }
 
     @Test
     void testLogin() {
         assertTrue(testPostIt.getLoggedIn());
         assertEquals(testUser, testPostIt.getCurrentUser());
-        assertEquals(null, testPostIt.getActiveFeed());
+        assertNull(testPostIt.getActiveFeed());
     }
 
     @Test
@@ -97,8 +90,29 @@ public class PostItTest {
     }
 
     @Test
+    void testMakeTextPostNotEnoughIDs() {
+        assertTrue(testPostIt.getPosts().isEmpty());
+        assertTrue(testPostIt.getCommunities().get(communityChoice).getPosts().isEmpty());
+        assertTrue(testPostIt.getCurrentUser().getPosts().isEmpty());
+
+        testPostIt.setMaxId(0);
+
+        assertTrue(testPostIt.makeTextPost("title", "body", communityChoice));
+
+        assertEquals(1, testPostIt.getPosts().size());
+        assertEquals(1, testPostIt.getCommunities().get(communityChoice).getPosts().size());
+        assertEquals(1, testPostIt.getCurrentUser().getPosts().size());
+
+        assertFalse(testPostIt.makeTextPost("anotherTitle", "anotherBody", communityChoice));
+
+        assertEquals(1, testPostIt.getPosts().size());
+        assertEquals(1, testPostIt.getCommunities().get(communityChoice).getPosts().size());
+        assertEquals(1, testPostIt.getCurrentUser().getPosts().size());
+    }
+
+    @Test
     void testUpdateBio() {
-        assertEquals(testUser.DEFAULT_BIO, testPostIt.getCurrentUser().getBio());
+        assertEquals(User.DEFAULT_BIO, testPostIt.getCurrentUser().getBio());
 
         testPostIt.updateBio("new bio");
 
@@ -107,11 +121,11 @@ public class PostItTest {
 
     @Test
     void testAddCommunity() {
-        assertEquals(testPostIt.DEFAULT_COMMUNITIES.size(), testPostIt.getCommunities().size());
+        assertEquals(PostIt.DEFAULT_COMMUNITIES.size(), testPostIt.getCommunities().size());
 
         testPostIt.addCommunity("newCommunity", "a fun place");
 
-        assertEquals(testPostIt.DEFAULT_COMMUNITIES.size() + 1, testPostIt.getCommunities().size());
+        assertEquals(PostIt.DEFAULT_COMMUNITIES.size() + 1, testPostIt.getCommunities().size());
         assertTrue(testPostIt.getCommunities().containsKey("newCommunity"));
         assertEquals("a fun place", testPostIt.getCommunities().get("newCommunity").getCommunityAbout());
         assertEquals("newCommunity", testPostIt.getCommunities().get("newCommunity").getCommunityName());
@@ -145,7 +159,7 @@ public class PostItTest {
             testPostIt.startHomeFeed();
             fail("EmptyFeedException supposed to be thrown");
         } catch (EmptyFeedException efe) {
-
+            // pass
         }
     }
 
@@ -193,7 +207,7 @@ public class PostItTest {
 
         testPostIt.clearActiveFeed();
 
-        assertEquals(null, testPostIt.getActiveFeed());
+        assertNull(testPostIt.getActiveFeed());
     }
 
 }

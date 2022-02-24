@@ -1,88 +1,53 @@
 {
     "loggedIn": true,
     "user": {
-        "password": "666666666",
-        "likedPosts": [268960],
-        "bio": "fgfsdfsdf",
+        "password": "12345678",
+        "likedPosts": [],
+        "bio": "No bio yet...",
         "dislikedPosts": [],
         "posts": [
-            444296,
-            615935
+            18313,
+            52941
         ],
         "subscribedCommunities": [],
-        "username": "666"
+        "username": "1"
     },
     "posts": [
         {
-            "comments": [
-                {
-                    "opName": "666",
-                    "dislikes": 0,
-                    "body": "fdffdf",
-                    "likes": 0
-                },
-                {
-                    "opName": "666",
-                    "dislikes": 0,
-                    "body": "dfdsdsffjsjdf",
-                    "likes": 0
-                }
-            ],
-            "opName": "323",
-            "dislikes": 0,
-            "textBody": "df",
-            "id": 268960,
-            "title": "df",
-            "community": "gaming",
-            "likes": 1,
-            "commentCount": 2
-        },
-        {
             "comments": [],
-            "opName": "666",
+            "opName": "1",
             "dislikes": 0,
-            "textBody": "wer",
-            "id": 615935,
-            "title": "wee",
-            "community": "bro",
+            "textBody": "body1",
+            "id": 18313,
+            "title": "title1",
+            "community": "newCommunity",
             "likes": 0,
             "commentCount": 0
         },
         {
             "comments": [],
-            "opName": "666",
+            "opName": "1",
             "dislikes": 0,
-            "textBody": "dsf",
-            "id": 444296,
-            "title": "sdf",
-            "community": "gaming",
+            "textBody": "body2",
+            "id": 52941,
+            "title": "title2",
+            "community": "funny",
             "likes": 0,
             "commentCount": 0
         }
     ],
-    "users": [
-        {
-            "password": "12345678",
-            "likedPosts": [],
-            "bio": "No bio yet...",
-            "dislikedPosts": [],
-            "posts": [268960],
-            "subscribedCommunities": [],
-            "username": "323"
-        },
-        {
-            "password": "666666666",
-            "likedPosts": [268960],
-            "bio": "fgfsdfsdf",
-            "dislikedPosts": [],
-            "posts": [
-                444296,
-                615935
-            ],
-            "subscribedCommunities": [],
-            "username": "666"
-        }
-    ],
+    "users": [{
+        "password": "12345678",
+        "likedPosts": [],
+        "bio": "No bio yet...",
+        "dislikedPosts": [],
+        "posts": [
+            18313,
+            52941
+        ],
+        "subscribedCommunities": [],
+        "username": "1"
+    }],
     "communities": [
         {
             "creator": "PostIt",
@@ -96,10 +61,14 @@
             "subs": 0,
             "name": "gaming",
             "about": "This is a default community.",
-            "posts": [
-                268960,
-                444296
-            ]
+            "posts": []
+        },
+        {
+            "creator": "1",
+            "subs": 0,
+            "name": "newCommunity",
+            "about": "some about section",
+            "posts": [18313]
         },
         {
             "creator": "PostIt",
@@ -120,14 +89,7 @@
             "subs": 0,
             "name": "funny",
             "about": "This is a default community.",
-            "posts": []
-        },
-        {
-            "creator": "666",
-            "subs": 0,
-            "name": "bro",
-            "about": "bro",
-            "posts": [615935]
+            "posts": [52941]
         },
         {
             "creator": "PostIt",

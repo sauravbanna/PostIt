@@ -2,14 +2,14 @@
     "loggedIn": true,
     "user": {
         "password": "12345678",
-        "likedPosts": [26768],
+        "likedPosts": [],
         "bio": "No bio yet...",
-        "dislikedPosts": [19766],
+        "dislikedPosts": [],
         "posts": [
-            19766,
-            26768
+            34620,
+            28231
         ],
-        "subscribedCommunities": ["funny"],
+        "subscribedCommunities": [],
         "username": "1"
     },
     "posts": [
@@ -18,41 +18,22 @@
             "opName": "1",
             "dislikes": 0,
             "textBody": "body2",
-            "id": 26768,
+            "id": 28231,
             "title": "title2",
             "community": "funny",
-            "likes": 2,
+            "likes": 0,
             "commentCount": 0
         },
         {
-            "comments": [
-                {
-                    "opName": "1",
-                    "dislikes": 0,
-                    "body": "wow",
-                    "likes": 0
-                },
-                {
-                    "opName": "1",
-                    "dislikes": 0,
-                    "body": "this is amazing",
-                    "likes": 0
-                },
-                {
-                    "opName": "1",
-                    "dislikes": 0,
-                    "body": "great!",
-                    "likes": 0
-                }
-            ],
+            "comments": [],
             "opName": "1",
-            "dislikes": 1,
+            "dislikes": 0,
             "textBody": "body1",
-            "id": 19766,
+            "id": 34620,
             "title": "title1",
             "community": "newCommunity",
-            "likes": 1,
-            "commentCount": 3
+            "likes": 0,
+            "commentCount": 0
         }
     ],
     "users": [{
@@ -61,10 +42,10 @@
         "bio": "No bio yet...",
         "dislikedPosts": [],
         "posts": [
-            19766,
-            26768
+            34620,
+            28231
         ],
-        "subscribedCommunities": ["funny"],
+        "subscribedCommunities": [],
         "username": "1"
     }],
     "communities": [
@@ -87,7 +68,7 @@
             "subs": 0,
             "name": "newCommunity",
             "about": "some about section",
-            "posts": [19766]
+            "posts": [34620]
         },
         {
             "creator": "PostIt",
@@ -105,10 +86,10 @@
         },
         {
             "creator": "PostIt",
-            "subs": 2,
+            "subs": 0,
             "name": "funny",
             "about": "This is a default community.",
-            "posts": [26768]
+            "posts": [28231]
         },
         {
             "creator": "PostIt",

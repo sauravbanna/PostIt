@@ -5,21 +5,25 @@ import model.Community;
 import model.PostIt;
 import model.User;
 import model.content.othercontent.Comment;
+import model.content.posts.Post;
+import model.content.posts.TextPost;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class JsonWriterTest {
+public class JsonWriterTest extends JsonTest {
 
     // CONSTANTS
-    public static final String VALID_LOCATION = "./data/forum.json";
+    public static final String VALID_LOCATION = "./data/testWriterValidLocation.json";
+    public static final String EMPTY_FORUM = "./data/testWriterEmptyForum.json";
 
     // FIELDS
     private PostIt postIt;
     private User testUser1;
     private User testUser2;
+    private String communityChoice;
 
 
     // METHODS
@@ -29,6 +33,7 @@ public class JsonWriterTest {
         // valid usernames and passwords
         testUser1 = new User("1", "12345678");
         testUser2 = new User("otherUser", "goodPassword");
+        communityChoice = PostIt.DEFAULT_COMMUNITIES.get(0);
 
     }
 
@@ -48,12 +53,12 @@ public class JsonWriterTest {
     @Test
     void testWriterEmptyForumNotLoggedIn() {
         try {
-            JsonWriter writer = new JsonWriter(VALID_LOCATION);
+            JsonWriter writer = new JsonWriter(EMPTY_FORUM);
             writer.openWriter();
             writer.saveForum(postIt);
             writer.close();
 
-            JsonReader reader = new JsonReader(VALID_LOCATION);
+            JsonReader reader = new JsonReader(EMPTY_FORUM);
             postIt = reader.read();
 
             assertFalse(postIt.getLoggedIn());
@@ -87,10 +92,8 @@ public class JsonWriterTest {
             assertTrue(postIt.getPosts().isEmpty());
 
             assertEquals(2, postIt.getUsernamePasswords().size());
-            assertEquals(testUser1.getUserName(),
-                    postIt.getUsernamePasswords().get(testUser1.getUserName()).getUserName());
-            assertEquals(testUser2.getUserName(),
-                    postIt.getUsernamePasswords().get(testUser2.getUserName()).getUserName());
+            checkUser(postIt.getUsernamePasswords().get(testUser1.getUserName()), testUser1);
+            checkUser(postIt.getUsernamePasswords().get(testUser2.getUserName()), testUser2);
         } catch (IOException ioe) {
             fail("IOException should not have been thrown.");
         }
@@ -113,8 +116,7 @@ public class JsonWriterTest {
             postIt = reader.read();
 
             assertTrue(postIt.getLoggedIn());
-            assertEquals(testUser2.getUserName(), postIt.getCurrentUser().getUserName());
-            assertEquals(testUser2.getBio(), postIt.getCurrentUser().getBio());
+            checkUser(postIt.getCurrentUser(), testUser2);
         } catch (IOException ioe) {
             fail("IOException should not have been thrown.");
         }
@@ -160,12 +162,10 @@ public class JsonWriterTest {
             JsonReader reader = new JsonReader(VALID_LOCATION);
             postIt = reader.read();
 
-            assertEquals("newCommunity",
-                    postIt.getCommunities().get("newCommunity").getCommunityName());
-            assertEquals("some about section",
-                    postIt.getCommunities().get("newCommunity").getCommunityAbout());
-            assertEquals(testUser1.getUserName(),
-                    postIt.getCommunities().get("newCommunity").getCreator());
+            Community testCommunity = new Community("newCommunity", "some about section",
+                    testUser1.getUserName());
+
+            checkCommunity(postIt.getCommunities().get("newCommunity"), testCommunity);
 
         } catch (IOException ioe) {
             fail("IOException should not have been thrown.");
@@ -175,8 +175,6 @@ public class JsonWriterTest {
     @Test
     void testWriterForumWithPosts() {
         try {
-            String communityChoice = PostIt.DEFAULT_COMMUNITIES.get(0);
-
             postIt.addUser(testUser1.getUserName(), testUser1);
             postIt.login(testUser1.getUserName());
             postIt.addCommunity("newCommunity", "some about section");
@@ -213,8 +211,6 @@ public class JsonWriterTest {
     @Test
     void testWriterForumWithPostsAndComments() {
         try {
-            String communityChoice = PostIt.DEFAULT_COMMUNITIES.get(0);
-
             postIt.addUser(testUser1.getUserName(), testUser1);
             postIt.login(testUser1.getUserName());
             postIt.addCommunity("newCommunity", "some about section");
@@ -245,8 +241,6 @@ public class JsonWriterTest {
     @Test
     void testWriterForumWithUserSubscribedToCommunities() {
         try {
-            String communityChoice = PostIt.DEFAULT_COMMUNITIES.get(0);
-
             postIt.addUser(testUser1.getUserName(), testUser1);
             postIt.login(testUser1.getUserName());
             postIt.addCommunity("newCommunity", "some about section");
@@ -255,8 +249,6 @@ public class JsonWriterTest {
                     .subscribeToCommunity(postIt.getCommunities().get(communityChoice));
             postIt.getUsernamePasswords().get(testUser1.getUserName())
                     .subscribeToCommunity(postIt.getCommunities().get("newCommunity"));
-
-
 
             JsonWriter writer = new JsonWriter(VALID_LOCATION);
             writer.openWriter();

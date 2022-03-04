@@ -44,6 +44,7 @@ public class Feed {
     // Constructor
     // EFFECTS: creates a new Feed with the given list of posts, whether the user is logged in or not,
     //          the current user (null if not logged in), with feedPosition at 0, userFeedActive set to True,
+    //          with the postIt field set the the current forum the feed is displayed on,
     //          and with the Scanner object input instantiated to read user input
     public Feed(List<Integer> postList, Boolean loggedIn, User user, PostIt forum) {
         userFeed = postList;
@@ -117,7 +118,7 @@ public class Feed {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, User
     // EFFECTS: if user is logged in, adds current post to user's liked post
     //          otherwise, tells user to log in
     public void like() {
@@ -128,7 +129,7 @@ public class Feed {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, User
     // EFFECTS: if user is logged in, adds current post to user's disliked post
     //          otherwise, tells user to log in
     public void dislike() {
@@ -139,7 +140,7 @@ public class Feed {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, Post
     // EFFECTS: if user is logged in, prompts user to enter a comment
     //          adds comment user entered to current post's comments
     //          otherwise, tells user to log in
@@ -222,7 +223,7 @@ public class Feed {
 
     }
 
-    // EFFECTS: prints out the first numCommentsToShow comments from the given list with their user who posted,
+    // EFFECTS: prints out the first NUM_COMMENTS_TO_SHOW comments from the given list with their user who posted,
     //          comment body, and like / dislike numbers
     public void showComments(List<Comment> commentList) {
         int currentCommentCount = 0;

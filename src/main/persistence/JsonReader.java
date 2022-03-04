@@ -189,7 +189,6 @@ public class JsonReader {
         Post post = new TextPost(postOpName, postTitle, postBody, postCommunity, postId);
         post.setDislikes(postDislikes);
         post.setLikes(postLikes);
-        post.setOpName(postOpName);
         post.setCommentCount(postCommentCount);
         post.setComments(postComments);
 

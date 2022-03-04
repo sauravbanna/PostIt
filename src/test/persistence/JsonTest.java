@@ -39,6 +39,7 @@ public class JsonTest {
             assertEquals(c.getCommunityAbout(), actual.get(c.getCommunityName()).getCommunityAbout());
             assertEquals(c.getCreator(), actual.get(c.getCommunityName()).getCreator());
             assertEquals(c.getSubCount(), actual.get(c.getCommunityName()).getSubCount());
+            assertEquals(c.getPosts().size(), actual.get(c.getCommunityName()).getPosts().size());
         }
     }
 

@@ -3,7 +3,6 @@ package model;
 import model.content.othercontent.Comment;
 import model.content.posts.Post;
 import org.junit.jupiter.api.*;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class PostTest extends ContentTest {

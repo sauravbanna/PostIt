@@ -1,13 +1,7 @@
 package model;
 
-import model.content.posts.Post;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 // A group on PostIt with a community name, about section, subscriber count, creator name, and list of post ids
 // that user can view and post to
@@ -24,17 +18,17 @@ public class Community extends PostCollections implements Writable {
     public static final String CREATOR_KEY = "creator";
 
     // FIELDS
-    private String communityName;
-    private String communityAbout;
+    private final String communityName;
+    private final String communityAbout;
     private int subCount;
-    private String creator;
+    private final String creator;
 
     // METHODS
 
     // Constructor
     // REQUIRES: creator name is either null or a registered user on PostIt
     //           about section is either null or a String
-    // EFFECTS: creates a new community with the given name with 0 posts and no subscribers
+    // EFFECTS: creates a new community with the given name with 0 posts and subscribers
     //          if about section is given, sets that as community about section, else
     //          if about section is null, sets about section of community to DEFAULT_ABOUT_SECTION
     //          if creator name is given, sets that as community creator, else
@@ -71,7 +65,7 @@ public class Community extends PostCollections implements Writable {
     }
 
     // REQUIRES: given postId is valid (between 0 and PostIt.MAX_ID)
-    //           and is not already the id of an existing post on PostIt
+    //           and is not a duplicate id of an existing post on PostIt
     // MODIFIES: this
     // EFFECTS: adds a post's post id to the community
     public void addPost(Integer postId) {

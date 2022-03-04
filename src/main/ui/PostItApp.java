@@ -34,6 +34,7 @@ public class PostItApp {
 
     // Constructor
     // EFFECTS: creates a new PostIt Forum and instantiates the Scanner input to take in user input
+    //          and instantiates the JSON writer and reader to the correct file location
     public PostItApp() {
         input = new Scanner(System.in);
         jsonWriter = new JsonWriter(FORUM_DATA);
@@ -110,7 +111,7 @@ public class PostItApp {
         }
     }
 
-    // EFFECTS: checks if user if already logged in, if yes, lets user know and returns NEXT_ACTIOB_COMMAND
+    // EFFECTS: checks if user if already logged in, if yes, lets user know and returns NEXT_ACTION_COMMAND
     //          else, starts the log in process
     public String loginCheck() {
         if (postIt.getLoggedIn()) {
@@ -121,7 +122,7 @@ public class PostItApp {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, JsonWriter, PostIt
     // EFFECTS: tries to exit the forum and save the forum to file
     //          if successful, clears active feed and exits
     //          if save is unsucessful due to file not being found
@@ -150,7 +151,7 @@ public class PostItApp {
         return null;
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: if active feed doesn't exist, asks user what they want to do next
     //          returns user input
     //          if active feed exists, starts active feed again
@@ -164,7 +165,7 @@ public class PostItApp {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: if user is logged in, logs them out and clears the feed
     //          if user is not logged in, tells them that they are not
     public String logOut() {
@@ -215,9 +216,9 @@ public class PostItApp {
         return NEXT_ACTION_COMMAND;
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: prompts user to enter a username and password, and if valid, creates a new user with those details
-    //          and adds it to the database
+    //          and adds it to the forum
     //          if not valid, lets user know to enter a valid input
     //          username is valid if it is between 1-20 characters, does not already exist on PostIt,
     //          and is not SELF_PROFILE_COMMAND
@@ -286,7 +287,7 @@ public class PostItApp {
                 || username.equals(SELF_PROFILE_COMMAND));
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: if the given password matches the given username, logs in user
     //          otherwise, prompts user to re-enter details
     //          returns NEXT_ACTION_COMMAND at the end or when user types EXIT_COMMAND
@@ -343,7 +344,7 @@ public class PostItApp {
         System.out.println("Subscribed Communities: " + u.getSubscribedCommunities());
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: if logged in, subscribes user to specified community
     //          if valid community name is given
     //          if not logged in, tells user to log in
@@ -361,10 +362,10 @@ public class PostItApp {
         return NEXT_ACTION_COMMAND;
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt, User, Community
     // EFFECTS: asks user to enter a community name, if user enters EXIT_COMMAND, returns false
     //          if user enters a non-existent community, prompts user to re-enter community name
-    //          if user enters a cummintiy they've already subscribed to, prompts user to re-enter community name
+    //          if user enters a community they've already subscribed to, prompts user to re-enter community name
     //          returns true once valid community name is entered
     public Boolean communitySubscribeCheck() {
         do {
@@ -388,7 +389,7 @@ public class PostItApp {
         return true;
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: if logged in, prompts user to input a valid community name that does not already exist
     //          and an about section, and creates and adds community to list of communities on PostIt
     //          prompts user to re-enter details if invalid community name is entered
@@ -420,7 +421,7 @@ public class PostItApp {
     }
 
     // REQUIRES: DEFAULT_COMMUNITIES has at least 1 community
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: if user is logged in, shows user posts from their subscribed communities
     //          if user is not logged in, shows user posts from default communities
     //          returns NEXT_ACTION_COMMAND if there are no posts to show
@@ -441,7 +442,7 @@ public class PostItApp {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: prompts user to type in a community name
     //          if valid community name, shows user posts of that community
     //          if invalid, tells user that community was not found and returns the next command
@@ -465,6 +466,7 @@ public class PostItApp {
         }
     }
 
+    // MODIFIES: this
     // EFFECTS: prompts user to enter a username
     //          if user is a valid user (exists in list of registered users), displays user profile
     //          else, tells user that the user was not found
@@ -511,7 +513,7 @@ public class PostItApp {
         }
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt, User
     // EFFECTS: prompts user to edit their bio, and updates their bio if user chooses to
     //          and returns NEXT_ACTION_COMMAND
     //          otherwise, returns any other command the user types
@@ -543,7 +545,7 @@ public class PostItApp {
         return NEXT_ACTION_COMMAND;
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, PostIt
     // EFFECTS: if user is logged in, makes a post according to user specifications
     //          in a valid, existing community
     //          if user is not logged in, tells user that they have to log in

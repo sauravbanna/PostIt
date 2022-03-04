@@ -1,6 +1,5 @@
 package model;
 
-import model.content.othercontent.Comment;
 import model.content.posts.Post;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,7 +25,7 @@ public class User extends PostCollections implements Writable {
     public static final String DISLIKED_POSTS_KEY = "dislikedPosts";
 
     // FIELDS
-    private String userName;
+    private final String userName;
     private String password;
     private String bio;
     private List<String> subscribedCommunities;
@@ -39,6 +38,7 @@ public class User extends PostCollections implements Writable {
     // Constructor
     // EFFECTS: creates a user with the given username and password
     //          with a default bio and no subscribed communities
+    //          with no liked or disliked posts
     public User(String name, String password) {
         super();
         this.userName = name;
@@ -86,13 +86,13 @@ public class User extends PostCollections implements Writable {
     //          if post is in user's disliked posts, removes it from there
     //          and reduces the post's dislikes by 1
     public String addLikedPost(Post p) {
-        if (!likedPosts.contains(Integer.valueOf(p.getId()))) {
-            if (dislikedPosts.contains(Integer.valueOf(p.getId()))) {
+        if (!likedPosts.contains(p.getId())) {
+            if (dislikedPosts.contains(p.getId())) {
                 dislikedPosts.remove(Integer.valueOf(p.getId()));
                 p.unDislike();
             }
             p.like();
-            likedPosts.add(Integer.valueOf(p.getId()));
+            likedPosts.add(p.getId());
             return "Post added to liked posts";
         } else {
             return "You've already liked this post before!";
@@ -105,13 +105,13 @@ public class User extends PostCollections implements Writable {
     //          if post is in user's liked posts, removes it from there
     //          and reduces the post's likes by 1
     public String addDislikedPost(Post p) {
-        if (!dislikedPosts.contains(Integer.valueOf(p.getId()))) {
-            if (likedPosts.contains(Integer.valueOf(p.getId()))) {
+        if (!dislikedPosts.contains(p.getId())) {
+            if (likedPosts.contains(p.getId())) {
                 likedPosts.remove(Integer.valueOf(p.getId()));
                 p.unLike();
             }
             p.dislike();
-            dislikedPosts.add(Integer.valueOf(p.getId()));
+            dislikedPosts.add(p.getId());
             return "Post added to disliked posts";
         } else {
             return "You've already disliked this post before!";

@@ -91,11 +91,15 @@ public class PostItTest {
 
     @Test
     void testMakeTextPostNotEnoughIDs() {
+        testPostIt = new PostIt(0);
+        testPostIt.addDefaultCommunitiesCheck();
+        testUser = new User("1", "12345678");
+        testPostIt.addUser(testUser.getUserName(), testUser);
+        testPostIt.login(testUser.getUserName());
+
         assertTrue(testPostIt.getPosts().isEmpty());
         assertTrue(testPostIt.getCommunities().get(communityChoice).getPosts().isEmpty());
         assertTrue(testPostIt.getCurrentUser().getPosts().isEmpty());
-
-        testPostIt.setMaxId(0);
 
         assertTrue(testPostIt.makeTextPost("title", "body", communityChoice));
 

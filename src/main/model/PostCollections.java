@@ -38,7 +38,7 @@ public abstract class PostCollections {
         return this.posts;
     }
 
-    // REQUIRES: given postId belong to a post made by a registered user on PostIt
+    // REQUIRES: given postId belongs to a post made by a registered user on PostIt
     //           and cannot already be in this collection
     // MODIFIES: this
     // EFFECTS: adds the given post id to the collection of post ids

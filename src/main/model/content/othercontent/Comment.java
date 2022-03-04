@@ -15,8 +15,9 @@ public class Comment extends Content {
     // METHODS
 
     // Constructor
-    // REQUIRES: given username is a registered user
+    // REQUIRES: given username is a registered user on PostIt
     // EFFECTS: creates a comment with the given username posting and the given body
+    //          with 0 likes and dislikes
     public Comment(String opName, String body) {
         super(opName);
         this.body = body;

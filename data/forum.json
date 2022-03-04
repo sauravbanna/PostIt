@@ -1,16 +1,24 @@
 {
     "loggedIn": true,
     "user": {
-        "password": "12345678",
-        "likedPosts": [26768],
-        "bio": "No bio yet...",
-        "dislikedPosts": [19766],
-        "posts": [
-            19766,
-            26768
+        "password": "000000000000",
+        "likedPosts": [],
+        "bio": "Just a user...",
+        "dislikedPosts": [
+            66250,
+            12033
         ],
-        "subscribedCommunities": ["funny"],
-        "username": "1"
+        "posts": [
+            12033,
+            85362
+        ],
+        "subscribedCommunities": [
+            "canada",
+            "funny",
+            "gaming",
+            "newCommunity"
+        ],
+        "username": "3"
     },
     "posts": [
         {
@@ -22,6 +30,28 @@
             "title": "title2",
             "community": "funny",
             "likes": 2,
+            "commentCount": 0
+        },
+        {
+            "comments": [],
+            "opName": "3",
+            "dislikes": 1,
+            "textBody": "Wow",
+            "id": 12033,
+            "title": "I love Canada too!",
+            "community": "canada",
+            "likes": 0,
+            "commentCount": 0
+        },
+        {
+            "comments": [],
+            "opName": "3",
+            "dislikes": 0,
+            "textBody": "great",
+            "id": 85362,
+            "title": "Canada",
+            "community": "canada",
+            "likes": 0,
             "commentCount": 0
         },
         {
@@ -46,27 +76,79 @@
                 }
             ],
             "opName": "1",
-            "dislikes": 1,
+            "dislikes": 0,
             "textBody": "body1",
             "id": 19766,
             "title": "title1",
             "community": "newCommunity",
+            "likes": 2,
+            "commentCount": 3
+        },
+        {
+            "comments": [
+                {
+                    "opName": "1",
+                    "dislikes": 0,
+                    "body": "me too",
+                    "likes": 0
+                },
+                {
+                    "opName": "3",
+                    "dislikes": 0,
+                    "body": "me too",
+                    "likes": 0
+                },
+                {
+                    "opName": "3",
+                    "dislikes": 0,
+                    "body": "mee too thanks",
+                    "likes": 0
+                }
+            ],
+            "opName": "1",
+            "dislikes": 1,
+            "textBody": "It's great",
+            "id": 66250,
+            "title": "I love canada!",
+            "community": "canada",
             "likes": 1,
             "commentCount": 3
         }
     ],
-    "users": [{
-        "password": "12345678",
-        "likedPosts": [],
-        "bio": "No bio yet...",
-        "dislikedPosts": [],
-        "posts": [
-            19766,
-            26768
-        ],
-        "subscribedCommunities": ["funny"],
-        "username": "1"
-    }],
+    "users": [
+        {
+            "password": "12345678",
+            "likedPosts": [],
+            "bio": "No bio yet...",
+            "dislikedPosts": [],
+            "posts": [
+                19766,
+                26768
+            ],
+            "subscribedCommunities": ["funny"],
+            "username": "1"
+        },
+        {
+            "password": "000000000000",
+            "likedPosts": [],
+            "bio": "Just a user...",
+            "dislikedPosts": [
+                66250,
+                12033
+            ],
+            "posts": [
+                12033,
+                85362
+            ],
+            "subscribedCommunities": [
+                "canada",
+                "funny",
+                "gaming",
+                "newCommunity"
+            ],
+            "username": "3"
+        }
+    ],
     "communities": [
         {
             "creator": "PostIt",
@@ -77,24 +159,28 @@
         },
         {
             "creator": "PostIt",
-            "subs": 0,
+            "subs": 1,
             "name": "gaming",
             "about": "This is a default community.",
             "posts": []
         },
         {
             "creator": "1",
-            "subs": 0,
+            "subs": 1,
             "name": "newCommunity",
             "about": "some about section",
             "posts": [19766]
         },
         {
             "creator": "PostIt",
-            "subs": 0,
+            "subs": 1,
             "name": "canada",
             "about": "This is a default community.",
-            "posts": []
+            "posts": [
+                66250,
+                12033,
+                85362
+            ]
         },
         {
             "creator": "PostIt",
@@ -105,7 +191,7 @@
         },
         {
             "creator": "PostIt",
-            "subs": 2,
+            "subs": 3,
             "name": "funny",
             "about": "This is a default community.",
             "posts": [26768]

@@ -14,6 +14,8 @@ import java.util.*;
 public class PostIt implements Writable {
 
     // CONSTANTS
+    public static final int DEFAULT_MAX_ID = 100000;
+
     public static final String POSTS_KEY = "posts";
     public static final String ACTIVE_USER_KEY = "user";
     public static final String USERS_KEY = "users";
@@ -57,20 +59,27 @@ public class PostIt implements Writable {
     private HashMap<String, User> usernamePasswords;
     private HashMap<String, Community> communities;
     private static HashMap<Integer, Post> posts;
-    private int maxId;
+    private final int maxId;
 
     // METHODS
 
     // EFFECTS: creates a new instance of the PostIt forum, with loggedIn being false and no logged-in user
-    //          instantiates the usernamePassword and communities as empty hashmaps
-    //          instantiates and adds communities from DEFAULT_COMMUNITIES with the default about section
-    public PostIt() {
+    //          instantiates the usernamePasswords, posts, and communities as empty hashmaps
+    //          sets maxId to the given value
+    public PostIt(int maxId) {
         loggedIn = false;
         usernamePasswords = new HashMap<>();
         communities = new HashMap<>();
         posts = new HashMap<>();
         currentlyLoggedInUser = null;
-        maxId = 100000;
+        this.maxId = maxId;
+    }
+
+    // EFFECTS: creates a new instance of the PostIt forum, with loggedIn being false and no logged-in user
+    //          instantiates the usernamePasswords, posts, and communities as empty hashmaps
+    //          sets maxId to the default value
+    public PostIt() {
+        this(DEFAULT_MAX_ID);
     }
 
     // EFFECTS: returns the active feed of the forum
@@ -96,7 +105,7 @@ public class PostIt implements Writable {
         return this.communities;
     }
 
-    // REQUIRES: given user has a valid username and password
+    // REQUIRES: given user has a valid and unique username and valid password
     // MODIFIES: this
     // EFFECTS: adds the given username and user to the map of registered users
     public void addUser(String username, User user) {
@@ -126,9 +135,8 @@ public class PostIt implements Writable {
     //           and given community exists on PostIt
     // MODIFIES: this
     // EFFECTS: creates a new text post with the given title and body with a unique id in the given community,
-    //          with poster being the current user, and adds it to current user's and
-    //          community's posts
-    //          returns true if post successfull made, returns false if generated id already exists
+    //          with poster being the current user, and adds it to current user's and community's posts
+    //          returns true if post successfully made, returns false if generated id already exists
     public Boolean makeTextPost(String title, String body, String communityChoice) {
         int randomId = (int)(Math.random() * maxId);
         if (posts.containsKey(randomId)) {
@@ -214,7 +222,7 @@ public class PostIt implements Writable {
 
     // EFFECTS: returns the map of all the posts and their ids
     public HashMap<Integer, Post> getPosts() {
-        return this.posts;
+        return posts;
     }
 
     // MODIFIES: this
@@ -236,10 +244,6 @@ public class PostIt implements Writable {
     // EFFECTS: sets the map of usernames and users to the given map
     public void setUsernamePasswords(HashMap<String, User> usernamePasswords) {
         this.usernamePasswords = usernamePasswords;
-    }
-
-    public void setMaxId(int maxId) {
-        this.maxId = maxId;
     }
 
     // REQUIRES: map contains registered communities on PostIt
@@ -276,13 +280,13 @@ public class PostIt implements Writable {
 
     // EFFECTS: returns the posts on the forum as a JSONArray
     private JSONArray postsToJson() {
-        JSONArray posts = new JSONArray();
+        JSONArray postsJson = new JSONArray();
 
-        for (Post p : this.posts.values()) {
-            posts.put(p.toJson());
+        for (Post p : posts.values()) {
+            postsJson.put(p.toJson());
         }
 
-        return posts;
+        return postsJson;
     }
 
     // EFFECTS: returns the communities on the forum as a JSONArray

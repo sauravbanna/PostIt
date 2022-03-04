@@ -21,19 +21,20 @@ public abstract class Post extends Content {
 
 
     // FIELDS
-    private String title;
+    private final String title;
     private List<Comment> comments;
     private int commentCount;
-    private int id;
+    private final int id;
 
-    private String community;
+    private final String community;
 
     // METHODS
 
     // Constructor
     // REQUIRES: given name is a registered user, given community is an existing community on PostIt, given id
     //           is not already assigned to another post on PostIt
-    // EFFECTS: creates a new Post with given poster name and title
+    // EFFECTS: creates a new Post with given poster name, title, and id in the given community,
+    //          with 0 comments, likes, and dislikes
     public Post(String opName, String title, String community, int id) {
         super(opName);
         this.title = title;
@@ -41,7 +42,6 @@ public abstract class Post extends Content {
         this.commentCount = 0;
         this.community = community;
         this.id = id;
-
     }
 
     // MODIFIES: this
@@ -76,7 +76,7 @@ public abstract class Post extends Content {
         return id;
     }
 
-    // REQUIRES: commentCount >= 0
+    // REQUIRES: given commentCount >= 0
     // MODIFIES: this
     // EFFECTS: sets the post's comment count to the given number
     public void setCommentCount(int commentCount) {

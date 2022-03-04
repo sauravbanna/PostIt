@@ -4,8 +4,7 @@ import model.Community;
 import model.PostIt;
 import model.User;
 import model.content.othercontent.Comment;
-import model.content.posts.Post;
-import model.content.posts.TextPost;
+import model.content.posts.*;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;

@@ -14,7 +14,7 @@ public abstract class Content implements Writable {
 
 
     // FIELDS
-    private String opName;
+    private final String opName;
     private int likes;
     private int dislikes;
 
@@ -23,7 +23,7 @@ public abstract class Content implements Writable {
     // Constructor
     // REQUIRES: given name is a registered user on PostIt
     // EFFECTS: creates a new Post with given poster name
-    //          with 0 likes, dislikes and comments
+    //          with 0 likes and dislikes
     public Content(String opName) {
         this.opName = opName;
         this.likes = 0;
@@ -70,13 +70,6 @@ public abstract class Content implements Writable {
     // EFFECTS: decrease the number of likes on this content by 1
     public void unLike() {
         this.likes--;
-    }
-
-    // REQUIRES: given name is a registered username on PostIt
-    // MODIFIES: this
-    // EFFECTS: sets the poster name of this content to the given name
-    public void setOpName(String opName) {
-        this.opName = opName;
     }
 
     // REQUIRES: given likes >= 0

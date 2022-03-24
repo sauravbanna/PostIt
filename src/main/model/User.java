@@ -85,17 +85,17 @@ public class User extends PostCollections implements Writable {
     //          and adds 1 like to post's like count
     //          if post is in user's disliked posts, removes it from there
     //          and reduces the post's dislikes by 1
-    public String addLikedPost(Post p) {
+    public void addLikedPost(Post p) {
         if (!likedPosts.contains(p.getId())) {
+            p.like();
+            likedPosts.add(p.getId());
             if (dislikedPosts.contains(p.getId())) {
                 dislikedPosts.remove(Integer.valueOf(p.getId()));
                 p.unDislike();
             }
-            p.like();
-            likedPosts.add(p.getId());
-            return "Post added to liked posts";
         } else {
-            return "You've already liked this post before!";
+            p.unLike();
+            likedPosts.remove(new Integer(p.getId()));
         }
     }
 
@@ -104,17 +104,17 @@ public class User extends PostCollections implements Writable {
     //          and adds 1 like to post's dislike count
     //          if post is in user's liked posts, removes it from there
     //          and reduces the post's likes by 1
-    public String addDislikedPost(Post p) {
+    public void addDislikedPost(Post p) {
         if (!dislikedPosts.contains(p.getId())) {
+            p.dislike();
+            dislikedPosts.add(p.getId());
             if (likedPosts.contains(p.getId())) {
                 likedPosts.remove(Integer.valueOf(p.getId()));
                 p.unLike();
             }
-            p.dislike();
-            dislikedPosts.add(p.getId());
-            return "Post added to disliked posts";
         } else {
-            return "You've already disliked this post before!";
+            p.unDislike();
+            dislikedPosts.remove(new Integer(p.getId()));
         }
     }
 

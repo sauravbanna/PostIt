@@ -51,38 +51,18 @@ public class Feed {
     }
 
     private void showCurrentPost() {
+        display.removeAll();
         display.add(Box.createHorizontalGlue());
-        display.add(new PostDisplay(postIt.getPosts().get(userFeed.get(feedPosition))));
+        display.add(new PostDisplay(postIt.getPosts().get(userFeed.get(feedPosition)), currentUser,
+                new Dimension(displayHeightPx, displayHeightPx)));
         display.add(Box.createHorizontalGlue());
+        display.revalidate();
+        display.repaint();
     }
 
     private void refreshDisplayDimensions() {
         this.displayHeightPx = this.display.getHeight();
         this.displayWidthPx = this.display.getWidth();
-    }
-
-
-    // TODO change
-    // MODIFIES: this, User
-    // EFFECTS: if user is logged in, adds current post to user's liked post
-    //          otherwise, tells user to log in
-    public void like() {
-        if (loggedIn) {
-            System.out.println(currentUser.addLikedPost(currentPost));
-        }  else {
-            System.out.println("You have to be logged in to do that!");
-        }
-    }
-
-    // MODIFIES: this, User
-    // EFFECTS: if user is logged in, adds current post to user's disliked post
-    //          otherwise, tells user to log in
-    public void dislike() {
-        if (loggedIn) {
-            System.out.println(currentUser.addDislikedPost(currentPost));
-        }  else {
-            System.out.println("You have to be logged in to do that!");
-        }
     }
 
     // MODIFIES: this, Post

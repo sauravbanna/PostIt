@@ -89,20 +89,20 @@ class UserTest extends PostCollectionsTest {
 
         assertEquals(2, testUser.getLikedPosts().size());
 
-        assertEquals("You've already liked this post before!", testUser.addLikedPost(testPost1));
-        assertEquals("You've already liked this post before!", testUser.addLikedPost(testPost2));
+        testUser.addLikedPost(testPost1);
+        testUser.addLikedPost(testPost2);
 
         assertEquals(1, testPost1.getLikes());
         assertEquals(1, testPost2.getLikes());
 
         assertEquals(0, testPost3.getLikes());
 
-        assertEquals("Post added to liked posts", testUser.addLikedPost(testPost3));
+        testUser.addLikedPost(testPost3);
 
         assertEquals(1, testPost3.getLikes());
         assertEquals(3, testUser.getLikedPosts().size());
 
-        assertEquals("You've already liked this post before!", testUser.addLikedPost(testPost3));
+        testUser.addLikedPost(testPost3);
 
         assertEquals(1, testPost3.getLikes());
     }
@@ -116,7 +116,7 @@ class UserTest extends PostCollectionsTest {
         assertEquals(0, testPost2.getLikes());
         assertEquals(0, testPost3.getLikes());
 
-        assertEquals("Post added to liked posts", testUser.addLikedPost(testPost1));
+        testUser.addLikedPost(testPost1);
 
         assertEquals(1, testPost1.getLikes());
 
@@ -124,7 +124,7 @@ class UserTest extends PostCollectionsTest {
         assertTrue(testUser.getDislikedPosts().isEmpty());
         assertEquals(0, testUser.getLikedPosts().get(0));
 
-        assertEquals("Post added to liked posts", testUser.addLikedPost(testPost2));
+        testUser.addLikedPost(testPost2);
 
         assertEquals(1, testPost2.getLikes());
 
@@ -132,7 +132,7 @@ class UserTest extends PostCollectionsTest {
         assertTrue(testUser.getDislikedPosts().isEmpty());
         assertEquals(1, testUser.getLikedPosts().get(1));
 
-        assertEquals("Post added to liked posts", testUser.addLikedPost(testPost3));
+        testUser.addLikedPost(testPost3);
 
         assertEquals(1, testPost3.getLikes());
 
@@ -164,7 +164,7 @@ class UserTest extends PostCollectionsTest {
         assertEquals(3, testUser.getDislikedPosts().size());
         assertTrue(testUser.getLikedPosts().isEmpty());
 
-        assertEquals("Post added to liked posts", testUser.addLikedPost(testPost1));
+        testUser.addLikedPost(testPost1);
 
         assertEquals(2, testUser.getDislikedPosts().size());
         assertEquals(1, testUser.getLikedPosts().size());
@@ -172,7 +172,7 @@ class UserTest extends PostCollectionsTest {
         assertEquals(0, testPost1.getDislikes());
         assertEquals(1, testPost1.getLikes());
 
-        assertEquals("Post added to liked posts", testUser.addLikedPost(testPost2));
+        testUser.addLikedPost(testPost2);
 
         assertEquals(1, testUser.getDislikedPosts().size());
         assertEquals(2, testUser.getLikedPosts().size());
@@ -180,7 +180,7 @@ class UserTest extends PostCollectionsTest {
         assertEquals(0, testPost2.getDislikes());
         assertEquals(1, testPost2.getLikes());
 
-        assertEquals("Post added to liked posts", testUser.addLikedPost(testPost3));
+        testUser.addLikedPost(testPost3);
 
         assertEquals(0, testUser.getDislikedPosts().size());
         assertEquals(3, testUser.getLikedPosts().size());
@@ -202,20 +202,20 @@ class UserTest extends PostCollectionsTest {
 
         assertEquals(2, testUser.getDislikedPosts().size());
 
-        assertEquals("You've already disliked this post before!", testUser.addDislikedPost(testPost1));
-        assertEquals("You've already disliked this post before!", testUser.addDislikedPost(testPost2));
+        testUser.addDislikedPost(testPost1);
+        testUser.addDislikedPost(testPost2);
 
         assertEquals(1, testPost1.getDislikes());
         assertEquals(1, testPost2.getDislikes());
 
         assertEquals(0, testPost3.getDislikes());
 
-        assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost3));
+        testUser.addDislikedPost(testPost3);
 
         assertEquals(1, testPost3.getDislikes());
         assertEquals(3, testUser.getDislikedPosts().size());
 
-        assertEquals("You've already disliked this post before!", testUser.addDislikedPost(testPost3));
+        testUser.addDislikedPost(testPost3);
 
         assertEquals(1, testPost3.getDislikes());
     }
@@ -229,7 +229,7 @@ class UserTest extends PostCollectionsTest {
         assertEquals(0, testPost2.getDislikes());
         assertEquals(0, testPost3.getDislikes());
 
-        assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost1));
+        testUser.addDislikedPost(testPost1);
 
         assertEquals(1, testPost1.getDislikes());
 
@@ -237,7 +237,7 @@ class UserTest extends PostCollectionsTest {
         assertTrue(testUser.getLikedPosts().isEmpty());
         assertEquals(0, testUser.getDislikedPosts().get(0));
 
-        assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost2));
+        testUser.addDislikedPost(testPost2);
 
         assertEquals(1, testPost2.getDislikes());
 
@@ -245,7 +245,7 @@ class UserTest extends PostCollectionsTest {
         assertTrue(testUser.getLikedPosts().isEmpty());
         assertEquals(1, testUser.getDislikedPosts().get(1));
 
-        assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost3));
+        testUser.addDislikedPost(testPost3);
 
         assertEquals(1, testPost3.getDislikes());
 
@@ -277,7 +277,7 @@ class UserTest extends PostCollectionsTest {
         assertEquals(3, testUser.getLikedPosts().size());
         assertTrue(testUser.getDislikedPosts().isEmpty());
 
-        assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost1));
+        testUser.addDislikedPost(testPost1);
 
         assertEquals(2, testUser.getLikedPosts().size());
         assertEquals(1, testUser.getDislikedPosts().size());
@@ -285,7 +285,7 @@ class UserTest extends PostCollectionsTest {
         assertEquals(0, testPost1.getLikes());
         assertEquals(1, testPost1.getDislikes());
 
-        assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost2));
+        testUser.addDislikedPost(testPost2);
 
         assertEquals(1, testUser.getLikedPosts().size());
         assertEquals(2, testUser.getDislikedPosts().size());
@@ -293,7 +293,7 @@ class UserTest extends PostCollectionsTest {
         assertEquals(0, testPost2.getLikes());
         assertEquals(1, testPost2.getDislikes());
 
-        assertEquals("Post added to disliked posts", testUser.addDislikedPost(testPost3));
+        testUser.addDislikedPost(testPost3);
 
         assertEquals(0, testUser.getLikedPosts().size());
         assertEquals(3, testUser.getDislikedPosts().size());

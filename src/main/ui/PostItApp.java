@@ -56,6 +56,16 @@ public class PostItApp extends JFrame {
     private double aspectRatio;
 
 
+    // TODO
+    // Make text post
+    // Make Image Post
+    // View User
+    // Edit Profile
+    // Register
+    // Login
+    // Logout
+
+
     // METHODS
 
     // Constructor
@@ -157,7 +167,7 @@ public class PostItApp extends JFrame {
 
     private void addForumElements() {
         title = new JPanel();
-        title.setLayout(new BoxLayout(title, BoxLayout.Y_AXIS));
+        title.setLayout(new GridBagLayout());
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
         title.setBackground(DEFAULT_BACKGROUND_COLOR);
         forum.add(title);
@@ -184,17 +194,25 @@ public class PostItApp extends JFrame {
         subCountText.setPreferredSize(new Dimension(widthPx, (int)(titleHeightPx * 0.25)));
         subCountText.setFont(new Font("Verdana", Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
 
-        titleText.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        aboutSectionText.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        subCountText.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        initTitlePosition();
+    }
 
-        title.add(titleText);
-        title.add(Box.createHorizontalGlue());
-        title.add(aboutSectionText);
-        title.add(Box.createHorizontalGlue());
-        title.add(subCountText);
+    private void initTitlePosition() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 2;
+        title.add(titleText, gbc);
 
-        title.setAlignmentX(Box.LEFT_ALIGNMENT);
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        title.add(aboutSectionText, gbc);
+
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        title.add(subCountText, gbc);
     }
 
     private void refreshTitleText() {

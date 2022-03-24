@@ -2,6 +2,7 @@ package model;
 
 import exceptions.EmptyDefaultCommunities;
 import exceptions.EmptyFeedException;
+import model.content.posts.ImagePost;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
 import org.json.JSONArray;
@@ -112,6 +113,7 @@ public class PostIt implements Writable {
         return this.currentlyLoggedInUser;
     }
 
+    // TODO
     // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True,
     //           and given community exists on PostIt
     // MODIFIES: this
@@ -130,7 +132,6 @@ public class PostIt implements Writable {
             return true;
         }
     }
-
 
     public Boolean makeTextPost(String title, String body) {
         return makeTextPost(title, body, currentCommunity);

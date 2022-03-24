@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.EmptyDefaultCommunities;
 import exceptions.EmptyFeedException;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
@@ -23,38 +24,18 @@ public class PostIt implements Writable {
     public static final String LOGGED_IN_KEY = "loggedIn";
     public static final String NULL_USER = "null";
 
-    public static final String VIEW_COMMUNITY_COMMAND = "/visit";
-    public static final String MAKE_POST_COMMAND = "/post";
-    public static final String LOGOUT_COMMAND = "/logout";
-    public static final String LOGIN_COMMAND = "/login";
-    public static final String HOME_COMMAND = "/home";
-    public static final String VIEW_USER_COMMAND = "/user";
-    public static final String REGISTER_COMMAND = "/register";
-    public static final String EXIT_COMMAND = "/exit";
-    public static final String NEXT_ACTION_COMMAND = "action";
-    public static final String SHOW_AVAILABLE_COMMUNITIES = "/show";
-    public static final String SUBSCRIBE_TO_COMMUNITY_COMMAND = "/join";
-    public static final String CREATE_COMMUNITY_COMMAND = "/create";
-    public static final String HELP_COMMAND = "/help";
-    public static final String EDIT_PROFILE_COMMAND = "/edit";
-    public static final String SELF_PROFILE_COMMAND = "me";
-    public static final String VIEW_USER_POSTS = "/userposts";
-
     public static final int MAX_USERNAME_LENGTH = 20;
     public static final int MIN_PASSWORD_LENGTH = 8;
 
     public static final List<String> DEFAULT_COMMUNITIES =
             Arrays.asList("funny", "news", "mildlyinteresting", "canada", "sports", "gaming");
-    public static final List<String> EXIT_FEED_COMMANDS =
-            Arrays.asList(VIEW_COMMUNITY_COMMAND, MAKE_POST_COMMAND, LOGIN_COMMAND, LOGOUT_COMMAND,
-                    HOME_COMMAND, VIEW_USER_COMMAND, REGISTER_COMMAND, EXIT_COMMAND, SHOW_AVAILABLE_COMMUNITIES,
-                    SUBSCRIBE_TO_COMMUNITY_COMMAND, CREATE_COMMUNITY_COMMAND);
 
     // FIELDS
 
     private Boolean loggedIn;
     private User currentlyLoggedInUser;
     private Feed activeFeed;
+    private String currentCommunity;
 
     private HashMap<String, User> usernamePasswords;
     private HashMap<String, Community> communities;
@@ -150,6 +131,11 @@ public class PostIt implements Writable {
         }
     }
 
+
+    public Boolean makeTextPost(String title, String body) {
+        return makeTextPost(title, body, currentCommunity);
+    }
+
     // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True
     // MODIFIES: this
     // EFFECTS: changes the currently logged in user's bio to the new bio
@@ -172,7 +158,8 @@ public class PostIt implements Writable {
     //          if logged in, returns feed with posts from user's subscribed communities
     //          throws EmptyFeedException if feed is empty
     //          if not logged in, returns feed with posts from default communities
-    public Feed startHomeFeed() throws EmptyFeedException {
+    //          sets current community to null
+    public Feed startHomeFeed() throws EmptyFeedException, EmptyDefaultCommunities {
         List<Integer> currentFeed = new ArrayList<>();
         if (loggedIn) {
             for (String community : currentlyLoggedInUser.getSubscribedCommunities()) {
@@ -186,9 +173,15 @@ public class PostIt implements Writable {
             for (String community : DEFAULT_COMMUNITIES) {
                 currentFeed.addAll(communities.get(community).getPosts());
             }
+
+            if (currentFeed.size() == 0) {
+                throw new EmptyDefaultCommunities();
+            }
         }
 
-        activeFeed = new Feed(currentFeed, loggedIn, currentlyLoggedInUser, this);
+        currentCommunity = null;
+
+        activeFeed = new Feed(currentFeed, this);
         return activeFeed;
     }
 
@@ -196,9 +189,10 @@ public class PostIt implements Writable {
     // MODIFIES: this
     // EFFECTS: adds posts from the community with the given name to the active feed
     //          and returns the feed
-    public Feed showCommunity(String communityName) {
-        activeFeed = new Feed(communities.get(communityName).getPosts(),
-                loggedIn, currentlyLoggedInUser, this);
+    //          sets current community to the given community name
+    public Feed startCommunityFeed(String communityName) {
+        activeFeed = new Feed(communities.get(communityName).getPosts(), this);
+        currentCommunity = communityName;
         return activeFeed;
     }
 
@@ -260,6 +254,10 @@ public class PostIt implements Writable {
     // EFFECTS: sets the map of usernames and users to the given map
     public void setPosts(HashMap<Integer, Post> posts) {
         PostIt.posts = posts;
+    }
+
+    public String getCurrentCommunity() {
+        return currentCommunity;
     }
 
 

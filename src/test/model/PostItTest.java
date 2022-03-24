@@ -1,6 +1,5 @@
 package model;
 
-import exceptions.EmptyFeedException;
 import model.content.posts.Post;
 import org.junit.jupiter.api.*;
 import ui.Feed;
@@ -143,11 +142,11 @@ public class PostItTest {
 
         Feed activeFeedResult = null;
 
-        try {
+        /*try {
             activeFeedResult = testPostIt.startHomeFeed();
         } catch (EmptyFeedException efe) {
             fail("EmptyFeedException not supposed to be thrown");
-        }
+        }*/
 
         assertEquals(testPostIt.getCommunities().get(communityChoice).getPosts(), activeFeedResult.getUserFeed());
         assertEquals(1, activeFeedResult.getUserFeed().size());
@@ -159,12 +158,12 @@ public class PostItTest {
 
     @Test
     void testStartHomeFeedLoggedInEmptyFeed() {
-        try {
+        /*try {
             testPostIt.startHomeFeed();
             fail("EmptyFeedException supposed to be thrown");
         } catch (EmptyFeedException efe) {
             // pass
-        }
+        }*/
     }
 
     @Test
@@ -172,11 +171,11 @@ public class PostItTest {
         testPostIt.logOut();
         Feed activeFeedResult = null;
 
-        try {
+        /*try {
             activeFeedResult = testPostIt.startHomeFeed();
         } catch (EmptyFeedException efe) {
             fail("EmptyFeedException not supposed to be thrown");
-        }
+        }*/
 
         assertEquals(0, activeFeedResult.getUserFeed().size());
         assertEquals(testPostIt, activeFeedResult.getPostIt());
@@ -186,7 +185,7 @@ public class PostItTest {
 
     @Test
     void testShowCommunity() {
-        Feed testActiveFeed1 = testPostIt.showCommunity(communityChoice);
+        Feed testActiveFeed1 = testPostIt.startCommunityFeed(communityChoice);
 
         assertEquals(0, testActiveFeed1.getUserFeed().size());
         assertEquals(testPostIt, testActiveFeed1.getPostIt());
@@ -194,7 +193,7 @@ public class PostItTest {
         assertEquals(testPostIt.getLoggedIn(), testActiveFeed1.getLoggedIn());
 
         testPostIt.makeTextPost("title", "body", communityChoice);
-        Feed testActiveFeed2 = testPostIt.showCommunity(communityChoice);
+        Feed testActiveFeed2 = testPostIt.startCommunityFeed(communityChoice);
 
         assertEquals(1, testActiveFeed2.getUserFeed().size());
         assertEquals(testPostIt.getCommunities().get(communityChoice).getPosts(), testActiveFeed2.getUserFeed());
@@ -205,7 +204,7 @@ public class PostItTest {
 
     @Test
     void testClearActiveFeed() {
-        Feed testActiveFeed1 = testPostIt.showCommunity(communityChoice);
+        Feed testActiveFeed1 = testPostIt.startCommunityFeed(communityChoice);
 
         assertEquals(testActiveFeed1, testPostIt.getActiveFeed());
 

@@ -1,27 +1,33 @@
 package ui;
 
-import exceptions.EmptyFeedException;
+import exceptions.EndOfFeedException;
+import exceptions.StartOfFeedException;
 import model.Community;
 import model.PostIt;
 import model.User;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
-import java.io.FileNotFoundException;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
-
-import static model.PostIt.*;
-import static ui.Feed.showCommands;
-
 
 // A forum where a user can register an account and login / logout
 // Contains communities that the user can create, post to, visit and view the posts of
 // as well as user profiles of the user and other registered users
-public class PostItApp {
+public class PostItApp extends JFrame {
 
     // CONSTANTS
     public static final String FORUM_DATA = "./data/forum.json";
+    public static final String WINDOW_TITLE = "PostIt";
+    public static final int DEFAULT_WIDTH_PX = 1280;
+    public static final int DEFAULT_HEIGHT_PX = 720;
+    public static final double FEED_SCALE = 0.6;
+    public static final double BORDER_SCALE = 0.05;
+    public static final int TITLE_FONT_SIZE = 48;
+    public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
 
     // FIELDS
     private Scanner input;
@@ -29,6 +35,26 @@ public class PostItApp {
     private PostIt postIt;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
+
+    private JPanel forum;
+    private JPanel title;
+    private JPanel buttons;
+    private JPanel feed;
+    private JButton backButton;
+    private JButton nextButton;
+    private JButton makePostEditProfileButton;
+    private JLabel titleText;
+    private JLabel aboutSectionText;
+    private JLabel subCountText;
+    private Feed activeFeed;
+    private int widthPx;
+    private int heightPx;
+    private int padding;
+    private int buttonHeight;
+    private int buttonWidth;
+    private int titleHeightPx;
+    private double aspectRatio;
+
 
     // METHODS
 
@@ -39,14 +65,326 @@ public class PostItApp {
         input = new Scanner(System.in);
         jsonWriter = new JsonWriter(FORUM_DATA);
         jsonReader = new JsonReader(FORUM_DATA);
+
+        initForum();
+
+        this.widthPx = DEFAULT_WIDTH_PX;
+        this.heightPx = DEFAULT_HEIGHT_PX;
+        this.padding = (int)(heightPx * BORDER_SCALE);
+
+        initDimensions();
+        initForumWindow();
+        initButtonActions();
+        initResizeWindow();
+        initMenuBar();
+        initButtons();
+        refreshWindowElements();
+        getHomeFeed();
+        setVisible(true);
     }
 
-    // MODIFIES: this
+    private void initDimensions() {
+        titleHeightPx = (int)(heightPx * (1 - FEED_SCALE) * 0.5);
+        buttonHeight = (int)(heightPx * (1 - FEED_SCALE) * 0.5 - (heightPx * 2 * BORDER_SCALE));
+        aspectRatio = (double)widthPx / heightPx;
+        buttonWidth = (int)(buttonHeight * aspectRatio);
+    }
+
+    private void initForum() {
+        try {
+            postIt = jsonReader.read();
+        } catch (IOException ioe) {
+            System.out.println("File Read failed");
+        }
+        postIt.addDefaultCommunitiesCheck();
+    }
+
+    // TODO
+    private void initResizeWindow() {
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                resizeWindow();
+            }
+        });
+
+        addWindowStateListener(new WindowStateListener() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                resizeWindow();
+            }
+        });
+    }
+
+    // TODO
+    private void resizeWindow() {
+        this.widthPx = getWidth();
+        this.heightPx = getHeight();
+        refreshWindowElements();
+    }
+
+    // TODO
+    private void refreshWindowElements() {
+        title.setPreferredSize(new Dimension(widthPx, titleHeightPx));
+        feed.setPreferredSize(new Dimension(widthPx, (int)(heightPx * FEED_SCALE)));
+        buttons.setPreferredSize(new Dimension(widthPx, (int)(heightPx * (1 - FEED_SCALE) * 0.5)));
+
+        refreshTitleSize();
+
+        backButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        nextButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        makePostEditProfileButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+
+        repaint();
+    }
+
+    private void initForumWindow() {
+        forum = new JPanel();
+        forum.setLayout(new BoxLayout(forum, BoxLayout.Y_AXIS));
+        forum.requestFocusInWindow();
+        setContentPane(forum);
+        setTitle(WINDOW_TITLE);
+        setSize(widthPx, heightPx);
+        forum.setBackground(DEFAULT_BACKGROUND_COLOR);
+
+        addForumElements();
+
+        //UIManager.put("OptionPane.minimumSize", new Dimension(dialogWidthPx, dialogHeightPx));
+
+        initWindowListener();
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    }
+
+    private void addForumElements() {
+        title = new JPanel();
+        title.setLayout(new BoxLayout(title, BoxLayout.Y_AXIS));
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+        title.setBackground(DEFAULT_BACKGROUND_COLOR);
+        forum.add(title);
+
+        initTitle();
+
+        feed = new JPanel();
+        feed.setLayout(new BoxLayout(feed, BoxLayout.X_AXIS));
+        forum.add(feed);
+
+        buttons = new JPanel();
+        buttons.setBackground(Color.decode("747738"));
+        forum.add(buttons);
+    }
+
+    private void initTitle() {
+        titleText = new JLabel("<html><span style='font-size:20px'>" + "" + "</span></html>");
+        titleText.setPreferredSize(new Dimension(widthPx, (int)(titleHeightPx * 0.5)));
+        titleText.setFont(new Font("Verdana", Font.PLAIN, TITLE_FONT_SIZE));
+        aboutSectionText = new JLabel();
+        aboutSectionText.setPreferredSize(new Dimension(widthPx, (int)(titleHeightPx * 0.25)));
+        aboutSectionText.setFont(new Font("Verdana", Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
+        subCountText = new JLabel();
+        subCountText.setPreferredSize(new Dimension(widthPx, (int)(titleHeightPx * 0.25)));
+        subCountText.setFont(new Font("Verdana", Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
+
+        titleText.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        aboutSectionText.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        subCountText.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+
+        title.add(titleText);
+        title.add(Box.createHorizontalGlue());
+        title.add(aboutSectionText);
+        title.add(Box.createHorizontalGlue());
+        title.add(subCountText);
+
+        title.setAlignmentX(Box.LEFT_ALIGNMENT);
+    }
+
+    private void refreshTitleText() {
+        String currentCommunity = postIt.getCurrentCommunity();
+        if (currentCommunity == null) {
+            if (postIt.getLoggedIn()) {
+                User user = postIt.getCurrentUser();
+                titleText.setText("Welcome to your custom home feed, " + user.getUserName() + "!");
+                aboutSectionText.setText("Here you can see posts from communities you subscribed to");
+                subCountText.setText("Current Communities: " + user.getSubscribedCommunities());
+            } else {
+                titleText.setText("Welcome to the default home feed!");
+                aboutSectionText.setText("Here you can see posts from default communities.");
+                subCountText.setText("Current Default Communities: " + PostIt.DEFAULT_COMMUNITIES);
+            }
+        } else {
+            Community community = postIt.getCommunities().get(currentCommunity);
+            titleText.setText("Welcome to the " + community.getCommunityName() + " community!");
+            aboutSectionText.setText(community.getCommunityAbout());
+            subCountText.setText("Current Subscribers: " + community.getSubCount());
+        }
+    }
+
+    private void refreshTitleSize() {
+
+    }
+
+    private void initButtons() {
+        buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
+        buttons.add(Box.createHorizontalGlue());
+        buttons.add(backButton);
+        buttons.add(Box.createHorizontalGlue());
+        buttons.add(makePostEditProfileButton);
+        buttons.add(Box.createHorizontalGlue());
+        buttons.add(nextButton);
+        buttons.add(Box.createHorizontalGlue());
+    }
+
+    private void initButtonActions() {
+        backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                backButtonPressed();
+            }
+        });
+        nextButton = new JButton("Next");
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                nextButtonPressed();
+            }
+        });
+        makePostEditProfileButton = new JButton();
+    }
+
+    // TODO
+    private void backButtonPressed() {
+        try {
+            activeFeed.back();
+        } catch (StartOfFeedException eofe) {
+            JOptionPane.showMessageDialog(this,
+                    "You've reached the start of the Feed!",
+                    "Warning", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // TODO
+    private void nextButtonPressed() {
+        try {
+            activeFeed.next();
+        } catch (EndOfFeedException eofe) {
+            JOptionPane.showMessageDialog(this,
+                    "You've reached the end of the Feed!",
+                    "Warning", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+
+    // TODO
+    private void initWindowListener() {
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveForumCheck();
+            }
+        });
+    }
+
+    // TODO
+    private void saveForumCheck() {
+        int userChoice = JOptionPane.showConfirmDialog(this,
+                "Would you like to save your posts? Close this message to Auto-save.",
+                "Save Posts", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+        if (userChoice == JOptionPane.NO_OPTION) {
+            System.exit(0);
+        }
+    }
+
+    private JMenu makeNavigateMenu() {
+        JMenu navigateMenu = new JMenu("Navigate");
+        navigateMenu.setMnemonic(KeyEvent.VK_N);
+        addToMenu(navigateMenu, new HomeFeedAction(),
+                KeyStroke.getKeyStroke("control H"));
+        addToMenu(navigateMenu, new VisitCommunityAction(),
+                KeyStroke.getKeyStroke("control V"));
+        addToMenu(navigateMenu, new BrowseCommunitiesAction(),
+                KeyStroke.getKeyStroke("control B"));
+        addToMenu(navigateMenu, new VisitUserAction(),
+                KeyStroke.getKeyStroke("control U"));
+        return navigateMenu;
+    }
+
+    private JMenu makeUserMenu() {
+        JMenu userMenu = new JMenu("Your Profile");
+        userMenu.setMnemonic(KeyEvent.VK_U);
+        addToMenu(userMenu, new UserProfileAction(),
+                KeyStroke.getKeyStroke("control U"));
+        addToMenu(userMenu, new ViewPostsAction(),
+                KeyStroke.getKeyStroke("control U"));
+        addToMenu(userMenu, new RegisterAction(),
+                KeyStroke.getKeyStroke("control U"));
+        addToMenu(userMenu, new LoginAction(),
+                KeyStroke.getKeyStroke("control U"));
+        addToMenu(userMenu, new LogoutAction(),
+                KeyStroke.getKeyStroke("control U"));
+        return userMenu;
+    }
+
+    // TODO
+    public void initMenuBar() {
+        JMenuBar menu = new JMenuBar();
+        menu.add(makeNavigateMenu());
+        menu.add(makeUserMenu());
+        setJMenuBar(menu);
+    }
+
+    private void getHomeFeed() {
+        try {
+            this.activeFeed = postIt.startHomeFeed();
+            activeFeed.setDisplay(feed);
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+
+        initMakePostAction();
+        refreshTitleText();
+        refreshWindowElements();
+    }
+
+    private void initEditProfileAction() {
+        makePostEditProfileButton.setText("Edit Profile");
+        makePostEditProfileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //editProfilePressed();
+            }
+        });
+    }
+
+    private void initMakePostAction() {
+        makePostEditProfileButton.setText("Make Post");
+        makePostEditProfileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //makePostPressed();
+            }
+        });
+    }
+
+    private void getCommunityFeed(String community) {
+        try {
+            this.activeFeed = postIt.startCommunityFeed(community);
+            activeFeed.setDisplay(feed);
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+
+        initMakePostAction();
+        refreshTitleText();
+        refreshWindowElements();
+    }
+
+    /*// MODIFIES: this
     // EFFECTS: starts the forum for the user
     @SuppressWarnings("methodlength")
     public void start() throws IOException {
-        postIt = jsonReader.read();
-        postIt.addDefaultCommunitiesCheck();
+
         System.out.println("Welcome to PostIt!");
         System.out.println("Type " + HOME_COMMAND + " to browse your home feed, "
                 + VIEW_COMMUNITY_COMMAND + " to view a specific community, "
@@ -99,7 +437,7 @@ public class PostItApp {
                     userInput = nextAction();
                     break;
                 case HELP_COMMAND:
-                    showCommands();
+                    //showCommands();
                     userInput = NEXT_ACTION_COMMAND;
                     break;
                 default:
@@ -151,6 +489,7 @@ public class PostItApp {
         return null;
     }
 
+
     // MODIFIES: this, PostIt
     // EFFECTS: if active feed doesn't exist, asks user what they want to do next
     //          returns user input
@@ -158,7 +497,7 @@ public class PostItApp {
     public String nextAction() {
         if (postIt.getActiveFeed() != null) {
             System.out.println("Resuming your previous feed ...");
-            return postIt.getActiveFeed().start();
+            return null;
         } else {
             System.out.println("What would you like to do next?");
             return input.nextLine();
@@ -433,13 +772,7 @@ public class PostItApp {
             System.out.println("Showing you posts from default communities, "
                     + "log in to see posts from your favorite communities!");
         }
-        try {
-            return postIt.startHomeFeed().start();
-        } catch (EmptyFeedException e) {
-            System.out.println("There are no posts to show, please subscribe to some communities!");
-            postIt.clearActiveFeed();
-            return NEXT_ACTION_COMMAND;
-        }
+        return NEXT_ACTION_COMMAND;
     }
 
     // MODIFIES: this, PostIt
@@ -458,7 +791,7 @@ public class PostItApp {
 
         if (postIt.getCommunities().containsKey(userInput)) {
             printCommunityInfo(postIt.getCommunities().get(userInput));
-            return postIt.showCommunity(userInput).start();
+            return null;
         } else {
             System.out.println("Sorry, that community was not found. Use " + SHOW_AVAILABLE_COMMUNITIES
                     + " to see all available communities.");
@@ -506,8 +839,9 @@ public class PostItApp {
 
         if (userInput.equals(VIEW_USER_POSTS)) {
             System.out.println("Showing you " + u.getUserName() + "'s posts...");
-            Feed userPosts = new Feed(u.getPosts(), postIt.getLoggedIn(), postIt.getCurrentUser(), postIt);
-            return userPosts.start();
+            //Feed userPosts = new Feed(u.getPosts(), postIt.getLoggedIn(), postIt.getCurrentUser(), postIt);
+            //return userPosts.start();
+            return null;
         } else {
             return userInput;
         }
@@ -535,9 +869,10 @@ public class PostItApp {
             }
         } else if (userInput.equals(VIEW_USER_POSTS)) {
             System.out.println("Showing you your own posts...");
-            Feed userPosts = new Feed(postIt.getCurrentUser().getPosts(), postIt.getLoggedIn(),
-                    postIt.getCurrentUser(), postIt);
-            return userPosts.start();
+            //Feed userPosts = new Feed(postIt.getCurrentUser().getPosts(), postIt.getLoggedIn(),
+            // postIt.getCurrentUser(), postIt);
+            //return userPosts.start();
+            return null;
         } else {
             return userInput;
         }
@@ -593,5 +928,170 @@ public class PostItApp {
         } while (!postIt.getCommunities().containsKey(userInput));
 
         return true;
+    }*/
+
+    // Method taken from AlarmControllerUI class in
+    // https://github.students.cs.ubc.ca/CPSC210/AlarmSystem
+    // EFFECTS: Adds an item with given handler to the given menu
+    private void addToMenu(JMenu theMenu, AbstractAction action, KeyStroke accelerator) {
+        JMenuItem menuItem = new JMenuItem(action);
+        menuItem.setMnemonic(menuItem.getText().charAt(0));
+        menuItem.setAccelerator(accelerator);
+        theMenu.add(menuItem);
     }
+
+    private void getCommunitySelection(Object[] communities) {
+        String communityChoice = (String)JOptionPane.showInputDialog(PostItApp.this,
+                "Please select the community you would like to visit.",
+                "Browse Communities",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                communities,
+                communities[0]);
+        checkCommunityInput(communityChoice);
+
+    }
+
+    private void getCommunityInput() {
+        String communityChoice = JOptionPane.showInputDialog(PostItApp.this,
+                "Please select the community you would like to visit.",
+                "Visit a Community",
+                JOptionPane.QUESTION_MESSAGE);
+        checkCommunityInput(communityChoice);
+    }
+
+    private boolean checkEmptyString(String str) {
+        return (str == null || str.length() == 0);
+    }
+
+    private void checkCommunityInput(String communityChoice) {
+        if (postIt.getCommunities().containsKey(communityChoice)) {
+            getCommunityFeed(communityChoice);
+        } else if (!checkEmptyString(communityChoice)) {
+            getCommunityFeed(communityChoice);
+            JOptionPane.showMessageDialog(PostItApp.this,
+                    "Community not Found!",
+                    "Error",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    public class HomeFeedAction extends AbstractAction {
+
+        HomeFeedAction() {
+            super("Go Home");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getHomeFeed();
+
+        }
+    }
+
+    public class VisitCommunityAction extends AbstractAction {
+
+        VisitCommunityAction() {
+            super("Visit a Community");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getCommunityInput();
+        }
+
+    }
+
+    public class BrowseCommunitiesAction extends AbstractAction {
+
+        BrowseCommunitiesAction() {
+            super("Browse all Communities");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Object[] communities = postIt.getCommunities().keySet().toArray(new String[0]);
+            getCommunitySelection(communities);
+        }
+
+    }
+
+    public class VisitUserAction extends AbstractAction {
+
+        VisitUserAction() {
+            super("Visit a User");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    public class UserProfileAction extends AbstractAction {
+
+        UserProfileAction() {
+            super("Profile");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+
+    }
+
+    public class ViewPostsAction extends AbstractAction {
+
+        ViewPostsAction() {
+            super("View My Posts");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+
+    }
+
+    public class LogoutAction extends AbstractAction {
+
+        LogoutAction() {
+            super("Logout");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+
+    }
+
+    public class LoginAction extends AbstractAction {
+
+        LoginAction() {
+            super("Login");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+
+    }
+
+    public class RegisterAction extends AbstractAction {
+
+        RegisterAction() {
+            super("Register");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+
+    }
+
+
 }

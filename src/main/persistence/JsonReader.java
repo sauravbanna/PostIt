@@ -5,11 +5,13 @@ import model.Community;
 import model.PostIt;
 import model.User;
 import model.content.othercontent.Comment;
+import model.content.posts.ImagePost;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -177,7 +179,6 @@ public class JsonReader {
     // EFFECTS: reads a text post from a JSONObject and returns it
     private Post jsonToPost(JSONObject postJson) {
         String postTitle = postJson.getString(Post.TITLE_KEY);
-        String postBody = postJson.getString(TextPost.TEXT_BODY_KEY);
         int postLikes = postJson.getInt(Post.LIKES_KEY);
         int postDislikes = postJson.getInt(Post.DISLIKES_KEY);
         int postCommentCount = postJson.getInt(Post.COMMENT_COUNT_KEY);
@@ -186,7 +187,16 @@ public class JsonReader {
         int postId = postJson.getInt(Post.ID_KEY);
         String postOpName = postJson.getString(Post.OP_NAME_KEY);
 
-        Post post = new TextPost(postOpName, postTitle, postBody, postCommunity, postId);
+        Post post = null;
+
+        if (postJson.has(TextPost.TEXT_BODY_KEY)) {
+            String postBody = postJson.getString(TextPost.TEXT_BODY_KEY);
+            post = new TextPost(postOpName, postTitle, postBody, postCommunity, postId);
+        } else if (postJson.has(ImagePost.IMAGE_LOCATION_KEY)) {
+            String image = postJson.getString(ImagePost.IMAGE_LOCATION_KEY);
+            post = new ImagePost(postOpName, postTitle, image, postCommunity, postId);
+        }
+
         post.setDislikes(postDislikes);
         post.setLikes(postLikes);
         post.setCommentCount(postCommentCount);

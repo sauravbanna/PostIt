@@ -17,11 +17,8 @@ import java.util.Scanner;
 // A Feed of posts that the user can view one by one, like, dislike, or comment on
 public class Feed {
 
-    public static final int NUM_COMMENTS_TO_SHOW = 5;
-
     // FIELDS
     protected List<Integer> userFeed;
-    protected Boolean userFeedActive;
     private int feedPosition;
     private Post currentPost;
     private final Boolean loggedIn;
@@ -44,7 +41,6 @@ public class Feed {
     public Feed(List<Integer> postList, PostIt forum) {
         userFeed = postList;
         feedPosition = 0;
-        input = new Scanner(System.in);
         this.loggedIn = forum.getLoggedIn();
         this.currentUser = forum.getCurrentUser();
         this.postIt = forum;
@@ -115,6 +111,7 @@ public class Feed {
     }
 
     public void setDisplay(JPanel display) {
+        display.removeAll();
         this.display = display;
         refreshDisplayDimensions();
         showCurrentPost();

@@ -33,14 +33,14 @@ public class CreateCommunityDisplay extends UserInput {
 
     @Override
     public void initButtonActions() {
-        cancel.addActionListener(new ActionListener() {
+        button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CreateCommunityDisplay.this.dispose();
             }
         });
 
-        accept.addActionListener(new ActionListener() {
+        button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 createCommunityIfValid();
@@ -56,6 +56,7 @@ public class CreateCommunityDisplay extends UserInput {
                         "Successfully created Community!",
                         "Success",
                         JOptionPane.PLAIN_MESSAGE);
+                this.dispose();
             } else {
                 invalidInput(this,"about section");
             }
@@ -69,7 +70,7 @@ public class CreateCommunityDisplay extends UserInput {
         this.setTitle("Create Community");
         firstInputText.setText("Community Name: ");
         secondInputText.setText("Community About: ");
-        accept.setText("Create");
+        button2.setText("Create");
 
         startDisplay();
     }

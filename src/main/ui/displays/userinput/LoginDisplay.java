@@ -17,7 +17,7 @@ public class LoginDisplay extends UsernamePasswordInput {
 
     public void makeVisible() {
         this.setTitle("Login");
-        accept.setText("Login");
+        button2.setText("Login");
         firstInputText.setText("Username: ");
         secondInputText.setText("Password: ");
 
@@ -26,14 +26,14 @@ public class LoginDisplay extends UsernamePasswordInput {
 
 
     public void initButtonActions() {
-        cancel.addActionListener(new ActionListener() {
+        button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LoginDisplay.this.dispose();
             }
         });
 
-        accept.addActionListener(new ActionListener() {
+        button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 loginIfValid();

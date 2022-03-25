@@ -11,7 +11,7 @@ import persistence.JsonWriter;
 import ui.displays.userinput.CreateCommunityDisplay;
 import ui.displays.userinput.LoginDisplay;
 import ui.displays.userinput.RegisterDisplay;
-import ui.displays.userinput.MakePostDisplay;
+import ui.displays.userinput.MakeTextPostDisplay;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,6 +19,7 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 // A forum where a user can register an account and login / logout
@@ -32,10 +33,13 @@ public class PostItApp extends JFrame {
     public static final String WINDOW_TITLE = "PostIt";
     public static final int DEFAULT_WIDTH_PX = 1280;
     public static final int DEFAULT_HEIGHT_PX = 720;
+    public static final int MAX_IMAGE_DIMENSION = 320;
     public static final int TITLE_FONT_SIZE = 40;
     public static final int PADDING = 10;
     public static final Color DEFAULT_FOREGROUND_COLOR = new Color(77, 121, 174);
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
+    public static final int NUM_COMMENTS_TO_SHOW = 5;
+    public static final String DEFAULT_FONT = "Verdana";
 
     // FIELDS
     private PostIt postIt;
@@ -78,6 +82,7 @@ public class PostItApp extends JFrame {
 
         initForum();
 
+        System.out.println(postIt.getPosts().get(47758).getCommunity());
         this.widthPx = DEFAULT_WIDTH_PX;
         this.heightPx = DEFAULT_HEIGHT_PX;
 
@@ -135,8 +140,6 @@ public class PostItApp extends JFrame {
 
         addForumElements();
 
-        //UIManager.put("OptionPane.minimumSize", new Dimension(dialogWidthPx, dialogHeightPx));
-
         initWindowListener();
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
@@ -150,10 +153,6 @@ public class PostItApp extends JFrame {
         }
 
         return image;
-    }
-
-    private Image resizeBackground() {
-        return background.getScaledInstance(widthPx, heightPx, Image.SCALE_DEFAULT);
     }
 
     private void addForumElements() {
@@ -207,11 +206,11 @@ public class PostItApp extends JFrame {
 
     private void initTitle() {
         titleText = new JLabel();
-        titleText.setFont(new Font("Verdana", Font.PLAIN, TITLE_FONT_SIZE));
+        titleText.setFont(new Font(DEFAULT_FONT, Font.PLAIN, TITLE_FONT_SIZE));
         aboutSectionText = new JLabel();
-        aboutSectionText.setFont(new Font("Verdana", Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
+        aboutSectionText.setFont(new Font(DEFAULT_FONT, Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
         subCountText = new JLabel();
-        subCountText.setFont(new Font("Verdana", Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
+        subCountText.setFont(new Font(DEFAULT_FONT, Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
 
         initTitlePosition();
     }
@@ -374,24 +373,28 @@ public class PostItApp extends JFrame {
 
     // TODO
     private void backButtonPressed() {
-        try {
-            activeFeed.back();
-        } catch (StartOfFeedException eofe) {
-            JOptionPane.showMessageDialog(this,
-                    "You've reached the start of the Feed!",
-                    "Warning", JOptionPane.ERROR_MESSAGE);
+        if (activeFeed != null) {
+            try {
+                activeFeed.back();
+            } catch (StartOfFeedException eofe) {
+                JOptionPane.showMessageDialog(this,
+                        "You've reached the start of the Feed!",
+                        "Warning", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
     // TODO
     private void nextButtonPressed() {
-        try {
-            activeFeed.next();
-            repaint();
-        } catch (EndOfFeedException eofe) {
-            JOptionPane.showMessageDialog(this,
-                    "You've reached the end of the Feed!",
-                    "Warning", JOptionPane.ERROR_MESSAGE);
+        if (activeFeed != null) {
+            try {
+                activeFeed.next();
+                repaint();
+            } catch (EndOfFeedException eofe) {
+                JOptionPane.showMessageDialog(this,
+                        "You've reached the end of the Feed!",
+                        "Warning", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -415,6 +418,28 @@ public class PostItApp extends JFrame {
 
         if (userChoice == JOptionPane.NO_OPTION) {
             System.exit(0);
+        }
+
+        saveForum();
+    }
+
+    private void saveForum() {
+        try {
+            jsonWriter.openWriter();
+            jsonWriter.saveForum(postIt);
+            jsonWriter.close();
+            System.exit(0);
+        } catch (FileNotFoundException fe) {
+            Object[] options = {"Exit Anyway", "Don't Exit"};
+            int userChoice = JOptionPane.showOptionDialog(this,
+                    "Unable to save your posts during this session, are you sure you want to exit?",
+                    "Unable to Save",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+
+            if (userChoice == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
         }
     }
 
@@ -483,6 +508,7 @@ public class PostItApp extends JFrame {
                     "Profile Successfully Updated!",
                     "Success",
                     JOptionPane.PLAIN_MESSAGE);
+            refreshTitleText();
         } else {
             invalidInput(this, "bio");
         }
@@ -497,19 +523,39 @@ public class PostItApp extends JFrame {
 
 
     private void makePostPressed() {
-        MakePostDisplay makePost = new MakePostDisplay(postIt, (int)(widthPx / 2), heightPx);
-        System.out.println("ok");
+        Object[] choices = {"Text Post", "Image Post", "Cancel"};
+        int userChoice = JOptionPane.showOptionDialog(this,
+                "What kind of post would you like to make?",
+                "Make New Post",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                choices,
+                choices[0]);
+
+        if (userChoice == JOptionPane.YES_OPTION) {
+            MakeTextPostDisplay makePost = new MakeTextPostDisplay(postIt, (int) (widthPx / 2), heightPx);
+        } else if (userChoice == JOptionPane.NO_OPTION) {
+            //MakeImagePostDisplay makeImagePost = new MakeImagePostDisplay();
+        }
     }
 
     private void getCommunityFeed(String community) {
         try {
+            feed.removeAll();
+            activeFeed = null;
             userBeingViewed = null;
             communityBeingViewed = community;
             this.activeFeed = postIt.startCommunityFeed(community);
             activeFeed.setDisplay(feed);
         } catch (EmptyFeedException e) {
-            e.getStackTrace();
-            System.out.println("empty");
+            feed.removeAll();
+            activeFeed = null;
+            JLabel noPosts = new JLabel("Be the first to post here!");
+            noPosts.setFont(new Font(DEFAULT_FONT, Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
+            feed.add(Box.createHorizontalGlue());
+            feed.add(noPosts);
+            feed.add(Box.createHorizontalGlue());
         }
 
         initButtons(false);
@@ -553,7 +599,6 @@ public class PostItApp extends JFrame {
                 null,
                 communities,
                 communities[0]);
-        System.out.println(communityChoice);
         checkCommunityInput(communityChoice);
 
     }

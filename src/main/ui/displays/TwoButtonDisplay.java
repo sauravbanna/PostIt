@@ -22,8 +22,8 @@ public abstract class TwoButtonDisplay extends JDialog {
 
     protected PostIt forum;
     protected JPanel panel;
-    protected JButton accept;
-    protected JButton cancel;
+    protected JButton button2;
+    protected JButton button1;
 
     public TwoButtonDisplay(PostIt forum) {
         this.forum = forum;
@@ -50,9 +50,9 @@ public abstract class TwoButtonDisplay extends JDialog {
         initButtonDesigns();
 
         buttonHolder.add(Box.createHorizontalGlue());
-        buttonHolder.add(cancel);
+        buttonHolder.add(button1);
         buttonHolder.add(Box.createHorizontalGlue());
-        buttonHolder.add(accept);
+        buttonHolder.add(button2);
         buttonHolder.add(Box.createHorizontalGlue());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -67,16 +67,16 @@ public abstract class TwoButtonDisplay extends JDialog {
     }
 
     private void initButtonDesigns() {
-        accept = new JButton();
-        accept.setText("");
-        accept.setBorder(FOREGROUND_BORDER);
-        accept.setBackground(DEFAULT_FOREGROUND_COLOR);
-        accept.setForeground(DEFAULT_BACKGROUND_COLOR);
-        cancel = new JButton();
-        cancel.setText("Cancel");
-        cancel.setBackground(DEFAULT_FOREGROUND_COLOR);
-        cancel.setForeground(DEFAULT_BACKGROUND_COLOR);
-        cancel.setBorder(FOREGROUND_BORDER);
+        button2 = new JButton();
+        button2.setText("");
+        button2.setBorder(FOREGROUND_BORDER);
+        button2.setBackground(DEFAULT_FOREGROUND_COLOR);
+        button2.setForeground(DEFAULT_BACKGROUND_COLOR);
+        button1 = new JButton();
+        button1.setText("Cancel");
+        button1.setBackground(DEFAULT_FOREGROUND_COLOR);
+        button1.setForeground(DEFAULT_BACKGROUND_COLOR);
+        button1.setBorder(FOREGROUND_BORDER);
     }
 
 

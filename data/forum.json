@@ -10,7 +10,10 @@
         ],
         "posts": [
             12033,
-            85362
+            85362,
+            47758,
+            33468,
+            67006
         ],
         "subscribedCommunities": [
             "canada",
@@ -113,6 +116,39 @@
             "community": "canada",
             "likes": 1,
             "commentCount": 3
+        },
+        {
+            "comments": [],
+            "opName": "3",
+            "dislikes": 0,
+            "textBody": "Here is a lot of Text. Wow. Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.Here is a lot of Text. Wow.",
+            "id": 33468,
+            "title": "This is a Text Post",
+            "community": "mildlyinteresting",
+            "likes": 0,
+            "commentCount": 0
+        },
+        {
+            "image": "./data/images/flower.jpg",
+            "comments": [],
+            "opName": "3",
+            "dislikes": 0,
+            "id": 47758,
+            "title": "Flower",
+            "community": "news",
+            "likes": 0,
+            "commentCount": 0
+        },
+        {
+            "comments": [],
+            "opName": "3",
+            "dislikes": 0,
+            "textBody": "Battle Royale",
+            "id": 67006,
+            "title": "Fornite",
+            "community": "fortnite",
+            "likes": 0,
+            "commentCount": 0
         }
     ],
     "users": [
@@ -138,7 +174,8 @@
             ],
             "posts": [
                 12033,
-                85362
+                85362,
+                47758
             ],
             "subscribedCommunities": [
                 "canada",
@@ -155,7 +192,7 @@
             "subs": 0,
             "name": "news",
             "about": "This is a default community.",
-            "posts": []
+            "posts": [47758]
         },
         {
             "creator": "PostIt",
@@ -190,6 +227,13 @@
             "posts": []
         },
         {
+            "creator": "3",
+            "subs": 0,
+            "name": "fortnite",
+            "about": "Fortnite Battle Royale",
+            "posts": [67006]
+        },
+        {
             "creator": "PostIt",
             "subs": 3,
             "name": "funny",
@@ -201,7 +245,7 @@
             "subs": 0,
             "name": "mildlyinteresting",
             "about": "This is a default community.",
-            "posts": []
+            "posts": [33468]
         }
     ]
 }

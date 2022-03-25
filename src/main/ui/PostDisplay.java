@@ -3,6 +3,7 @@ package ui;
 import model.PostIt;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
+import ui.displays.CommentsDisplay;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,8 +26,9 @@ public class PostDisplay extends JPanel {
     private JButton savePost;
     private JButton subscribe;
     private JLabel title;
-    private JTextArea body;
+    private JTextArea bodyText;
     private JLabel image;
+    private JComponent body;
     private JLabel username;
     private JLabel voteCount;
     private GridBagConstraints gbc;
@@ -43,6 +45,7 @@ public class PostDisplay extends JPanel {
         initPostElements();
         initUserControlButtons();
         updateButtonColors();
+        repaint();
         setVisible(true);
     }
 
@@ -91,7 +94,7 @@ public class PostDisplay extends JPanel {
         textHolder.setLayout(new BoxLayout(textHolder, BoxLayout.Y_AXIS));
         textHolder.setOpaque(false);
 
-        initPostText();
+        initPostContent();
 
         addPostTextToContainer(textHolder);
 
@@ -121,10 +124,12 @@ public class PostDisplay extends JPanel {
         textHolder.add(Box.createVerticalGlue());
     }
 
-    private void initPostText() {
+    private void initPostContent() {
         title = new JLabel();
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
         title.setBorder(TRANSPARENT_BORDER);
+        bodyText = new JTextArea(20, 10);
+        image = new JLabel();
         body = getBody();
         body.setBorder(TRANSPARENT_BORDER);
         username = new JLabel();
@@ -170,19 +175,22 @@ public class PostDisplay extends JPanel {
     }
 
 
-    private JTextArea getBody() {
+    private JComponent getBody() {
         if (post.getClass().equals(TextPost.class)) {
-            body = new JTextArea(20, 10);
-            body.setWrapStyleWord(true);
-            body.setLineWrap(true);
-            body.setOpaque(false);
-            body.setEditable(false);
-            body.setFocusable(false);
-            body.setBorder(THIN_BLACK_BORDER);
-            body.setText(post.getBody());
-            return body;
+            bodyText.setWrapStyleWord(true);
+            bodyText.setLineWrap(true);
+            bodyText.setOpaque(false);
+            bodyText.setEditable(false);
+            bodyText.setFocusable(false);
+            bodyText.setBorder(THIN_BLACK_BORDER);
+            bodyText.setText(post.getBody());
+            return bodyText;
         } else {
-            return null;
+            ImageIcon img = new ImageIcon(post.getBody());
+            image.setPreferredSize(new Dimension(MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION));
+            image.setIcon(img);
+            return image;
+
         }
     }
 
@@ -202,7 +210,7 @@ public class PostDisplay extends JPanel {
     private void initFont() {
         title.setFont(new Font("Verdana", Font.PLAIN, 24));
         username.setFont(new Font("Verdana", Font.PLAIN, 14));
-        body.setFont(new Font("Verdana", Font.PLAIN, 18));
+        bodyText.setFont(new Font("Verdana", Font.PLAIN, 18));
         voteCount.setFont(new Font("Verdana", Font.PLAIN, 14));
     }
 
@@ -227,7 +235,6 @@ public class PostDisplay extends JPanel {
                             forum.getCommunities().get(post.getCommunity()));
                     updateSubscribeButton();
                     confirmSubscribe("subscribed");
-                    System.out.println("action performed");
                 } else {
                     loginWarning(PostDisplay.this);
                 }
@@ -273,7 +280,8 @@ public class PostDisplay extends JPanel {
         comments.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
+                CommentsDisplay comments = new CommentsDisplay(forum, post.getComments(), post);
+                comments.makeVisible();
             }
         });
     }

@@ -12,7 +12,7 @@ import java.awt.event.WindowEvent;
 import static ui.PostItApp.*;
 import static ui.displays.TwoButtonDisplay.FOREGROUND_BORDER;
 
-public class MakePostDisplay extends JDialog {
+public class MakeTextPostDisplay extends JDialog {
 
     private JPanel panel;
     private JLabel titleText;
@@ -26,7 +26,7 @@ public class MakePostDisplay extends JDialog {
     private PostIt forum;
 
 
-    public MakePostDisplay(PostIt forum, int width, int height) {
+    public MakeTextPostDisplay(PostIt forum, int width, int height) {
         this.forum = forum;
         setTitle("Make a Post");
         setSize(new Dimension(width, height));
@@ -200,11 +200,7 @@ public class MakePostDisplay extends JDialog {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
-        if (userChoice == JOptionPane.YES_OPTION) {
-            return true;
-        }
-
-        return false;
+        return userChoice == JOptionPane.YES_OPTION;
     }
 
     private void postSuccessfullyMade() {
@@ -219,14 +215,14 @@ public class MakePostDisplay extends JDialog {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int userChoice = JOptionPane.showConfirmDialog(MakePostDisplay.this,
+                int userChoice = JOptionPane.showConfirmDialog(MakeTextPostDisplay.this,
                         "Are you sure you want to cancel? Your progress will be discarded.",
                         "Confirm Exit",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.WARNING_MESSAGE);
 
                 if (userChoice == JOptionPane.YES_OPTION) {
-                    MakePostDisplay.this.dispose();
+                    MakeTextPostDisplay.this.dispose();
                 }
             }
         });

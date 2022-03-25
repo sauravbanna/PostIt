@@ -21,7 +21,7 @@ public class RegisterDisplay extends UsernamePasswordInput {
         this.setTitle("Register");
         firstInputText.setText("Username (1-20 characters)");
         secondInputText.setText("Password (Min 8 characters)");
-        accept.setText("Register");
+        button2.setText("Register");
 
 
         startDisplay();
@@ -29,14 +29,14 @@ public class RegisterDisplay extends UsernamePasswordInput {
 
     @Override
     public void initButtonActions() {
-        cancel.addActionListener(new ActionListener() {
+        button1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RegisterDisplay.this.dispose();
             }
         });
 
-        accept.addActionListener(new ActionListener() {
+        button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 registerIfValid();

@@ -11,7 +11,8 @@ import persistence.JsonWriter;
 import ui.displays.userinput.CreateCommunityDisplay;
 import ui.displays.userinput.LoginDisplay;
 import ui.displays.userinput.RegisterDisplay;
-import ui.displays.userinput.MakeTextPostDisplay;
+import ui.displays.userinput.makepost.MakeImagePostDisplay;
+import ui.displays.userinput.makepost.MakeTextPostDisplay;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -535,7 +536,7 @@ public class PostItApp extends JFrame {
         if (userChoice == JOptionPane.YES_OPTION) {
             MakeTextPostDisplay makePost = new MakeTextPostDisplay(postIt, (int) (widthPx / 2), heightPx);
         } else if (userChoice == JOptionPane.NO_OPTION) {
-            //MakeImagePostDisplay makeImagePost = new MakeImagePostDisplay();
+            MakeImagePostDisplay makeImagePost = new MakeImagePostDisplay(postIt, (int) (widthPx / 2), heightPx);
         }
     }
 

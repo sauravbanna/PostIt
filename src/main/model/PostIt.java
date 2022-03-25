@@ -36,7 +36,6 @@ public class PostIt implements Writable {
     private Boolean loggedIn;
     private User currentlyLoggedInUser;
     private Feed activeFeed;
-    private String currentCommunity;
 
     private HashMap<String, User> usernamePasswords;
     private HashMap<String, Community> communities;
@@ -133,10 +132,6 @@ public class PostIt implements Writable {
         }
     }
 
-    public Boolean makeTextPost(String title, String body) {
-        return makeTextPost(title, body, currentCommunity);
-    }
-
     // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True
     // MODIFIES: this
     // EFFECTS: changes the currently logged in user's bio to the new bio
@@ -180,8 +175,6 @@ public class PostIt implements Writable {
             }
         }
 
-        currentCommunity = null;
-
         activeFeed = new Feed(currentFeed, this);
         return activeFeed;
     }
@@ -191,9 +184,19 @@ public class PostIt implements Writable {
     // EFFECTS: adds posts from the community with the given name to the active feed
     //          and returns the feed
     //          sets current community to the given community name
-    public Feed startCommunityFeed(String communityName) {
+    public Feed startCommunityFeed(String communityName) throws EmptyFeedException {
         activeFeed = new Feed(communities.get(communityName).getPosts(), this);
-        currentCommunity = communityName;
+        if (communities.get(communityName).getPosts().isEmpty()) {
+            throw new EmptyFeedException();
+        }
+        return activeFeed;
+    }
+
+    public Feed visitUser(String username) throws EmptyFeedException {
+        activeFeed = new Feed(usernamePasswords.get(username).getPosts(), this);
+        if (usernamePasswords.get(username).getPosts().isEmpty()) {
+            throw new EmptyFeedException();
+        }
         return activeFeed;
     }
 
@@ -255,10 +258,6 @@ public class PostIt implements Writable {
     // EFFECTS: sets the map of usernames and users to the given map
     public void setPosts(HashMap<Integer, Post> posts) {
         PostIt.posts = posts;
-    }
-
-    public String getCurrentCommunity() {
-        return currentCommunity;
     }
 
 

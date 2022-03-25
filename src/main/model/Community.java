@@ -78,6 +78,12 @@ public class Community extends PostCollections implements Writable {
         this.subCount++;
     }
 
+    // MODIFIES: this
+    // EFFECTS: removes 1 subscriber from this community's sub count
+    public void removeSubscriber() {
+        this.subCount--;
+    }
+
     // EFFECTS: returns the creator name of the community
     public String getCreator() {
         return this.creator;

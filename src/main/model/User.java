@@ -122,9 +122,20 @@ public class User extends PostCollections implements Writable {
     //           and community is not already in subscribedCommunities
     // MODIFIES: this, Community
     // EFFECTS: adds the given community to user's subscribed communities
+    //          and adds 1 to community's sub count
     public void subscribeToCommunity(Community c) {
         this.subscribedCommunities.add(c.getCommunityName());
         c.addSubscriber();
+    }
+
+    // REQUIRES: community is one that is already registered on the forum,
+    //           and community is already in subscribedCommunities
+    // MODIFIES: this, Community
+    // EFFECTS: removes the given community to user's subscribed communities
+    //          and removes 1 from community's sub count
+    public void unsubscribeFromCommunity(Community c) {
+        this.subscribedCommunities.remove(c.getCommunityName());
+        c.removeSubscriber();
     }
 
     // REQUIRES: password is at least ui.PostIt.MIN_PASSWORD_LENGTH characters long

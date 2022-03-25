@@ -183,7 +183,7 @@ public class PostItTest {
         assertEquals(testPostIt.getLoggedIn(), activeFeedResult.getLoggedIn());
     }
 
-    @Test
+   /* @Test
     void testShowCommunity() {
         Feed testActiveFeed1 = testPostIt.startCommunityFeed(communityChoice);
 
@@ -247,7 +247,7 @@ public class PostItTest {
             assertEquals(Community.DEFAULT_ABOUT_SECTION, testPostIt.getCommunities().get(s).getCommunityAbout());
             assertEquals(Community.DEFAULT_CREATOR, testPostIt.getCommunities().get(s).getCreator());
         }
-    }
+    }*/
 
 
 }

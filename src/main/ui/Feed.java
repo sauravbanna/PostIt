@@ -50,11 +50,11 @@ public class Feed {
         this.postIt = forum;
     }
 
+    // TODO if time
     private void showCurrentPost() {
         display.removeAll();
         display.add(Box.createHorizontalGlue());
-        display.add(new PostDisplay(postIt.getPosts().get(userFeed.get(feedPosition)), currentUser,
-                new Dimension(displayHeightPx, displayHeightPx)));
+        display.add(new PostDisplay(postIt.getPosts().get(userFeed.get(feedPosition)), postIt));
         display.add(Box.createHorizontalGlue());
         display.revalidate();
         display.repaint();

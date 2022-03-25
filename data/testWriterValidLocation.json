@@ -6,8 +6,8 @@
         "bio": "No bio yet...",
         "dislikedPosts": [],
         "posts": [
-            4504,
-            43581,
+            97110,
+            75918,
             37884
         ],
         "subscribedCommunities": [],
@@ -19,7 +19,7 @@
             "opName": "1",
             "dislikes": 0,
             "textBody": "body1",
-            "id": 4504,
+            "id": 97110,
             "title": "title1",
             "community": "newCommunity",
             "likes": 0,
@@ -41,7 +41,7 @@
             "opName": "1",
             "dislikes": 0,
             "textBody": "body2",
-            "id": 43581,
+            "id": 75918,
             "title": "title2",
             "community": "funny",
             "likes": 0,
@@ -54,8 +54,8 @@
         "bio": "No bio yet...",
         "dislikedPosts": [],
         "posts": [
-            4504,
-            43581,
+            97110,
+            75918,
             37884
         ],
         "subscribedCommunities": [],
@@ -81,7 +81,7 @@
             "subs": 0,
             "name": "newCommunity",
             "about": "some about section",
-            "posts": [4504]
+            "posts": [97110]
         },
         {
             "creator": "PostIt",
@@ -103,7 +103,7 @@
             "name": "funny",
             "about": "This is a default community.",
             "posts": [
-                43581,
+                75918,
                 37884
             ]
         },

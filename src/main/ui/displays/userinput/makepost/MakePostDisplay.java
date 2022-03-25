@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Set;
 
 import static ui.PostItApp.DEFAULT_BACKGROUND_COLOR;
 import static ui.PostItApp.DEFAULT_FOREGROUND_COLOR;
@@ -120,8 +121,8 @@ public abstract class MakePostDisplay extends JDialog {
     // MODIFIES: this, JPanel, JLabel
     // EFFECTS: initialises the community input combo box and places it on the panel
     protected void initCommunity(int ypos) {
-        String[] communities = forum.getCommunities().keySet().toArray(new String[0]);
-        community = new JComboBox(communities);
+        String[] communities = ((Set<String>)forum.getCommunities().keySet()).toArray(new String[0]);
+        community = new JComboBox<String>(communities);
         community.setSelectedIndex(0);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.LINE_START;

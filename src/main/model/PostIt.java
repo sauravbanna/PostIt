@@ -1,6 +1,5 @@
 package model;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import exceptions.EmptyDefaultCommunities;
 import exceptions.EmptyFeedException;
 import exceptions.IDAlreadyExistsException;

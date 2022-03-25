@@ -37,4 +37,19 @@ public class CommunityTest extends PostCollectionsTest {
 
 
     }
+
+    @Test
+    void testRemoveSubscriber() {
+        testCommunityDefault.addSubscriber();
+        testCommunityDefault.addSubscriber();
+        testCommunityDefault.addSubscriber();
+
+        assertEquals(3, testCommunityDefault.getSubCount());
+        testCommunityDefault.removeSubscriber();
+        assertEquals(2, testCommunityDefault.getSubCount());
+        testCommunityDefault.removeSubscriber();
+        assertEquals(1, testCommunityDefault.getSubCount());
+
+
+    }
 }

@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.EmptyDefaultCommunities;
+import exceptions.EmptyFeedException;
 import model.content.posts.Post;
 import org.junit.jupiter.api.*;
 import ui.Feed;
@@ -142,11 +144,13 @@ public class PostItTest {
 
         Feed activeFeedResult = null;
 
-        /*try {
+        try {
             activeFeedResult = testPostIt.startHomeFeed();
         } catch (EmptyFeedException efe) {
             fail("EmptyFeedException not supposed to be thrown");
-        }*/
+        } catch (EmptyDefaultCommunities edc) {
+            fail("EmptyDefaultCommunities not supposed to be thrown");
+        }
 
         assertEquals(testPostIt.getCommunities().get(communityChoice).getPosts(), activeFeedResult.getUserFeed());
         assertEquals(1, activeFeedResult.getUserFeed().size());
@@ -158,53 +162,117 @@ public class PostItTest {
 
     @Test
     void testStartHomeFeedLoggedInEmptyFeed() {
-        /*try {
+        try {
             testPostIt.startHomeFeed();
             fail("EmptyFeedException supposed to be thrown");
         } catch (EmptyFeedException efe) {
             // pass
-        }*/
+        } catch (EmptyDefaultCommunities edc) {
+            fail("EmptyDefaultCommunities not supposed to be thrown");
+        }
     }
 
     @Test
-    void testStartHomeFeedNotLoggedIn() {
+    void testStartHomeFeedNotLoggedInFeedNotEmpty() {
+        testPostIt.makeTextPost("title", "body", communityChoice);
         testPostIt.logOut();
         Feed activeFeedResult = null;
 
-        /*try {
+        try {
             activeFeedResult = testPostIt.startHomeFeed();
         } catch (EmptyFeedException efe) {
             fail("EmptyFeedException not supposed to be thrown");
-        }*/
+        } catch (EmptyDefaultCommunities edc) {
+            fail("EmptyDefaultCommunities not supposed to be thrown");
+        }
 
-        assertEquals(0, activeFeedResult.getUserFeed().size());
+        assertEquals(testPostIt.getCommunities().get(communityChoice).getPosts(), activeFeedResult.getUserFeed());
+        assertEquals(1, activeFeedResult.getUserFeed().size());
         assertEquals(testPostIt, activeFeedResult.getPostIt());
-        assertEquals(testPostIt.getCurrentUser(), activeFeedResult.getCurrentUser());
+        assertNull(activeFeedResult.getCurrentUser());
         assertEquals(testPostIt.getLoggedIn(), activeFeedResult.getLoggedIn());
     }
 
-   /* @Test
-    void testShowCommunity() {
-        Feed testActiveFeed1 = testPostIt.startCommunityFeed(communityChoice);
+    @Test
+    void testStartHomeFeedNotLoggedInFeedEmpty() {
+        testPostIt.logOut();
+        Feed activeFeedResult = null;
 
-        assertEquals(0, testActiveFeed1.getUserFeed().size());
-        assertEquals(testPostIt, testActiveFeed1.getPostIt());
-        assertEquals(testPostIt.getCurrentUser(), testActiveFeed1.getCurrentUser());
-        assertEquals(testPostIt.getLoggedIn(), testActiveFeed1.getLoggedIn());
+        try {
+            activeFeedResult = testPostIt.startHomeFeed();
+            fail("EmptyDefaultCommunities supposed to be thrown");
+        } catch (EmptyFeedException efe) {
+            fail("EmptyFeedException not supposed to be thrown");
+        } catch (EmptyDefaultCommunities edc) {
+            // pass
+        }
+    }
 
+    @Test
+    void testShowCommunityFeedNotEmpty() {
         testPostIt.makeTextPost("title", "body", communityChoice);
-        Feed testActiveFeed2 = testPostIt.startCommunityFeed(communityChoice);
+        Feed testActiveFeed = null;
+        try {
+            testActiveFeed = testPostIt.startCommunityFeed(communityChoice);
+        } catch (EmptyFeedException efe) {
+            fail("EmptyFeedException not supposed to be thrown");
+        }
 
-        assertEquals(1, testActiveFeed2.getUserFeed().size());
-        assertEquals(testPostIt.getCommunities().get(communityChoice).getPosts(), testActiveFeed2.getUserFeed());
-        assertEquals(testPostIt, testActiveFeed2.getPostIt());
-        assertEquals(testPostIt.getCurrentUser(), testActiveFeed2.getCurrentUser());
-        assertEquals(testPostIt.getLoggedIn(), testActiveFeed2.getLoggedIn());
+        assertEquals(1, testActiveFeed.getUserFeed().size());
+        assertEquals(testPostIt.getCommunities().get(communityChoice).getPosts(), testActiveFeed.getUserFeed());
+        assertEquals(testPostIt, testActiveFeed.getPostIt());
+        assertEquals(testPostIt.getCurrentUser(), testActiveFeed.getCurrentUser());
+        assertEquals(testPostIt.getLoggedIn(), testActiveFeed.getLoggedIn());
+    }
+
+    @Test
+    void testShowCommunityFeedEmpty() {
+        Feed testActiveFeed = null;
+        try {
+            testActiveFeed = testPostIt.startCommunityFeed(communityChoice);
+            fail("EmptyFeedException supposed to be thrown");
+        } catch (EmptyFeedException efe) {
+            // pass
+        }
+    }
+
+    @Test
+    void testVisitUserFeedNotEmpty() {
+        testPostIt.makeTextPost("title", "body", communityChoice);
+        Feed testActiveFeed = null;
+        try {
+            testActiveFeed = testPostIt.visitUser(testUser.getUserName());
+        } catch (EmptyFeedException efe) {
+            fail("EmptyFeedException not supposed to be thrown");
+        }
+
+        assertEquals(1, testActiveFeed.getUserFeed().size());
+        assertEquals(testPostIt.getCurrentUser().getPosts(), testActiveFeed.getUserFeed());
+        assertEquals(testPostIt, testActiveFeed.getPostIt());
+        assertEquals(testPostIt.getCurrentUser(), testActiveFeed.getCurrentUser());
+        assertEquals(testPostIt.getLoggedIn(), testActiveFeed.getLoggedIn());
+    }
+
+    @Test
+    void testVisitUserFeedEmpty() {
+        Feed testActiveFeed = null;
+        try {
+            testActiveFeed = testPostIt.visitUser(testUser.getUserName());
+            fail("EmptyFeedException supposed to be thrown");
+        } catch (EmptyFeedException efe) {
+            // pass
+        }
     }
 
     @Test
     void testClearActiveFeed() {
-        Feed testActiveFeed1 = testPostIt.startCommunityFeed(communityChoice);
+        testPostIt.makeTextPost("title", "body", communityChoice);
+        Feed testActiveFeed1 = null;
+        try {
+            testActiveFeed1 = testPostIt.startCommunityFeed(communityChoice);
+        } catch (EmptyFeedException efe) {
+            fail("EmptyFeedException not supposed to be thrown");
+        }
 
         assertEquals(testActiveFeed1, testPostIt.getActiveFeed());
 
@@ -247,7 +315,7 @@ public class PostItTest {
             assertEquals(Community.DEFAULT_ABOUT_SECTION, testPostIt.getCommunities().get(s).getCommunityAbout());
             assertEquals(Community.DEFAULT_CREATOR, testPostIt.getCommunities().get(s).getCreator());
         }
-    }*/
+    }
 
 
 }

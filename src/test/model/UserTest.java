@@ -51,6 +51,33 @@ class UserTest extends PostCollectionsTest {
     }
 
     @Test
+    void testUnsubscribeToCommunity() {
+
+        Community community1 = new Community("funny", "funny stuff", null);
+
+        testUser.subscribeToCommunity(community1);
+
+        Community community2 = new Community("news", "The latest news", null);
+        testUser.subscribeToCommunity(community2);
+
+        assertEquals(2, testUser.getSubscribedCommunities().size());
+        assertEquals(1, community1.getSubCount());
+        assertEquals(1, community2.getSubCount());
+
+        testUser.unsubscribeFromCommunity(community1);
+
+        assertEquals(1, testUser.getSubscribedCommunities().size());
+        assertEquals(0, community1.getSubCount());
+        assertEquals(1, community2.getSubCount());
+
+        testUser.unsubscribeFromCommunity(community2);
+
+        assertEquals(0, testUser.getSubscribedCommunities().size());
+        assertEquals(0, community1.getSubCount());
+        assertEquals(0, community2.getSubCount());
+    }
+
+    @Test
     void testSetBio() {
         assertEquals(User.DEFAULT_BIO, testUser.getBio());
 
@@ -92,19 +119,19 @@ class UserTest extends PostCollectionsTest {
         testUser.addLikedPost(testPost1);
         testUser.addLikedPost(testPost2);
 
-        assertEquals(1, testPost1.getLikes());
-        assertEquals(1, testPost2.getLikes());
+        assertEquals(0, testPost1.getLikes());
+        assertEquals(0, testPost2.getLikes());
 
         assertEquals(0, testPost3.getLikes());
 
         testUser.addLikedPost(testPost3);
 
         assertEquals(1, testPost3.getLikes());
-        assertEquals(3, testUser.getLikedPosts().size());
+        assertEquals(1, testUser.getLikedPosts().size());
 
         testUser.addLikedPost(testPost3);
 
-        assertEquals(1, testPost3.getLikes());
+        assertEquals(0, testPost3.getLikes());
     }
 
     @Test
@@ -205,19 +232,19 @@ class UserTest extends PostCollectionsTest {
         testUser.addDislikedPost(testPost1);
         testUser.addDislikedPost(testPost2);
 
-        assertEquals(1, testPost1.getDislikes());
-        assertEquals(1, testPost2.getDislikes());
+        assertEquals(0, testPost1.getDislikes());
+        assertEquals(0, testPost2.getDislikes());
 
         assertEquals(0, testPost3.getDislikes());
 
         testUser.addDislikedPost(testPost3);
 
         assertEquals(1, testPost3.getDislikes());
-        assertEquals(3, testUser.getDislikedPosts().size());
+        assertEquals(1, testUser.getDislikedPosts().size());
 
         testUser.addDislikedPost(testPost3);
 
-        assertEquals(1, testPost3.getDislikes());
+        assertEquals(0, testPost3.getDislikes());
     }
 
     @Test

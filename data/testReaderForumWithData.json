@@ -25,6 +25,17 @@
       "commentCount": 0
     },
     {
+      "image": "./data/images/flower.jpg",
+      "comments": [],
+      "opName": "1",
+      "dislikes": 0,
+      "id": 47758,
+      "title": "Flower",
+      "community": "news",
+      "likes": 0,
+      "commentCount": 0
+    },
+    {
       "comments": [
         {
           "opName": "1",
@@ -62,7 +73,8 @@
     "dislikedPosts": [],
     "posts": [
       19766,
-      26768
+      26768,
+      47758
     ],
     "subscribedCommunities": ["funny"],
     "username": "1"
@@ -73,7 +85,7 @@
       "subs": 0,
       "name": "news",
       "about": "This is a default community.",
-      "posts": []
+      "posts": [47758]
     },
     {
       "creator": "PostIt",

@@ -58,7 +58,6 @@ public class PostItApp extends JFrame {
     private JLabel titleText;
     private JLabel aboutSectionText;
     private JLabel subCountText;
-    private Feed activeFeed;
     private int widthPx;
     private int heightPx;
     private String userBeingViewed;
@@ -373,9 +372,9 @@ public class PostItApp extends JFrame {
 
     // TODO
     private void backButtonPressed() {
-        if (activeFeed != null) {
+        if (postIt.getActiveFeed() != null) {
             try {
-                activeFeed.back();
+                postIt.getActiveFeed().back();
             } catch (StartOfFeedException eofe) {
                 JOptionPane.showMessageDialog(this,
                         "You've reached the start of the Feed!",
@@ -386,9 +385,9 @@ public class PostItApp extends JFrame {
 
     // TODO
     private void nextButtonPressed() {
-        if (activeFeed != null) {
+        if (postIt.getActiveFeed() != null) {
             try {
-                activeFeed.next();
+                postIt.getActiveFeed().next();
                 repaint();
             } catch (EndOfFeedException eofe) {
                 JOptionPane.showMessageDialog(this,
@@ -485,8 +484,8 @@ public class PostItApp extends JFrame {
         try {
             userBeingViewed = null;
             communityBeingViewed = null;
-            this.activeFeed = postIt.startHomeFeed();
-            activeFeed.setDisplay(feed);
+            postIt.startHomeFeed();
+            postIt.getActiveFeed().setDisplay(feed);
         } catch (Exception e) {
             e.getStackTrace();
         }
@@ -543,14 +542,14 @@ public class PostItApp extends JFrame {
     private void getCommunityFeed(String community) {
         try {
             feed.removeAll();
-            activeFeed = null;
+            postIt.clearActiveFeed();
             userBeingViewed = null;
             communityBeingViewed = community;
-            this.activeFeed = postIt.startCommunityFeed(community);
-            activeFeed.setDisplay(feed);
+            postIt.startCommunityFeed(community);
+            postIt.getActiveFeed().setDisplay(feed);
         } catch (EmptyFeedException e) {
             feed.removeAll();
-            activeFeed = null;
+            postIt.clearActiveFeed();
             JLabel noPosts = new JLabel("Be the first to post here!");
             noPosts.setFont(new Font(DEFAULT_FONT, Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
             feed.add(Box.createHorizontalGlue());
@@ -566,8 +565,8 @@ public class PostItApp extends JFrame {
         try {
             userBeingViewed = username;
             communityBeingViewed = null;
-            this.activeFeed = postIt.visitUser(username);
-            activeFeed.setDisplay(feed);
+            postIt.visitUser(username);
+            postIt.getActiveFeed().setDisplay(feed);
         } catch (EmptyFeedException e) {
             e.getStackTrace();
         }

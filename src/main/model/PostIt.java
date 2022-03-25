@@ -218,6 +218,7 @@ public class PostIt implements Writable {
         this.activeFeed = null;
     }
 
+
     // EFFECTS: returns the map of all the posts and their ids
     public HashMap<Integer, Post> getPosts() {
         return posts;

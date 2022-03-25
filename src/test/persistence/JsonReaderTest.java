@@ -25,6 +25,7 @@ public class JsonReaderTest extends JsonTest {
     private User testUser1;
     private Post testPost1;
     private Post testPost2;
+    private Post testImagePost;
     private List<Comment> testComments;
     private List<Community> testCommunities;
 
@@ -85,11 +86,14 @@ public class JsonReaderTest extends JsonTest {
                     0, 0, 26768);
             testPost1 = initAssertPost("title1", "body1", "1", "newCommunity", 1,
                     1, 3, 19766);
+            testImagePost = initAssertImagePost("Flower", "./data/images/flower.jpg", "1",
+                    "news", 0, 0, 0, 47758);
             testComments = initAssertComments();
 
             checkUser(postIt.getCurrentUser(), testUser1);
             checkPost(postIt.getPosts().get(19766), testPost1);
             checkPost(postIt.getPosts().get(26768), testPost2);
+            checkPost(postIt.getPosts().get(47758), testImagePost);
             checkComments(postIt.getPosts().get(19766).getComments(), testComments);
 
             initAssertCommunities();
@@ -126,6 +130,15 @@ public class JsonReaderTest extends JsonTest {
         return post;
     }
 
+    Post initAssertImagePost(String title, String image, String username, String community, int likes,
+                             int dislikes, int comments, int id) {
+        Post post = new ImagePost(username, title, image, community, id);
+        post.setCommentCount(comments);
+        post.setLikes(likes);
+        post.setDislikes(dislikes);
+        return post;
+    }
+
     List<Comment> initAssertComments() {
         List<Comment> comments = new ArrayList<>();
         comments.add(new Comment("1", "wow"));
@@ -143,12 +156,17 @@ public class JsonReaderTest extends JsonTest {
         posts.add(26768);
         funny.setPosts(posts);
 
+        Community news = new Community("funny", null, null);
+        posts = new ArrayList<>();
+        posts.add(47758);
+        news.setPosts(posts);
+
         Community newCommunity = new Community("newCommunity", "some about section", "1");
         List<Integer> newPosts = new ArrayList<>();
         newPosts.add(19766);
         newCommunity.setPosts(newPosts);
         for (String c : PostIt.DEFAULT_COMMUNITIES) {
-            if (!c.equals("funny")) {
+            if (!c.equals("funny") && !c.equals("news")) {
                 testCommunities.add(new Community(c, null, null));
             }
         }

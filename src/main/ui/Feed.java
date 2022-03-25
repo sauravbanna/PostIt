@@ -50,7 +50,7 @@ public class Feed {
         this.postIt = forum;
     }
 
-    // TODO if time
+
     private void showCurrentPost() {
         display.removeAll();
         display.add(Box.createHorizontalGlue());
@@ -63,21 +63,6 @@ public class Feed {
     private void refreshDisplayDimensions() {
         this.displayHeightPx = this.display.getHeight();
         this.displayWidthPx = this.display.getWidth();
-    }
-
-    // MODIFIES: this, Post
-    // EFFECTS: if user is logged in, prompts user to enter a comment
-    //          adds comment user entered to current post's comments
-    //          otherwise, tells user to log in
-    public void comment() {
-        if (loggedIn) {
-            System.out.println("Please type your comment and press enter when done:");
-            String comment = input.nextLine();
-            currentPost.addComment(new Comment(currentUser.getUserName(), comment));
-            System.out.println("Your comment has been posted!");
-        }  else {
-            System.out.println("You have to be logged in to do that!");
-        }
     }
 
     // MODIFIES: this
@@ -103,45 +88,6 @@ public class Feed {
         } else {
             throw new StartOfFeedException();
         }
-    }
-
-    // Methods to print things to console
-
-
-/*
-    // EFFECTS: prints out the first NUM_COMMENTS_TO_SHOW comments from the given list with their user who posted,
-    //          comment body, and like / dislike numbers
-    public void showComments(List<Comment> commentList) {
-        int currentCommentCount = 0;
-
-        while (true) {
-            for (int i = currentCommentCount; i < Math.min(currentCommentCount
-                    + NUM_COMMENTS_TO_SHOW, commentList.size()); i++) {
-                showComment(commentList.get(i));
-            }
-
-            currentCommentCount += NUM_COMMENTS_TO_SHOW;
-
-            if (currentCommentCount >= commentList.size()) {
-                System.out.println("No more comments, feel free to add one!");
-                break;
-            }
-
-            System.out.println("Type " + VIEW_COMMENTS_COMMAND + " to view the next "
-                    + NUM_COMMENTS_TO_SHOW + " comments.");
-            System.out.println("Type Enter to stop reading comments.");
-            String userChoice = input.nextLine();
-            if (!userChoice.equals(VIEW_COMMENTS_COMMAND)) {
-                break;
-            }
-        }
-    }*/
-
-    // EFFECTS: prints out the given comment with user who posted it and comment body
-    public void showComment(Comment c) {
-        System.out.println(c.getOpName() + " says: ");
-        System.out.println(c.getCommentBody());
-        System.out.println();
     }
 
     // EFFECTS: returns the current feed

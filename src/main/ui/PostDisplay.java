@@ -1,25 +1,23 @@
 package ui;
 
-import jdk.nashorn.internal.scripts.JO;
 import model.PostIt;
-import model.content.posts.ImagePost;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import static ui.PostItApp.*;
 import static ui.PostItApp.PADDING;
+import static ui.displays.TwoButtonDisplay.THIN_BLACK_BORDER;
+import static ui.displays.userinput.UserInput.TRANSPARENT_BORDER;
 
 public class PostDisplay extends JPanel {
 
-    public static final Color UPVOTE_COLOR = Color.RED;
-    public static final Color DOWNVOTE_COLOR = Color.BLUE;
+    public static final Color UPVOTE_COLOR = new Color(169, 53, 15);
+    public static final Color DOWNVOTE_COLOR = new Color(31, 66, 83);
 
     private JButton upvoteButton;
     private JButton downvoteButton;
@@ -28,7 +26,7 @@ public class PostDisplay extends JPanel {
     private JButton subscribe;
     private JLabel title;
     private JTextArea body;
-    private JPanel image;
+    private JLabel image;
     private JLabel username;
     private JLabel voteCount;
     private GridBagConstraints gbc;
@@ -41,11 +39,11 @@ public class PostDisplay extends JPanel {
         this.post = p;
         this.forum = forum;
         this.setLayout(new GridBagLayout());
+        this.setOpaque(false);
         initPostElements();
         initUserControlButtons();
         updateButtonColors();
         setVisible(true);
-        setBackground(Color.CYAN);
     }
 
     private void initPostElements() {
@@ -63,6 +61,7 @@ public class PostDisplay extends JPanel {
 
     private void addButtons() {
         JPanel buttonHolder = new JPanel();
+        buttonHolder.setOpaque(false);
         buttonHolder.setLayout(new BoxLayout(buttonHolder, BoxLayout.X_AXIS));
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -90,22 +89,17 @@ public class PostDisplay extends JPanel {
     private void addText() {
         JPanel textHolder = new JPanel();
         textHolder.setLayout(new BoxLayout(textHolder, BoxLayout.Y_AXIS));
-        textHolder.setBackground(Color.RED);
+        textHolder.setOpaque(false);
 
-        title = new JLabel();
-        title.setAlignmentX(Component.LEFT_ALIGNMENT);
-        body = getBody();
-        username = new JLabel();
-        username.setAlignmentX(Component.LEFT_ALIGNMENT);
+        initPostText();
 
-        textHolder.add(Box.createVerticalGlue());
-        textHolder.add(title);
-        textHolder.add(Box.createVerticalGlue());
-        textHolder.add(username);
-        textHolder.add(Box.createVerticalGlue());
-        textHolder.add(body);
-        textHolder.add(Box.createVerticalGlue());
+        addPostTextToContainer(textHolder);
 
+        addContainerToDisplay(textHolder);
+
+    }
+
+    private void addContainerToDisplay(JPanel textHolder) {
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -115,7 +109,27 @@ public class PostDisplay extends JPanel {
         gbc.fill = GridBagConstraints.VERTICAL;
 
         add(textHolder, gbc);
+    }
 
+    private void addPostTextToContainer(JPanel textHolder) {
+        textHolder.add(Box.createVerticalGlue());
+        textHolder.add(title);
+        textHolder.add(Box.createVerticalGlue());
+        textHolder.add(username);
+        textHolder.add(Box.createVerticalGlue());
+        textHolder.add(body);
+        textHolder.add(Box.createVerticalGlue());
+    }
+
+    private void initPostText() {
+        title = new JLabel();
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+        title.setBorder(TRANSPARENT_BORDER);
+        body = getBody();
+        body.setBorder(TRANSPARENT_BORDER);
+        username = new JLabel();
+        username.setBorder(TRANSPARENT_BORDER);
+        username.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 
     private void addUserInputButtons() {
@@ -125,11 +139,12 @@ public class PostDisplay extends JPanel {
 
         JPanel userButtonsHolder = new JPanel();
         userButtonsHolder.setLayout(new BoxLayout(userButtonsHolder, BoxLayout.Y_AXIS));
+        userButtonsHolder.setOpaque(false);
 
 
         userButtonsHolder.add(Box.createVerticalGlue());
         userButtonsHolder.add(upvoteButton);
-        userButtonsHolder.add(voteCount);
+        userButtonsHolder.add(getVoteCountDisplay());
         userButtonsHolder.add(downvoteButton);
         userButtonsHolder.add(Box.createVerticalGlue());
 
@@ -144,18 +159,31 @@ public class PostDisplay extends JPanel {
         add(userButtonsHolder, gbc);
     }
 
+    private JPanel getVoteCountDisplay() {
+        JPanel voteCountDisplay = new JPanel();
+        voteCountDisplay.setBackground(DEFAULT_BACKGROUND_COLOR);
+        voteCountDisplay.setLayout(new BoxLayout(voteCountDisplay, BoxLayout.X_AXIS));
+        voteCountDisplay.add(Box.createHorizontalGlue());
+        voteCountDisplay.add(voteCount);
+        voteCountDisplay.add(Box.createHorizontalGlue());
+        return voteCountDisplay;
+    }
+
+
     private JTextArea getBody() {
-        body = new JTextArea(20, 10);
-        body.setWrapStyleWord(true);
-        body.setLineWrap(true);
-        body.setOpaque(false);
-        body.setEditable(false);
-        body.setFocusable(false);
-        body.setBackground(UIManager.getColor("Label.background"));
-        body.setFont(UIManager.getFont("Label.font"));
-        body.setBorder(UIManager.getBorder("Label.border"));
-        body.setText(post.getBody());
-        return body;
+        if (post.getClass().equals(TextPost.class)) {
+            body = new JTextArea(20, 10);
+            body.setWrapStyleWord(true);
+            body.setLineWrap(true);
+            body.setOpaque(false);
+            body.setEditable(false);
+            body.setFocusable(false);
+            body.setBorder(THIN_BLACK_BORDER);
+            body.setText(post.getBody());
+            return body;
+        } else {
+            return null;
+        }
     }
 
     private void initText() {
@@ -178,8 +206,6 @@ public class PostDisplay extends JPanel {
         voteCount.setFont(new Font("Verdana", Font.PLAIN, 14));
     }
 
-    // TODO
-    // add Subscribe button to community
     private void initUserControlButtons() {
         initUpvoteAction();
 

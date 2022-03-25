@@ -1,4 +1,4 @@
-package ui;
+package ui.displays.userinput;
 
 import model.PostIt;
 
@@ -9,7 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import static ui.PostItApp.invalidInput;
+import static ui.PostItApp.*;
+import static ui.displays.TwoButtonDisplay.FOREGROUND_BORDER;
 
 public class MakePostDisplay extends JDialog {
 
@@ -127,11 +128,18 @@ public class MakePostDisplay extends JDialog {
     private void initButtons() {
         JPanel buttonHolder = new JPanel();
         buttonHolder.setLayout(new BoxLayout(buttonHolder, BoxLayout.X_AXIS));
-        buttonHolder.setBackground(Color.PINK);
+        buttonHolder.setBackground(DEFAULT_FOREGROUND_COLOR);
+        buttonHolder.setBorder(FOREGROUND_BORDER);
         makePost = new JButton();
         makePost.setText("Make Post");
+        makePost.setBackground(DEFAULT_FOREGROUND_COLOR);
+        makePost.setBorder(FOREGROUND_BORDER);
+        makePost.setForeground(DEFAULT_BACKGROUND_COLOR);
         cancel = new JButton();
         cancel.setText("Cancel");
+        cancel.setBackground(DEFAULT_FOREGROUND_COLOR);
+        cancel.setBorder(FOREGROUND_BORDER);
+        cancel.setForeground(DEFAULT_BACKGROUND_COLOR);
         buttonHolder.add(Box.createHorizontalGlue());
         buttonHolder.add(cancel);
         buttonHolder.add(Box.createHorizontalGlue());

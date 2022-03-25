@@ -1,4 +1,4 @@
-package ui;
+package ui.displays.userinput;
 
 import model.PostIt;
 import model.User;
@@ -9,29 +9,26 @@ import java.awt.event.ActionListener;
 
 import static ui.PostItApp.invalidInput;
 
-public class RegisterDisplay extends LoginDisplay {
+public class RegisterDisplay extends UsernamePasswordInput {
 
-    public RegisterDisplay(PostIt forum, int width, int height) {
-        super(forum, width, height);
-        this.setTitle("Register");
+    public RegisterDisplay(PostIt forum) {
+        super(forum);
 
     }
 
     @Override
     public void makeVisible() {
-        usernameText.setText("Username \n(1-20 characters)");
-        passwordText.setText("Password \n(Min 8 characters)");
+        this.setTitle("Register");
+        firstInputText.setText("Username (1-20 characters)");
+        secondInputText.setText("Password (Min 8 characters)");
+        accept.setText("Register");
 
 
-        initButtonActions();
-
-        this.setContentPane(panel);
-        setLocationRelativeTo(getParent());
-        pack();
-        setVisible(true);
+        startDisplay();
     }
 
-    private void initButtonActions() {
+    @Override
+    public void initButtonActions() {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -39,7 +36,7 @@ public class RegisterDisplay extends LoginDisplay {
             }
         });
 
-        login.addActionListener(new ActionListener() {
+        accept.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 registerIfValid();
@@ -48,10 +45,10 @@ public class RegisterDisplay extends LoginDisplay {
     }
 
     private void registerIfValid() {
-        if (checkValidUsername(username.getText())) {
+        if (checkValidUsername(firstInput.getText())) {
             if (checkValidPassword(password.getPassword())) {
                 String passwordString = getPassword(password.getPassword());
-                forum.addUser(username.getText(), new User(username.getText(), passwordString));
+                forum.addUser(firstInput.getText(), new User(firstInput.getText(), passwordString));
                 JOptionPane.showMessageDialog(this,
                         "Successfully registered your account! Use the menu above to login.",
                         "Success",
@@ -61,7 +58,7 @@ public class RegisterDisplay extends LoginDisplay {
                 invalidInput(this,"password");
             }
         } else {
-            invalidInput(this,"username");
+            invalidInput(this,"username, or that username already exists.");
         }
     }
 

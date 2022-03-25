@@ -8,7 +8,10 @@ import java.awt.*;
 
 import static ui.PostItApp.*;
 
+// A basic display with 2 buttons
 public abstract class TwoButtonDisplay extends JDialog {
+
+    // CONSTANTS
 
     public static final Border LOWERED_BEVEL_BORDER = BorderFactory.createLoweredBevelBorder();
     public static final Border TRANSPARENT_BORDER = BorderFactory.createMatteBorder(PADDING, PADDING, PADDING, PADDING,
@@ -20,11 +23,18 @@ public abstract class TwoButtonDisplay extends JDialog {
     public static final Border COMPOUND_BORDER_TRANSPARENT = BorderFactory.createCompoundBorder(TRANSPARENT_BORDER,
             BorderFactory.createCompoundBorder(THIN_BLACK_BORDER, LOWERED_BEVEL_BORDER));
 
+    // FIELDS
+
     protected PostIt forum;
     protected JPanel panel;
     protected JButton button2;
     protected JButton button1;
 
+    // METHODS
+
+    // Constructor
+    // EFFECTS: creates a new dialog, initialises its elements
+    //          sets the forum to the given value
     public TwoButtonDisplay(PostIt forum) {
         this.forum = forum;
         this.panel = new JPanel();
@@ -34,14 +44,11 @@ public abstract class TwoButtonDisplay extends JDialog {
 
 
 
-        initLoginElements();
-    }
-
-    private void initLoginElements() {
         initButtons();
-
     }
 
+    // MODIFIES: this, JPanel, JLabel
+    // EFFECTS: initialises the display's buttons and places it on the panel
     protected void initButtons() {
         JPanel buttonHolder = new JPanel();
         buttonHolder.setBackground(DEFAULT_FOREGROUND_COLOR);
@@ -66,6 +73,8 @@ public abstract class TwoButtonDisplay extends JDialog {
         panel.add(buttonHolder, gbc);
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: sets the designs for the display's buttons
     private void initButtonDesigns() {
         button2 = new JButton();
         button2.setText("");
@@ -79,11 +88,16 @@ public abstract class TwoButtonDisplay extends JDialog {
         button1.setBorder(FOREGROUND_BORDER);
     }
 
-
+    // MODIFIES: JButton
+    // EFFECTS: sets the actions for the 2 buttons on the display
     public abstract void initButtonActions();
 
+    // EFFECTS: makes this display visible
     public abstract void makeVisible();
 
+    // MODIFIES: this
+    // EFFECTS: initialises the 2 button's actions
+    //          and makes the display visible
     public void startDisplay() {
         initButtonActions();
 

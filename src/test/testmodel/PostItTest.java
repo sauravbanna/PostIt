@@ -1,7 +1,11 @@
-package model;
+package testmodel;
 
 import exceptions.EmptyDefaultCommunities;
 import exceptions.EmptyFeedException;
+import exceptions.IDAlreadyExistsException;
+import model.Community;
+import model.PostIt;
+import model.User;
 import model.content.posts.Post;
 import org.junit.jupiter.api.*;
 import ui.Feed;
@@ -293,7 +297,7 @@ public class PostItTest {
         for (String s : PostIt.DEFAULT_COMMUNITIES) {
             assertTrue(testPostIt.getCommunities().containsKey(s));
             assertEquals(s, testPostIt.getCommunities().get(s).getCommunityName());
-            assertEquals(Community.DEFAULT_ABOUT_SECTION, testPostIt.getCommunities().get(s).getCommunityAbout());
+            Assertions.assertEquals(Community.DEFAULT_ABOUT_SECTION, testPostIt.getCommunities().get(s).getCommunityAbout());
             assertEquals(Community.DEFAULT_CREATOR, testPostIt.getCommunities().get(s).getCreator());
         }
     }
@@ -315,6 +319,67 @@ public class PostItTest {
             assertEquals(Community.DEFAULT_ABOUT_SECTION, testPostIt.getCommunities().get(s).getCommunityAbout());
             assertEquals(Community.DEFAULT_CREATOR, testPostIt.getCommunities().get(s).getCreator());
         }
+    }
+
+    @Test
+    void testMakeImagePost() {
+        assertTrue(testPostIt.getPosts().isEmpty());
+        assertTrue(testPostIt.getCommunities().get(communityChoice).getPosts().isEmpty());
+        assertTrue(testPostIt.getCurrentUser().getPosts().isEmpty());
+
+        assertTrue(testPostIt.makeImagePost("title",
+                "./data/images/47758.jpg",
+                communityChoice, 47758));
+
+        assertEquals(1, testPostIt.getPosts().size());
+        assertEquals(1, testPostIt.getCommunities().get(communityChoice).getPosts().size());
+        assertEquals(1, testPostIt.getCurrentUser().getPosts().size());
+
+        Post post = testPostIt.getPosts().values().iterator().next();
+
+        assertEquals(47758, testPostIt.getCommunities().get(communityChoice).getPosts().get(0));
+        assertEquals(47758, testPostIt.getCurrentUser().getPosts().get(0));
+        assertEquals(post, testPostIt.getPosts().get(47758));
+    }
+
+    @Test
+    void testGetRandomIDNotEnoughIDS() {
+        testPostIt = new PostIt(0);
+        testPostIt.addDefaultCommunitiesCheck();
+        int randomID = 0;
+        try {
+            randomID = testPostIt.getRandomID();
+        } catch (IDAlreadyExistsException ide) {
+            fail("IDAlreadyExistsException should not have been thrown.");
+        }
+
+        assertTrue(randomID == 0);
+        testPostIt.addUser(testUser.getUserName(), testUser);
+        testPostIt.login(testUser.getUserName());
+        testPostIt.makeImagePost("title", "./data/images/28832.png",
+                communityChoice, randomID);
+
+        try {
+            randomID = testPostIt.getRandomID();
+            fail("IDAlreadyExistsException should have been thrown.");
+        } catch (IDAlreadyExistsException ide) {
+            // pass
+        }
+    }
+
+    @Test
+    void testGetRandomID() {
+        int randomID = 0;
+        try {
+            randomID = testPostIt.getRandomID();
+        } catch (IDAlreadyExistsException ide) {
+            fail("IDAlreadyExistsException should not have been thrown.");
+        }
+
+        assertFalse(randomID == 0);
+        assertTrue(randomID > 0);
+        assertTrue(randomID < 100000);
+
     }
 
 

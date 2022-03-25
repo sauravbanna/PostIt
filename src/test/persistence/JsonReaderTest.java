@@ -86,7 +86,7 @@ public class JsonReaderTest extends JsonTest {
                     0, 0, 26768);
             testPost1 = initAssertPost("title1", "body1", "1", "newCommunity", 1,
                     1, 3, 19766);
-            testImagePost = initAssertImagePost("Flower", "./data/images/flower.jpg", "1",
+            testImagePost = initAssertImagePost("Flower", "./data/images/47758.jpg", "1",
                     "news", 0, 0, 0, 47758);
             testComments = initAssertComments();
 

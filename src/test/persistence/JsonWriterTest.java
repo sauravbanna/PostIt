@@ -181,6 +181,8 @@ public class JsonWriterTest extends JsonTest {
             postIt.addDefaultCommunitiesCheck();
             postIt.makeTextPost("title1", "body1", "newCommunity");
             postIt.makeTextPost("title2", "body2", communityChoice);
+            postIt.makeImagePost("title3", "./data/images/47758.jpg",
+                    communityChoice, 37884);
 
             JsonWriter writer = new JsonWriter(VALID_LOCATION);
             writer.openWriter();
@@ -190,7 +192,7 @@ public class JsonWriterTest extends JsonTest {
             JsonReader reader = new JsonReader(VALID_LOCATION);
             postIt = reader.read();
 
-            assertEquals(1, postIt.getCommunities().get(communityChoice).getPosts().size());
+            assertEquals(2, postIt.getCommunities().get(communityChoice).getPosts().size());
             assertEquals(1, postIt.getCommunities().get("newCommunity").getPosts().size());
 
             int defaultCommunityId = postIt.getCommunities().get(communityChoice).getPosts().get(0);
@@ -198,10 +200,13 @@ public class JsonWriterTest extends JsonTest {
 
             assertTrue(postIt.getPosts().containsKey(defaultCommunityId));
             assertTrue(postIt.getPosts().containsKey(customCommunityPostId));
+            assertTrue(postIt.getPosts().containsKey(37884));
             assertEquals("title1", postIt.getPosts().get(customCommunityPostId).getTitle());
             assertEquals("title2", postIt.getPosts().get(defaultCommunityId).getTitle());
             assertEquals("body1", postIt.getPosts().get(customCommunityPostId).getBody());
             assertEquals("body2", postIt.getPosts().get(defaultCommunityId).getBody());
+            assertEquals("title3", postIt.getPosts().get(37884).getTitle());
+            assertEquals("./data/images/47758.jpg", postIt.getPosts().get(37884).getBody());
 
         } catch (IOException ioe) {
             fail("IOException should not have been thrown.");

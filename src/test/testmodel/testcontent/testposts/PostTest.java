@@ -1,8 +1,10 @@
-package model;
+package testmodel.testcontent.testposts;
 
 import model.content.othercontent.Comment;
 import model.content.posts.Post;
 import org.junit.jupiter.api.*;
+import testmodel.testcontent.ContentTest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class PostTest extends ContentTest {

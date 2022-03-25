@@ -2,6 +2,8 @@ package model.content.posts;
 
 import org.json.JSONObject;
 
+// A Post with an image, and all the other information a Post has such as
+// community name, username, title, number of likes, dislikes, comments, id number, and list of comments
 public class ImagePost extends Post {
 
     // CONSTANTS
@@ -16,7 +18,7 @@ public class ImagePost extends Post {
     // Constructor
     // REQUIRES: given name is a registered user, given community is an existing community on PostIt, given id
     //          is not already assigned to another post on PostIt
-    // EFFECTS: creates a new Text Post with given poster name, title, id, and body in the given community
+    // EFFECTS: creates a new Image Post with given poster name, title, id, and image location in the given community
     public ImagePost(String opName, String title, String image, String community, int id) {
         super(opName, title, community, id);
         this.imageLocation = image;

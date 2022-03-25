@@ -1,4 +1,4 @@
-package model;
+package testmodel.testcontent;
 
 import model.content.Content;
 import org.junit.jupiter.api.*;
@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ContentTest {
 
-    Content testContent;
+    protected Content testContent;
 
     @Test
     void testLike() {

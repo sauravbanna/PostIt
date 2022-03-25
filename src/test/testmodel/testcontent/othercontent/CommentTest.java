@@ -1,7 +1,9 @@
-package model;
+package testmodel.testcontent.othercontent;
 
 import model.content.othercontent.Comment;
 import org.junit.jupiter.api.*;
+import testmodel.testcontent.ContentTest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommentTest extends ContentTest {

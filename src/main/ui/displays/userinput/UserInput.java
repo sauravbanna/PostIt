@@ -6,12 +6,20 @@ import ui.displays.TwoButtonDisplay;
 import javax.swing.*;
 import java.awt.*;
 
+// A two-buttoned display allowing the user to input in one field
 public abstract class UserInput extends TwoButtonDisplay {
+
+    // FIELDS
 
     protected JLabel firstInputText;
     protected JTextField firstInput;
     protected JLabel secondInputText;
 
+    // METHODS
+
+    // Constructor
+    // EFFECTS: creates a new dialog, initialises its elements
+    //          sets the forum to the given value
     public UserInput(PostIt forum) {
         super(forum);
 
@@ -20,6 +28,8 @@ public abstract class UserInput extends TwoButtonDisplay {
         initPasswordText();
     }
 
+    // MODIFIES: this, JPanel, JLabel
+    // EFFECTS: initialises the first input label and places it on the panel
     private void initFirstInputText() {
         firstInputText = new JLabel();
         firstInputText.setText("");
@@ -33,6 +43,8 @@ public abstract class UserInput extends TwoButtonDisplay {
         panel.add(firstInputText, gbc);
     }
 
+    // MODIFIES: this, JPanel, JTextField
+    // EFFECTS: initialises the username input field and places it on the panel
     private void initUsername() {
         firstInput = new JTextField(15);
         firstInput.setBorder(COMPOUND_BORDER_TRANSPARENT);
@@ -44,6 +56,8 @@ public abstract class UserInput extends TwoButtonDisplay {
         panel.add(firstInput, gbc);
     }
 
+    // MODIFIES: this, JPanel, JLabel
+    // EFFECTS: initialises the password label and places it on the panel
     private void initPasswordText() {
         secondInputText = new JLabel();
         secondInputText.setText("");

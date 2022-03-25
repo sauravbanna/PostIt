@@ -1,6 +1,6 @@
-package model;
+package testmodel;
 
-import model.content.posts.TextPost;
+import model.Community;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

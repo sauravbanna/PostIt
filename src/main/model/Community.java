@@ -78,6 +78,7 @@ public class Community extends PostCollections implements Writable {
         this.subCount++;
     }
 
+    // REQUIRES: subCount > 0
     // MODIFIES: this
     // EFFECTS: removes 1 subscriber from this community's sub count
     public void removeSubscriber() {

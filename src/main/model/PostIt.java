@@ -1,7 +1,9 @@
 package model;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import exceptions.EmptyDefaultCommunities;
 import exceptions.EmptyFeedException;
+import exceptions.IDAlreadyExistsException;
 import model.content.posts.ImagePost;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
@@ -112,24 +114,51 @@ public class PostIt implements Writable {
         return this.currentlyLoggedInUser;
     }
 
-    // TODO
+
     // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True,
     //           and given community exists on PostIt
     // MODIFIES: this
     // EFFECTS: creates a new text post with the given title and body with a unique id in the given community,
     //          with poster being the current user, and adds it to current user's and community's posts
+    //          tries to generate a unique id for the post
     //          returns true if post successfully made, returns false if generated id already exists
     public Boolean makeTextPost(String title, String body, String communityChoice) {
+        int randomId = 0;
+        try {
+            randomId = getRandomID();
+        } catch (IDAlreadyExistsException ide) {
+            return false;
+        }
+        Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice, randomId);
+        posts.put(randomId, newPost);
+        communities.get(communityChoice).addPost(randomId);
+        currentlyLoggedInUser.addUserPost(randomId);
+        return true;
+    }
+
+
+    // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True,
+    //           and given community exists on PostIt
+    //           and given id is unique and isn't already assigned to a post on PostIt
+    // MODIFIES: this
+    // EFFECTS: creates a new image post with the given title and image path with a unique id in the given community,
+    //          with poster being the current user, and adds it to current user's and community's posts
+    public Boolean makeImagePost(String title, String image, String communityChoice, int id) {
+        Post newPost = new ImagePost(currentlyLoggedInUser.getUserName(), title, image, communityChoice, id);
+        posts.put(id, newPost);
+        communities.get(communityChoice).addPost(id);
+        currentlyLoggedInUser.addUserPost(id);
+        return true;
+    }
+
+    // EFFECTS: generates a random id from 0 to maxId
+    //          throws IDAlreadyExistsException if id is already assigned to a post
+    public int getRandomID() throws IDAlreadyExistsException {
         int randomId = (int)(Math.random() * maxId);
         if (posts.containsKey(randomId)) {
-            return false;
-        } else {
-            Post newPost = new TextPost(currentlyLoggedInUser.getUserName(), title, body, communityChoice, randomId);
-            posts.put(randomId, newPost);
-            communities.get(communityChoice).addPost(randomId);
-            currentlyLoggedInUser.addUserPost(randomId);
-            return true;
+            throw new IDAlreadyExistsException();
         }
+        return randomId;
     }
 
     // REQUIRES: currentlyLoggedInUser != null, and loggedIn is True
@@ -154,7 +183,7 @@ public class PostIt implements Writable {
     //          if logged in, returns feed with posts from user's subscribed communities
     //          throws EmptyFeedException if feed is empty
     //          if not logged in, returns feed with posts from default communities
-    //          sets current community to null
+    //          throws EmptyDefaultCommunities if feed is empty
     public Feed startHomeFeed() throws EmptyFeedException, EmptyDefaultCommunities {
         List<Integer> currentFeed = new ArrayList<>();
         if (loggedIn) {
@@ -183,7 +212,7 @@ public class PostIt implements Writable {
     // MODIFIES: this
     // EFFECTS: adds posts from the community with the given name to the active feed
     //          and returns the feed
-    //          sets current community to the given community name
+    //          throws EmptyFeedException if feed is empty
     public Feed startCommunityFeed(String communityName) throws EmptyFeedException {
         activeFeed = new Feed(communities.get(communityName).getPosts(), this);
         if (communities.get(communityName).getPosts().isEmpty()) {
@@ -192,6 +221,11 @@ public class PostIt implements Writable {
         return activeFeed;
     }
 
+    // REQUIRES: given username is a name of a registered user on PostIt
+    // MODIFIES: this
+    // EFFECTS: adds posts from the user with the given name to the active feed
+    //          and returns the feed
+    //          throws EmptyFeedException if feed is empty
     public Feed visitUser(String username) throws EmptyFeedException {
         activeFeed = new Feed(usernamePasswords.get(username).getPosts(), this);
         if (usernamePasswords.get(username).getPosts().isEmpty()) {

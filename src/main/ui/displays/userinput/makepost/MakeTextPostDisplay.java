@@ -14,11 +14,15 @@ import static ui.displays.TwoButtonDisplay.FOREGROUND_BORDER;
 
 public class MakeTextPostDisplay extends MakePostDisplay {
 
+    // FIELDS
 
     private JTextArea body;
 
+    // METHODS
 
-
+    // Constructor
+    // EFFECTS: creates a new dialog, initialises its elements, and sets it visible
+    //          sets the forum, width and height to the given values
     public MakeTextPostDisplay(PostIt forum, int width, int height) {
         super(forum, width, height);
         initBody();
@@ -30,6 +34,8 @@ public class MakeTextPostDisplay extends MakePostDisplay {
         setVisible(true);
     }
 
+    // MODIFIES: this, JPanel, JTextArea
+    // EFFECTS: initialises the body input text area and places it on the panel
     private void initBody() {
         body = new JTextArea(20, 20);
         body.setLineWrap(true);
@@ -41,12 +47,16 @@ public class MakeTextPostDisplay extends MakePostDisplay {
         panel.add(body, gbc);
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the button actions for this dialog
     private void initButtonActions() {
         initMakePostAction();
 
         initCancelAction(this);
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the make post action for this dialog
     private void initMakePostAction() {
         makePost.addActionListener(new ActionListener() {
             @Override
@@ -56,14 +66,24 @@ public class MakeTextPostDisplay extends MakePostDisplay {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: checks if the user inputs are valid, and then makes a text post if they are
+    //          prompts user to re-enter inputs if not
+    //          loops until post is made if unqiue id not generated
+    //          lets user know that post has been made
     private void makePostIfValid() {
         if (checkIfEmpty(title.getText())) {
             if (checkIfEmpty(body.getText())) {
                 if (confirmMakePost()) {
-                    forum.makeTextPost(title.getText(),
+                    boolean makePost = forum.makeTextPost(title.getText(),
                             body.getText(),
                             (String)(community.getSelectedItem()));
-                    postSuccessfullyMade();
+                    while (!makePost) {
+                        makePost = forum.makeTextPost(title.getText(),
+                                body.getText(),
+                                (String)(community.getSelectedItem()));
+                    }
+                    postSuccessfullyMade(this);
                 }
             } else {
                 invalidInput(this, "body");
@@ -74,28 +94,6 @@ public class MakeTextPostDisplay extends MakePostDisplay {
     }
 
 
-
-    private boolean checkIfEmpty(String str) {
-        return (str != null && !(str.length() == 0));
-    }
-
-    private boolean confirmMakePost() {
-        int userChoice = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to post this?",
-                "Cofirm Post",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-
-        return userChoice == JOptionPane.YES_OPTION;
-    }
-
-    private void postSuccessfullyMade() {
-        JOptionPane.showMessageDialog(this,
-                "Post Successfully Made!",
-                "Success",
-                JOptionPane.PLAIN_MESSAGE);
-        this.dispose();
-    }
 
 
 }

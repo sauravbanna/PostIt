@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // A user on PostIt with a registered username and password, an about section, a list of
-// subscribed communities, and lists of post ids that they've made, liked and disliked
+// subscribed communities, and lists of ids of posts that they've made, liked and disliked
 // A User can like and disliked posts, comment under posts, subscribe to communities and change
 // their bio
 public class User extends PostCollections implements Writable {
@@ -85,6 +85,8 @@ public class User extends PostCollections implements Writable {
     //          and adds 1 like to post's like count
     //          if post is in user's disliked posts, removes it from there
     //          and reduces the post's dislikes by 1
+    //          if post is already in liked posts, removes it from there
+    //          and reduces the post's likes by 1
     public void addLikedPost(Post p) {
         if (!likedPosts.contains(p.getId())) {
             p.like();
@@ -104,6 +106,8 @@ public class User extends PostCollections implements Writable {
     //          and adds 1 like to post's dislike count
     //          if post is in user's liked posts, removes it from there
     //          and reduces the post's likes by 1
+    //          if post is already in disliked posts, removes it from there
+    //          and reduces the post's dislikes by 1
     public void addDislikedPost(Post p) {
         if (!dislikedPosts.contains(p.getId())) {
             p.dislike();
@@ -138,7 +142,7 @@ public class User extends PostCollections implements Writable {
         c.removeSubscriber();
     }
 
-    // REQUIRES: password is at least ui.PostIt.MIN_PASSWORD_LENGTH characters long
+    // REQUIRES: password is at least PostIt.MIN_PASSWORD_LENGTH characters long
     // MODIFIES: this
     // EFFECTS: sets user's password to given string
     public void setPassword(String password) {

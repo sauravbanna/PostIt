@@ -6,8 +6,9 @@
         "bio": "No bio yet...",
         "dislikedPosts": [],
         "posts": [
-            20843,
-            72774
+            4504,
+            43581,
+            37884
         ],
         "subscribedCommunities": [],
         "username": "1"
@@ -17,9 +18,20 @@
             "comments": [],
             "opName": "1",
             "dislikes": 0,
-            "textBody": "body2",
-            "id": 72774,
-            "title": "title2",
+            "textBody": "body1",
+            "id": 4504,
+            "title": "title1",
+            "community": "newCommunity",
+            "likes": 0,
+            "commentCount": 0
+        },
+        {
+            "image": "./data/images/47758.jpg",
+            "comments": [],
+            "opName": "1",
+            "dislikes": 0,
+            "id": 37884,
+            "title": "title3",
             "community": "funny",
             "likes": 0,
             "commentCount": 0
@@ -28,10 +40,10 @@
             "comments": [],
             "opName": "1",
             "dislikes": 0,
-            "textBody": "body1",
-            "id": 20843,
-            "title": "title1",
-            "community": "newCommunity",
+            "textBody": "body2",
+            "id": 43581,
+            "title": "title2",
+            "community": "funny",
             "likes": 0,
             "commentCount": 0
         }
@@ -42,8 +54,9 @@
         "bio": "No bio yet...",
         "dislikedPosts": [],
         "posts": [
-            20843,
-            72774
+            4504,
+            43581,
+            37884
         ],
         "subscribedCommunities": [],
         "username": "1"
@@ -68,7 +81,7 @@
             "subs": 0,
             "name": "newCommunity",
             "about": "some about section",
-            "posts": [20843]
+            "posts": [4504]
         },
         {
             "creator": "PostIt",
@@ -89,7 +102,10 @@
             "subs": 0,
             "name": "funny",
             "about": "This is a default community.",
-            "posts": [72774]
+            "posts": [
+                43581,
+                37884
+            ]
         },
         {
             "creator": "PostIt",

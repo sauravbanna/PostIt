@@ -2,6 +2,7 @@ package ui;
 
 import exceptions.EmptyFeedException;
 import exceptions.EndOfFeedException;
+import exceptions.IDAlreadyExistsException;
 import exceptions.StartOfFeedException;
 import model.Community;
 import model.PostIt;
@@ -46,7 +47,6 @@ public class PostItApp extends JFrame {
     private PostIt postIt;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
-
     private JPanelWithImage forum;
     private JPanel title;
     private JPanel buttons;
@@ -64,25 +64,26 @@ public class PostItApp extends JFrame {
     private String userBeingViewed;
     private String communityBeingViewed;
     private Image background;
-
-
-    // TODO
-    // Make Image Post
-
-
+    private boolean local;
 
     // METHODS
 
     // Constructor
-    // EFFECTS: creates a new PostIt Forum and instantiates the Scanner input to take in user input
-    //          and instantiates the JSON writer and reader to the correct file location
+    // EFFECTS: creates a new PostIt JFrame and asks user if they want to load forum from file
+    //          if yes, instantiates the JSON writer and reader to the correct file location
+    //          and loads forum
+    //          if no, creates default forum
+    //          then adds all window elements and starts the forum display
     public PostItApp() {
-        jsonWriter = new JsonWriter(FORUM_DATA);
-        jsonReader = new JsonReader(FORUM_DATA);
+        if (askUserToLoadData()) {
+            jsonWriter = new JsonWriter(FORUM_DATA);
+            jsonReader = new JsonReader(FORUM_DATA);
+            initForum();
+        } else {
+            postIt = new PostIt();
+            postIt.addDefaultCommunitiesCheck();
+        }
 
-        initForum();
-
-        System.out.println(postIt.getPosts().get(47758).getCommunity());
         this.widthPx = DEFAULT_WIDTH_PX;
         this.heightPx = DEFAULT_HEIGHT_PX;
 
@@ -95,7 +96,32 @@ public class PostItApp extends JFrame {
         setVisible(true);
     }
 
-    // TODO
+    // MODIFIES: this
+    // EFFECTS: asks user if they want to load forum from file or create a new one or cancel
+    //          closes if cancel
+    private boolean askUserToLoadData() {
+        Object[] options = {"Load From File", "Create Local Forum", "Cancel"};
+        int userChoice = JOptionPane.showOptionDialog(this,
+                "Would you like to load the forum on file, or create a local empty forum?",
+                "Start Forum",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+        if (userChoice == JOptionPane.YES_OPTION) {
+            local = false;
+            return true;
+        } else if (userChoice == JOptionPane.NO_OPTION) {
+            local = true;
+            return false;
+        }
+
+        System.exit(0);
+        return false;
+
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds a new Window Listener to react to window resizing
     private void initResizeWindow() {
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -112,7 +138,9 @@ public class PostItApp extends JFrame {
         });
     }
 
-    // TODO
+    // MODIFIES: this, JPanelWithImage
+    // EFFECTS: calculates and sets the new height and width of the display
+    //          and redraws background
     private void resizeWindow() {
         this.widthPx = getWidth();
         this.heightPx = getHeight();
@@ -120,6 +148,8 @@ public class PostItApp extends JFrame {
 
     }
 
+    // MODIFIES: this, PostIt
+    // EFFECTS: tries to load forum from file, prints to console if failed
     private void initForum() {
         try {
             postIt = jsonReader.read();
@@ -129,6 +159,8 @@ public class PostItApp extends JFrame {
         postIt.addDefaultCommunitiesCheck();
     }
 
+    // MODIFIES: this, JPanelWithImage
+    // EFFECTS: initialises the forum window with a background and window elements
     private void initForumWindow() {
         background = getBackgroundImage();
         forum = new JPanelWithImage(background);
@@ -144,6 +176,8 @@ public class PostItApp extends JFrame {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
 
+    // EFFECTS: tries to get background image from specified file location
+    //          return image if successful, prints to console if failed
     private Image getBackgroundImage() {
         Image image = null;
         try {
@@ -155,6 +189,8 @@ public class PostItApp extends JFrame {
         return image;
     }
 
+    // MODIFIES: this
+    // EFFECTS: initialises the forum elements for the forum display
     private void addForumElements() {
         addTitle();
 
@@ -165,6 +201,8 @@ public class PostItApp extends JFrame {
         addButtons();
     }
 
+    // MODIFIES: this, JPanelWithImage
+    // EFFECTS: initialises the button holder panel for the forum display
     private void addButtons() {
         buttons = new JPanel();
         buttons.setBackground(DEFAULT_FOREGROUND_COLOR);
@@ -177,6 +215,8 @@ public class PostItApp extends JFrame {
         forum.add(buttons, gbc);
     }
 
+    // MODIFIES: this, JPanelWithImage
+    // EFFECTS: initialises the feed panel for the forum display
     private void addFeed() {
         feed = new JPanel();
         feed.setLayout(new BoxLayout(feed, BoxLayout.X_AXIS));
@@ -190,6 +230,8 @@ public class PostItApp extends JFrame {
         forum.add(feed, gbc);
     }
 
+    // MODIFIES: this, JPanelWithImage
+    // EFFECTS: initialises the title panel for the forum display
     private void addTitle() {
         title = new JPanel();
         title.setLayout(new GridBagLayout());
@@ -204,6 +246,8 @@ public class PostItApp extends JFrame {
         forum.add(title, gbc);
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: initialises the title text for the title panel
     private void initTitle() {
         titleText = new JLabel();
         titleText.setFont(new Font(DEFAULT_FONT, Font.PLAIN, TITLE_FONT_SIZE));
@@ -215,6 +259,8 @@ public class PostItApp extends JFrame {
         initTitlePosition();
     }
 
+    // MODIFIES: this, JPanel
+    // EFFECTS: sets the title text at their positions on the title panel
     private void initTitlePosition() {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -239,6 +285,8 @@ public class PostItApp extends JFrame {
         title.add(subCountText, gbc);
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: sets the title text based on the given logged in boolean
     private void refreshTitleText(boolean loggedIn) {
         if (loggedIn) {
             User user = postIt.getCurrentUser();
@@ -254,6 +302,8 @@ public class PostItApp extends JFrame {
         repaint();
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: sets the title text based on the given user's profile
     private void refreshTitleText(User user) {
         titleText.setText("Welcome to " + user.getUserName() + "'s profile!");
         aboutSectionText.setText(user.getBio());
@@ -261,6 +311,8 @@ public class PostItApp extends JFrame {
         repaint();
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: sets the title text based on the given community's information
     private void refreshTitleText(Community community) {
         titleText.setText("Welcome to the " + community.getCommunityName() + " community!");
         aboutSectionText.setText(community.getCommunityAbout());
@@ -268,6 +320,8 @@ public class PostItApp extends JFrame {
         repaint();
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: sets the title text based on whether a user, a community, or the home feed is being viewed
     private void refreshTitleText() {
         if (userBeingViewed != null) {
             refreshTitleText(postIt.getUsernamePasswords().get(userBeingViewed));
@@ -278,6 +332,9 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // MODIFIES: this, JPanel
+    // EFFECTS: adds buttons to the buttons panel
+    //          if editProfile is true, adds edit profile button, doesn't add if false
     private void initButtons(boolean editProfile) {
         buttons.removeAll();
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
@@ -296,6 +353,8 @@ public class PostItApp extends JFrame {
         buttons.add(Box.createHorizontalGlue());
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the actions for the forum buttons
     private void initButtonActions() {
         initBackButtonAction();
         initNextButtonAction();
@@ -305,6 +364,10 @@ public class PostItApp extends JFrame {
 
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the action for the create community button
+    //          opens the community creation display if user is logged in
+    //          tells user to log in if not
     private void initCreateCommunityButtonAction() {
         createCommunityButton = new JButton();
         createCommunityButton.setText("Create Community");
@@ -320,6 +383,11 @@ public class PostItApp extends JFrame {
         });
     }
 
+
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the action for the make post button
+    //          opens the make post display if user is logged in
+    //          tells user to log in if not
     private void initMakePostButtonAction() {
         makePostButton = new JButton();
         makePostButton.setText("Make Post");
@@ -335,6 +403,9 @@ public class PostItApp extends JFrame {
         });
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the action for the edit profile button
+    //          opens the edit profile dialog
     private void initEditProfileButtonAction() {
         editProfileButton = new JButton();
         editProfileButton.setText("Edit Profile");
@@ -346,6 +417,10 @@ public class PostItApp extends JFrame {
         });
     }
 
+
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the action for the next button
+    //          shows the next post in the feed
     private void initNextButtonAction() {
         nextButton = new JButton("Next");
         nextButton.addActionListener(new ActionListener() {
@@ -356,6 +431,10 @@ public class PostItApp extends JFrame {
         });
     }
 
+
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the action for the back button
+    //          shows the previous post in the feed
     private void initBackButtonAction() {
         backButton = new JButton("Back");
         backButton.addActionListener(new ActionListener() {
@@ -366,12 +445,16 @@ public class PostItApp extends JFrame {
         });
     }
 
+    // MODIFIES: this, CreateCommunityDisplay
+    // EFFECTS: creates a dialog to make a new community
     private void createCommunity() {
         CreateCommunityDisplay display = new CreateCommunityDisplay(postIt);
         display.makeVisible();
     }
 
-    // TODO
+    // MODIFIES: this, Feed
+    // EFFECTS: if activeFeed is not null, moves back in feed
+    //          lets user know if they've reached start of feed
     private void backButtonPressed() {
         if (postIt.getActiveFeed() != null) {
             try {
@@ -384,7 +467,9 @@ public class PostItApp extends JFrame {
         }
     }
 
-    // TODO
+    // MODIFIES: this, Feed
+    // EFFECTS: if activeFeed is not null, moves forward in feed
+    //          lets user know if they've reached end of feed
     private void nextButtonPressed() {
         if (postIt.getActiveFeed() != null) {
             try {
@@ -398,22 +483,53 @@ public class PostItApp extends JFrame {
         }
     }
 
-
-
-    // TODO
+    // MODIFIES: this
+    // EFFECTS: adds a listener to detect when the forum is closed
+    //          prompts user to save if the forum is not local
     private void initWindowListener() {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                saveForumCheck();
+                if (!local) {
+                    closeWithSaving();
+                } else {
+                    closeWithoutSaving();
+                }
             }
         });
     }
 
-    // TODO
+    // EFFECTS: asks user to confirm exit, and then ask them if they want to save the forum
+    private void closeWithSaving() {
+        int userChoice = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to exit?",
+                "Exit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (userChoice == JOptionPane.YES_OPTION) {
+            saveForumCheck();
+        }
+    }
+
+    // EFFECTS: asks user to confirm exit and exits
+    private void closeWithoutSaving() {
+        int userChoice = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to exit? Your posts will not be saved.",
+                "Exit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (userChoice == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }
+
+    // EFFECTS: asks user if they want to save the forum
+    //          saves and exits if yes, exits if no
     private void saveForumCheck() {
         int userChoice = JOptionPane.showConfirmDialog(this,
-                "Would you like to save your posts? Close this message to Auto-save.",
+                "Would you like to save the forum? Close this message to Auto-save.",
                 "Save Posts", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (userChoice == JOptionPane.NO_OPTION) {
@@ -423,6 +539,10 @@ public class PostItApp extends JFrame {
         saveForum();
     }
 
+    // MODIFIES: this
+    // EFFECTS: tries to save the forum to file
+    //          exits if successful
+    //          asks user if they want to exit without saving if not
     private void saveForum() {
         try {
             jsonWriter.openWriter();
@@ -443,6 +563,7 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // EFFECTS: creates a navigation menu section and adds options to it
     private JMenu makeNavigateMenu() {
         JMenu navigateMenu = new JMenu("Navigate");
         navigateMenu.setMnemonic(KeyEvent.VK_N);
@@ -457,6 +578,7 @@ public class PostItApp extends JFrame {
         return navigateMenu;
     }
 
+    // EFFECTS: creates a user menu section and adds options to it
     private JMenu makeUserMenu() {
         JMenu userMenu = new JMenu("Your Profile");
         userMenu.setMnemonic(KeyEvent.VK_U);
@@ -473,7 +595,8 @@ public class PostItApp extends JFrame {
         return userMenu;
     }
 
-    // TODO
+    // MODIFIES: this
+    // EFFECTS: adds navigation and user menu sections to menu and sets the menu to this display
     public void initMenuBar() {
         JMenuBar menu = new JMenuBar();
         menu.add(makeNavigateMenu());
@@ -481,6 +604,10 @@ public class PostItApp extends JFrame {
         setJMenuBar(menu);
     }
 
+    // MODIFIES: this, PostIt, Feed
+    // EFFECTS: tries to get the home feed of the forum
+    //          if feed is empty, tells user that it is
+    //          refreshes the title text and buttons
     private void getHomeFeed() {
         try {
             userBeingViewed = null;
@@ -488,7 +615,7 @@ public class PostItApp extends JFrame {
             postIt.startHomeFeed();
             postIt.getActiveFeed().setDisplay(feed);
         } catch (Exception e) {
-            e.getStackTrace();
+            emptyFeed("Subscribe to some communities first!");
         }
 
         initButtons(false);
@@ -496,6 +623,10 @@ public class PostItApp extends JFrame {
     }
 
 
+    // MODIFIES: this, PostIt, User
+    // EFFECTS: prompts user to enter a new bio
+    //          updates bio and refreshes title text if entered string is not empty
+    //          prompts user to re-enter if empty
     private void editProfilePressed() {
         String newBio = JOptionPane.showInputDialog(this,
                 "Please enter your new bio.",
@@ -508,12 +639,13 @@ public class PostItApp extends JFrame {
                     "Profile Successfully Updated!",
                     "Success",
                     JOptionPane.PLAIN_MESSAGE);
-            refreshTitleText();
+            refreshTitleText(postIt.getCurrentUser());
         } else {
             invalidInput(this, "bio");
         }
     }
 
+    // EFFECTS: shows user a dialog saying that the given inputType was invalid
     public static void invalidInput(Container parent, String inputType) {
         JOptionPane.showMessageDialog(parent,
                 "Please enter a valid " + inputType,
@@ -521,7 +653,8 @@ public class PostItApp extends JFrame {
                 JOptionPane.WARNING_MESSAGE);
     }
 
-
+    // EFFECTS: prompts user to choose whether they want to make a text or image post
+    //          shows a make text post display or make image post display based on choice
     private void makePostPressed() {
         Object[] choices = {"Text Post", "Image Post", "Cancel"};
         int userChoice = JOptionPane.showOptionDialog(this,
@@ -540,6 +673,10 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // MODIFIES: this, PostIt, Feed
+    // EFFECTS: tries to get the community feed of the given community
+    //          if feed is empty, tells user that it is
+    //          refreshes the title text and buttons
     private void getCommunityFeed(String community) {
         try {
             feed.removeAll();
@@ -549,19 +686,32 @@ public class PostItApp extends JFrame {
             postIt.startCommunityFeed(community);
             postIt.getActiveFeed().setDisplay(feed);
         } catch (EmptyFeedException e) {
-            feed.removeAll();
-            postIt.clearActiveFeed();
-            JLabel noPosts = new JLabel("Be the first to post here!");
-            noPosts.setFont(new Font(DEFAULT_FONT, Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
-            feed.add(Box.createHorizontalGlue());
-            feed.add(noPosts);
-            feed.add(Box.createHorizontalGlue());
+            emptyFeed("Be the first to post here!");
         }
 
         initButtons(false);
         refreshTitleText();
     }
 
+    // MODIFIES: this, Feed, PostIt, JLabel, JPanel
+    // EFFECTS: clears the current feed and feed display
+    //          sets feed display to the given text
+    private void emptyFeed(String str) {
+        feed.removeAll();
+        postIt.clearActiveFeed();
+        JLabel noPosts = new JLabel(str);
+        noPosts.setFont(new Font(DEFAULT_FONT, Font.PLAIN, (int)(TITLE_FONT_SIZE / 2)));
+        feed.add(Box.createHorizontalGlue());
+        feed.add(noPosts);
+        feed.add(Box.createHorizontalGlue());
+    }
+
+    // MODIFIES: this, PostIt, Feed
+    // EFFECTS: tries to get the user feed of the given user
+    //          if feed is empty, tells user that it is
+    //          refreshes the title text and buttons
+    //          if given username is the same as the current user
+    //          adds edit profile button
     private void getUserFeed(String username) {
         try {
             userBeingViewed = username;
@@ -569,7 +719,7 @@ public class PostItApp extends JFrame {
             postIt.visitUser(username);
             postIt.getActiveFeed().setDisplay(feed);
         } catch (EmptyFeedException e) {
-            e.getStackTrace();
+            emptyFeed("No Posts from this User.");
         }
 
         if (postIt.getCurrentUser() != null
@@ -591,6 +741,8 @@ public class PostItApp extends JFrame {
         theMenu.add(menuItem);
     }
 
+    // EFFECTS: shows a dialog to the user prompting them to choose from the given array of objects
+    //          checks chosen object
     private void getCommunitySelection(Object[] communities) {
         String communityChoice = (String)JOptionPane.showInputDialog(PostItApp.this,
                 "Please select the community you would like to visit.",
@@ -603,6 +755,8 @@ public class PostItApp extends JFrame {
 
     }
 
+    // EFFECTS: shows a dialog to the user prompting them to enter a community name
+    //          checks input string
     private void getCommunityInput() {
         String communityChoice = JOptionPane.showInputDialog(PostItApp.this,
                 "Please select the community you would like to visit.",
@@ -611,19 +765,23 @@ public class PostItApp extends JFrame {
         checkCommunityInput(communityChoice);
     }
 
+    // EFFECTS: returns true if string is null or has length 0
     public static boolean checkEmptyString(String str) {
         return (str == null || str.length() == 0);
     }
 
+    // EFFECTS: if given community name is a registered community on PostIt
+    //          display the posts from that community
+    //          else lets user know that community was not found
     private void checkCommunityInput(String communityChoice) {
         if (postIt.getCommunities().containsKey(communityChoice)) {
-            System.out.println(communityChoice);
             getCommunityFeed(communityChoice);
         } else if (!checkEmptyString(communityChoice)) {
             notFoundError("Community");
         }
     }
 
+    // EFFECTS: lets user know that the object with the given name was not found
     private void notFoundError(String notFound) {
         JOptionPane.showMessageDialog(PostItApp.this,
                 notFound + " not Found!",
@@ -631,6 +789,8 @@ public class PostItApp extends JFrame {
                 JOptionPane.WARNING_MESSAGE);
     }
 
+    // EFFECTS: shows a dialog to the user prompting them to enter a user name that they want to view
+    //          checks input string
     private void getUserNameInput() {
         String userChoice = JOptionPane.showInputDialog(PostItApp.this,
                 "Please select the user you would like to visit.",
@@ -639,6 +799,9 @@ public class PostItApp extends JFrame {
         checkUserNameInput(userChoice);
     }
 
+    // EFFECTS: if given user name is a registered user on PostIt
+    //          display the posts from that user
+    //          else lets user know that user was not found
     private void checkUserNameInput(String userChoice) {
         if (postIt.getUsernamePasswords().containsKey(userChoice)) {
             getUserFeed(userChoice);
@@ -647,6 +810,9 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // MODIFIES: RegisterDisplay
+    // EFFECTS: if user is logged in, lets them know to log out first
+    //          otherwise, shows the register display to register an account
     private void register() {
         if (postIt.getLoggedIn()) {
             JOptionPane.showMessageDialog(this,
@@ -659,6 +825,10 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // MODIFIES: RegisterDisplay
+    // EFFECTS: if user is logged in, lets them know
+    //          otherwise, shows the login display to log into an account
+    //          refreshes the home feed once logged in
     private void login() {
         if (postIt.getLoggedIn()) {
             JOptionPane.showMessageDialog(this,
@@ -677,6 +847,10 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // MODIFIES: RegisterDisplay
+    // EFFECTS: if user is logged out, lets them know
+    //          otherwise, asks user to confirm logout, logs user out if yes
+    //          and refreshes home feed and menu bar
     private void logout() {
         if (postIt.getLoggedIn()) {
             int userChoice = JOptionPane.showConfirmDialog(this,
@@ -695,6 +869,8 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // EFFECTS: displays dialog on given parent component
+    //          letting user know that they are not logged in
     public static void loginWarning(Component parent) {
         JOptionPane.showMessageDialog(parent,
                 "You have to be logged in to do that!",
@@ -702,6 +878,7 @@ public class PostItApp extends JFrame {
                 JOptionPane.WARNING_MESSAGE);
     }
 
+    // Represents action to be taken when user wants to view their home feed
     public class HomeFeedAction extends AbstractAction {
 
         HomeFeedAction() {
@@ -715,6 +892,7 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // Represents action to be taken when user wants to visit a community
     public class VisitCommunityAction extends AbstractAction {
 
         VisitCommunityAction() {
@@ -728,6 +906,7 @@ public class PostItApp extends JFrame {
 
     }
 
+    // Represents action to be taken when user wants to browse all communities
     public class BrowseCommunitiesAction extends AbstractAction {
 
         BrowseCommunitiesAction() {
@@ -742,6 +921,7 @@ public class PostItApp extends JFrame {
 
     }
 
+    // Represents action to be taken when user wants to visit a user's profile
     public class VisitUserAction extends AbstractAction {
 
         VisitUserAction() {
@@ -754,6 +934,7 @@ public class PostItApp extends JFrame {
         }
     }
 
+    // Represents action to be taken when user wants to view their own profile
     public class UserProfileAction extends AbstractAction {
 
         UserProfileAction() {
@@ -767,6 +948,7 @@ public class PostItApp extends JFrame {
 
     }
 
+    // Represents action to be taken when user wants to logout
     public class LogoutAction extends AbstractAction {
 
         LogoutAction() {
@@ -780,6 +962,7 @@ public class PostItApp extends JFrame {
 
     }
 
+    // Represents action to be taken when user wants to login
     public class LoginAction extends AbstractAction {
 
         LoginAction() {
@@ -793,6 +976,7 @@ public class PostItApp extends JFrame {
 
     }
 
+    // Represents action to be taken when user wants to register an account
     public class RegisterAction extends AbstractAction {
 
         RegisterAction() {
@@ -806,11 +990,19 @@ public class PostItApp extends JFrame {
 
     }
 
+    // MODIFIES: JButton
+    // EFFECTS: removes any action listener on the given JButton
     public static void clearActionListeners(JButton button) {
         for (ActionListener al : button.getActionListeners()) {
             button.removeActionListener(al);
         }
 
+    }
+
+    // EFFECTS: tries to get a unique id from the forum
+    //          throws IDAlreadyExistsException if generated id is not unique
+    public int getRandomID() throws IDAlreadyExistsException {
+        return postIt.getRandomID();
     }
 
 

@@ -1,6 +1,8 @@
-package model;
+package testmodel;
 
 
+import model.Community;
+import model.User;
 import model.content.posts.Post;
 import model.content.posts.TextPost;
 import org.junit.jupiter.api.*;

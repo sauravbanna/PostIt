@@ -176,7 +176,7 @@ public class JsonReader {
         return posts;
     }
 
-    // EFFECTS: reads a text post from a JSONObject and returns it
+    // EFFECTS: reads a text or image post from a JSONObject and returns it
     private Post jsonToPost(JSONObject postJson) {
         String postTitle = postJson.getString(Post.TITLE_KEY);
         int postLikes = postJson.getInt(Post.LIKES_KEY);

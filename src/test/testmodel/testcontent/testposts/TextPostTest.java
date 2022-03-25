@@ -1,8 +1,9 @@
-package model;
+package testmodel.testcontent.testposts;
 
 
 import model.content.posts.TextPost;
 import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TextPostTest extends PostTest {

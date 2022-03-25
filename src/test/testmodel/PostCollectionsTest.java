@@ -1,5 +1,6 @@
-package model;
+package testmodel;
 
+import model.PostCollections;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

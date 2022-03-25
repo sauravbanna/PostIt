@@ -15,15 +15,19 @@ import static ui.PostItApp.PADDING;
 import static ui.displays.TwoButtonDisplay.THIN_BLACK_BORDER;
 import static ui.displays.userinput.UserInput.TRANSPARENT_BORDER;
 
+// A Panel that can display a post along with vote buttons, comment buttons,
 public class PostDisplay extends JPanel {
+
+    // CONSTANTS
 
     public static final Color UPVOTE_COLOR = new Color(169, 53, 15);
     public static final Color DOWNVOTE_COLOR = new Color(31, 66, 83);
 
+    // FIELDS
+
     private JButton upvoteButton;
     private JButton downvoteButton;
     private JButton comments;
-    private JButton savePost;
     private JButton subscribe;
     private JLabel title;
     private JTextArea bodyText;
@@ -36,6 +40,11 @@ public class PostDisplay extends JPanel {
     private PostIt forum;
     private Dimension padding;
 
+    // METHODS
+
+    // Constructor
+    // EFFECTS: creates a new post display with the given post and forum
+    //          initialises display elements and sets display to visible
     public PostDisplay(Post p, PostIt forum) {
         padding = new Dimension(PADDING, PADDING);
         this.post = p;
@@ -49,6 +58,8 @@ public class PostDisplay extends JPanel {
         setVisible(true);
     }
 
+    // MODIFIES: this, JLabel, JButton
+    // EFFECTS: initialises the panel elements and places it on the panel
     private void initPostElements() {
         addText();
 
@@ -62,6 +73,8 @@ public class PostDisplay extends JPanel {
 
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the panel button holder, adds buttons and places it on the panel
     private void addButtons() {
         JPanel buttonHolder = new JPanel();
         buttonHolder.setOpaque(false);
@@ -75,13 +88,10 @@ public class PostDisplay extends JPanel {
         gbc.fill = GridBagConstraints.BOTH;
 
         comments = new JButton();
-        savePost = new JButton();
         subscribe = new JButton();
 
         buttonHolder.add(Box.createHorizontalGlue());
         buttonHolder.add(comments);
-        buttonHolder.add(Box.createRigidArea(padding));
-        buttonHolder.add(savePost);
         buttonHolder.add(Box.createRigidArea(padding));
         buttonHolder.add(subscribe);
         buttonHolder.add(Box.createHorizontalGlue());
@@ -89,6 +99,8 @@ public class PostDisplay extends JPanel {
         add(buttonHolder, gbc);
     }
 
+    // MODIFIES: this, JPanel, JLabel
+    // EFFECTS: initialises the text holder panel, adds text to it, and places it on the panel
     private void addText() {
         JPanel textHolder = new JPanel();
         textHolder.setLayout(new BoxLayout(textHolder, BoxLayout.Y_AXIS));
@@ -102,6 +114,8 @@ public class PostDisplay extends JPanel {
 
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds the given container to the display
     private void addContainerToDisplay(JPanel textHolder) {
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
@@ -114,6 +128,8 @@ public class PostDisplay extends JPanel {
         add(textHolder, gbc);
     }
 
+    // MODIFIES: JPanel
+    // EFFECTS: adds the post's text to the given container
     private void addPostTextToContainer(JPanel textHolder) {
         textHolder.add(Box.createVerticalGlue());
         textHolder.add(title);
@@ -124,6 +140,8 @@ public class PostDisplay extends JPanel {
         textHolder.add(Box.createVerticalGlue());
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: initialises the post's text and body
     private void initPostContent() {
         title = new JLabel();
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -137,6 +155,8 @@ public class PostDisplay extends JPanel {
         username.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 
+    // MODIFIES: this, JPanel, JButton
+    // EFFECTS: initialises the panel's user input buttons and places it on the panel
     private void addUserInputButtons() {
         downvoteButton = new JButton();
         voteCount = new JLabel();
@@ -164,6 +184,8 @@ public class PostDisplay extends JPanel {
         add(userButtonsHolder, gbc);
     }
 
+    // MODIFIES: this, JPanel
+    // EFFECTS: adds the vote count label to a container and returns the container
     private JPanel getVoteCountDisplay() {
         JPanel voteCountDisplay = new JPanel();
         voteCountDisplay.setBackground(DEFAULT_BACKGROUND_COLOR);
@@ -174,7 +196,10 @@ public class PostDisplay extends JPanel {
         return voteCountDisplay;
     }
 
-
+    // MODIFIES: this, JTextArea, JLabel
+    // EFFECTS: if post is a text post, sets the body text area to the post's body
+    //          if post is image post, sets the image label to the post's image
+    //          and returns the component with the post content
     private JComponent getBody() {
         if (post.getClass().equals(TextPost.class)) {
             bodyText.setWrapStyleWord(true);
@@ -194,6 +219,8 @@ public class PostDisplay extends JPanel {
         }
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: initialises the label and button text
     private void initText() {
         title.setText(post.getTitle());
         username.setText("Posted by: " + post.getOpName() + " in " + post.getCommunity());
@@ -204,9 +231,10 @@ public class PostDisplay extends JPanel {
         updateVotes();
 
         comments.setText(post.getCommentCount() + " comments");
-        savePost.setText("Save Post");
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: initialises the label's fonts and sizes
     private void initFont() {
         title.setFont(new Font("Verdana", Font.PLAIN, 24));
         username.setFont(new Font("Verdana", Font.PLAIN, 14));
@@ -214,6 +242,8 @@ public class PostDisplay extends JPanel {
         voteCount.setFont(new Font("Verdana", Font.PLAIN, 14));
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the panel's button actions
     private void initUserControlButtons() {
         initUpvoteAction();
 
@@ -221,11 +251,13 @@ public class PostDisplay extends JPanel {
 
         initCommentsAction();
 
-        initSavePostAction();
-
         initSubscribeAction();
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the panel's subscribe button action
+    //          if user is logged in, subscribes user to community that post is in
+    //          else, tells user to log in
     private void initSubscribeAction() {
         subscribe.addActionListener(new ActionListener() {
             @Override
@@ -242,6 +274,10 @@ public class PostDisplay extends JPanel {
         });
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the panel's unsubscribe button action
+    //          if user is logged in, unsubscribes user to community that post is in
+    //          else, tells user to log in
     private void initUnsubscribeAction() {
         subscribe.addActionListener(new ActionListener() {
             @Override
@@ -258,6 +294,7 @@ public class PostDisplay extends JPanel {
         });
     }
 
+    // EFFECTS: lets user know that they have subscribed or unsubscribed to a community
     private void confirmSubscribe(String action) {
         JOptionPane.showMessageDialog(this,
                 "Successfully " + action + " from this community!",
@@ -265,17 +302,9 @@ public class PostDisplay extends JPanel {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
-    // TODO
-    private void initSavePostAction() {
-        savePost.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-
-            }
-        });
-    }
-
-    // TODO
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the panel's comments button action
+    //          opens the comment section of the post
     private void initCommentsAction() {
         comments.addActionListener(new ActionListener() {
             @Override
@@ -286,6 +315,10 @@ public class PostDisplay extends JPanel {
         });
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the panel's downvote button action
+    //          if user is logged in, dislikes post
+    //          else, tells user to log in
     private void initDownvoteAction() {
         downvoteButton.addActionListener(new ActionListener() {
             @Override
@@ -301,6 +334,10 @@ public class PostDisplay extends JPanel {
         });
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: initialises the panel's upvote button action
+    //          if user is logged in, likes post
+    //          else, tells user to log in
     private void initUpvoteAction() {
         upvoteButton.addActionListener(new ActionListener() {
             @Override
@@ -316,11 +353,15 @@ public class PostDisplay extends JPanel {
         });
     }
 
+    // MODIFIES: this, JLabel
+    // EFFECTS: updates the vote count of the post
     private void updateVotes() {
         voteCount.setText(String.valueOf(post.getLikes() - post.getDislikes()));
         repaint();
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: updates the vote button colors and the subscribe button text
     private void updateButtonColors() {
         upvoteButton.setBackground(new JButton().getBackground());
         downvoteButton.setBackground(new JButton().getBackground());
@@ -343,6 +384,9 @@ public class PostDisplay extends JPanel {
         repaint();
     }
 
+    // MODIFIES: this, JButton
+    // EFFECTS: updates the subscribe button text depending on whether the user is logged in
+    //          and subscribed to the post's community or not
     private void updateSubscribeButton() {
         if (forum.getLoggedIn() && forum.getCurrentUser().getSubscribedCommunities().contains(post.getCommunity())) {
             subscribe.setText("Unsubscribe");

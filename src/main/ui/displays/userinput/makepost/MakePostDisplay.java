@@ -25,7 +25,7 @@ public abstract class MakePostDisplay extends JDialog {
     protected JTextField title;
     protected JLabel bodyText;
     protected JLabel communityText;
-    protected JComboBox community;
+    protected JComboBox<String> community;
     protected JButton makePost;
     protected JButton cancel;
     protected PostIt forum;

@@ -93,7 +93,4 @@ public class MakeTextPostDisplay extends MakePostDisplay {
         }
     }
 
-
-
-
 }

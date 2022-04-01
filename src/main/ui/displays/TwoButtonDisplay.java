@@ -33,6 +33,7 @@ public abstract class TwoButtonDisplay extends JDialog {
     // METHODS
 
     // Constructor
+    // REQUIRES: given PostIt is not null
     // EFFECTS: creates a new dialog, initialises its elements
     //          sets the forum to the given value
     public TwoButtonDisplay(PostIt forum) {

@@ -1,4 +1,4 @@
-package ui.displays.userinput;
+package ui.displays.userinput.usernamepassword;
 
 import model.PostIt;
 

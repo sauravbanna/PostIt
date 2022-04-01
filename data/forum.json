@@ -1,30 +1,6 @@
 {
-    "loggedIn": true,
-    "user": {
-        "password": "000000000000",
-        "likedPosts": [],
-        "bio": "I'm a user",
-        "dislikedPosts": [
-            66250,
-            12033
-        ],
-        "posts": [
-            12033,
-            85362,
-            47758,
-            33468,
-            67006,
-            19525,
-            6771
-        ],
-        "subscribedCommunities": [
-            "funny",
-            "gaming",
-            "newCommunity",
-            "canada"
-        ],
-        "username": "3"
-    },
+    "loggedIn": false,
+    "user": "null",
     "posts": [
         {
             "comments": [],
@@ -112,6 +88,17 @@
             "commentCount": 3
         },
         {
+            "comments": [],
+            "opName": "3",
+            "dislikes": 0,
+            "textBody": "Gaming wow",
+            "id": 14648,
+            "title": "I love gaming",
+            "community": "gaming",
+            "likes": 1,
+            "commentCount": 0
+        },
+        {
             "comments": [
                 {
                     "opName": "1",
@@ -164,6 +151,17 @@
             "commentCount": 0
         },
         {
+            "image": "./data/images/48526.jpg",
+            "comments": [],
+            "opName": "3",
+            "dislikes": 0,
+            "id": 48526,
+            "title": "This is a laptop also",
+            "community": "fortnite",
+            "likes": 0,
+            "commentCount": 0
+        },
+        {
             "comments": [],
             "opName": "3",
             "dislikes": 0,
@@ -208,6 +206,15 @@
                 "newCommunity"
             ],
             "username": "3"
+        },
+        {
+            "password": "12345678",
+            "likedPosts": [14648],
+            "bio": "No bio yet...",
+            "dislikedPosts": [],
+            "posts": [],
+            "subscribedCommunities": [],
+            "username": "aUsername"
         }
     ],
     "communities": [
@@ -222,11 +229,21 @@
             ]
         },
         {
+            "creator": "3",
+            "subs": 0,
+            "name": "minecraft",
+            "about": "This is the official Minecraft Community!",
+            "posts": []
+        },
+        {
             "creator": "PostIt",
             "subs": 1,
             "name": "gaming",
             "about": "This is a default community.",
-            "posts": [19525]
+            "posts": [
+                19525,
+                14648
+            ]
         },
         {
             "creator": "1",
@@ -258,7 +275,10 @@
             "subs": 0,
             "name": "fortnite",
             "about": "Fortnite Battle Royale",
-            "posts": [67006]
+            "posts": [
+                67006,
+                48526
+            ]
         },
         {
             "creator": "PostIt",

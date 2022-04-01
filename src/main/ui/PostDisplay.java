@@ -43,6 +43,8 @@ public class PostDisplay extends JPanel {
     // METHODS
 
     // Constructor
+    // REQUIRES: given post is a valid post made on PostIt and is non-null
+    //           given PostIt is not null
     // EFFECTS: creates a new post display with the given post and forum
     //          initialises display elements and sets display to visible
     public PostDisplay(Post p, PostIt forum) {

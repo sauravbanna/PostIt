@@ -1,6 +1,7 @@
-package ui.displays.userinput;
+package ui.displays.userinput.usernamepassword;
 
 import model.PostIt;
+import ui.displays.userinput.UserInput;
 
 import javax.swing.*;
 import java.awt.*;

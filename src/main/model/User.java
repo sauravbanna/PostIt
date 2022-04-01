@@ -94,10 +94,19 @@ public class User extends PostCollections implements Writable {
             if (dislikedPosts.contains(p.getId())) {
                 dislikedPosts.remove(Integer.valueOf(p.getId()));
                 p.unDislike();
+                EventLog.getInstance().logEvent(
+                        new Event(userName + " removed "
+                                + p.getTitle() + " from their disliked posts."));
             }
+            EventLog.getInstance().logEvent(
+                    new Event(userName + " added "
+                            + p.getTitle() + " to their liked posts."));
         } else {
             p.unLike();
             likedPosts.remove(new Integer(p.getId()));
+            EventLog.getInstance().logEvent(
+                    new Event(userName + " removed "
+                            + p.getTitle() + " from their liked posts."));
         }
     }
 
@@ -115,10 +124,19 @@ public class User extends PostCollections implements Writable {
             if (likedPosts.contains(p.getId())) {
                 likedPosts.remove(Integer.valueOf(p.getId()));
                 p.unLike();
+                EventLog.getInstance().logEvent(
+                        new Event(userName + " removed "
+                                + p.getTitle() + " from their liked posts."));
             }
+            EventLog.getInstance().logEvent(
+                    new Event(userName + " added "
+                            + p.getTitle() + " to their disliked posts."));
         } else {
             p.unDislike();
             dislikedPosts.remove(new Integer(p.getId()));
+            EventLog.getInstance().logEvent(
+                    new Event(userName + " removed "
+                            + p.getTitle() + " from their disliked posts."));
         }
     }
 
@@ -130,6 +148,9 @@ public class User extends PostCollections implements Writable {
     public void subscribeToCommunity(Community c) {
         this.subscribedCommunities.add(c.getCommunityName());
         c.addSubscriber();
+        EventLog.getInstance().logEvent(
+                new Event("Subscribed " + userName + " to the "
+                        + c.getCommunityName() + " community."));
     }
 
     // REQUIRES: community is one that is already registered on the forum,
@@ -140,6 +161,9 @@ public class User extends PostCollections implements Writable {
     public void unsubscribeFromCommunity(Community c) {
         this.subscribedCommunities.remove(c.getCommunityName());
         c.removeSubscriber();
+        EventLog.getInstance().logEvent(
+                new Event("Unsubscribed " + userName + " from the "
+                        + c.getCommunityName() + " community."));
     }
 
     // REQUIRES: password is at least PostIt.MIN_PASSWORD_LENGTH characters long

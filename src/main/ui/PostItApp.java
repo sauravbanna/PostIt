@@ -5,13 +5,15 @@ import exceptions.EndOfFeedException;
 import exceptions.IDAlreadyExistsException;
 import exceptions.StartOfFeedException;
 import model.Community;
+import model.Event;
+import model.EventLog;
 import model.PostIt;
 import model.User;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 import ui.displays.userinput.CreateCommunityDisplay;
-import ui.displays.userinput.LoginDisplay;
-import ui.displays.userinput.RegisterDisplay;
+import ui.displays.userinput.usernamepassword.LoginDisplay;
+import ui.displays.userinput.usernamepassword.RegisterDisplay;
 import ui.displays.userinput.makepost.MakeImagePostDisplay;
 import ui.displays.userinput.makepost.MakeTextPostDisplay;
 
@@ -23,6 +25,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 
 // A forum where a user can register an account and login / logout
 // Contains communities that the user can create, post to, visit and view the posts of
@@ -508,6 +511,7 @@ public class PostItApp extends JFrame {
                 JOptionPane.WARNING_MESSAGE);
 
         if (userChoice == JOptionPane.YES_OPTION) {
+            printLog();
             saveForumCheck();
         }
     }
@@ -521,6 +525,7 @@ public class PostItApp extends JFrame {
                 JOptionPane.WARNING_MESSAGE);
 
         if (userChoice == JOptionPane.YES_OPTION) {
+            printLog();
             System.exit(0);
         }
     }
@@ -533,10 +538,20 @@ public class PostItApp extends JFrame {
                 "Save Posts", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (userChoice == JOptionPane.NO_OPTION) {
+            printLog();
             System.exit(0);
         }
 
         saveForum();
+    }
+
+    public void printLog() {
+        Iterator<Event> eventIterator = EventLog.getInstance().iterator();
+        while (eventIterator.hasNext()) {
+            System.out.println(eventIterator.next().toString());
+        }
+
+        EventLog.getInstance().clear();
     }
 
     // MODIFIES: this
@@ -548,6 +563,7 @@ public class PostItApp extends JFrame {
             jsonWriter.openWriter();
             jsonWriter.saveForum(postIt);
             jsonWriter.close();
+            printLog();
             System.exit(0);
         } catch (FileNotFoundException fe) {
             Object[] options = {"Exit Anyway", "Don't Exit"};
@@ -634,13 +650,13 @@ public class PostItApp extends JFrame {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (!checkEmptyString(newBio)) {
-            postIt.getCurrentUser().setBio(newBio);
+            postIt.updateBio(newBio);
             JOptionPane.showMessageDialog(this,
                     "Profile Successfully Updated!",
                     "Success",
                     JOptionPane.PLAIN_MESSAGE);
             refreshTitleText(postIt.getCurrentUser());
-        } else {
+        } else if (newBio == null) {
             invalidInput(this, "bio");
         }
     }
@@ -728,7 +744,7 @@ public class PostItApp extends JFrame {
         } else {
             initButtons(false);
         }
-        refreshTitleText();
+        refreshTitleText(postIt.getUsernamePasswords().get(username));
     }
 
     // Method taken from AlarmControllerUI class in
@@ -943,6 +959,7 @@ public class PostItApp extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            refreshTitleText(postIt.getCurrentUser());
             getUserFeed(postIt.getCurrentUser().getUserName());
         }
 

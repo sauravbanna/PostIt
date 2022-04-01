@@ -92,6 +92,8 @@ public class PostIt implements Writable {
     // EFFECTS: adds the given username and user to the map of registered users
     public void addUser(String username, User user) {
         this.usernamePasswords.put(username, user);
+        EventLog.getInstance().logEvent(
+                new Event("Added user " + username + " to the forum."));
     }
 
     // EFFECTS: returns the registered users on this forum
@@ -132,6 +134,10 @@ public class PostIt implements Writable {
         posts.put(randomId, newPost);
         communities.get(communityChoice).addPost(randomId);
         currentlyLoggedInUser.addUserPost(randomId);
+        EventLog.getInstance().logEvent(
+                new Event("Added text post with title \""
+                        + title + "\" by " + currentlyLoggedInUser.getUserName()
+                        + " to the " + communityChoice + " community."));
         return true;
     }
 
@@ -147,6 +153,10 @@ public class PostIt implements Writable {
         posts.put(id, newPost);
         communities.get(communityChoice).addPost(id);
         currentlyLoggedInUser.addUserPost(id);
+        EventLog.getInstance().logEvent(
+                new Event("Added image post with title \""
+                        + title + "\" by " + currentlyLoggedInUser.getUserName()
+                        + " to the " + communityChoice + "community."));
         return true;
     }
 
@@ -174,6 +184,8 @@ public class PostIt implements Writable {
     //          the currently logged in user to the list of communities on the forum
     public void addCommunity(String name, String about) {
         this.communities.put(name, new Community(name, about, currentlyLoggedInUser.getUserName()));
+        EventLog.getInstance().logEvent(
+                new Event(("Added the " + name + " community to the forum.")));
 
     }
 
@@ -241,6 +253,8 @@ public class PostIt implements Writable {
         for (String community : DEFAULT_COMMUNITIES) {
             if (!communities.containsKey(community)) {
                 communities.put(community, new Community(community, null, null));
+                EventLog.getInstance().logEvent(
+                        new Event("Added the " + community + " default community to the forum."));
             }
         }
     }

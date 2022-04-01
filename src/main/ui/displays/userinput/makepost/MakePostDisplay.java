@@ -33,6 +33,7 @@ public abstract class MakePostDisplay extends JDialog {
     // METHODS
 
     // Constructor
+    // REQUIRES: given PostIt is not null
     // EFFECTS: creates a new dialog, initialises its elements, and sets it visible
     //          sets the forum, width and height to the given value
     public MakePostDisplay(PostIt forum, int width, int height) {

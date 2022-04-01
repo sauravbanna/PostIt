@@ -43,7 +43,7 @@ public class MakeImagePostDisplay extends MakePostDisplay {
     public MakeImagePostDisplay(PostIt forum, int width, int height) {
         super(forum, width, height);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Only JPEG, JPG, and PNG files",
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Only JPG and PNG files",
                 JPG, PNG);
         fileChooser = new JFileChooser();
         fileChooser.setFileFilter(filter);

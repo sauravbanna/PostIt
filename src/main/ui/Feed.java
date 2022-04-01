@@ -17,7 +17,6 @@ public class Feed {
     // FIELDS
     protected List<Integer> userFeed;
     private int feedPosition;
-    private Post currentPost;
     private final Boolean loggedIn;
     private final User currentUser;
     private PostIt postIt;
@@ -29,6 +28,7 @@ public class Feed {
     // METHODS
 
     // Constructor
+    // REQUIRES: given PostIt is not null
     // EFFECTS: creates a new Feed with the given list of posts, whether the user is logged in or not,
     //          the current user (null if not logged in), with feedPosition at 0, userFeedActive set to True,
     //          with the postIt field set the the current forum the feed is displayed on
@@ -78,7 +78,6 @@ public class Feed {
     public void back() throws StartOfFeedException {
         if (feedPosition > 0) {
             feedPosition--;
-            currentPost = postIt.getPosts().get(userFeed.get(feedPosition));
             showCurrentPost();
         } else {
             throw new StartOfFeedException();

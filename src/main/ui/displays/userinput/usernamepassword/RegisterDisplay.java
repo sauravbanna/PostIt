@@ -1,4 +1,4 @@
-package ui.displays.userinput;
+package ui.displays.userinput.usernamepassword;
 
 import model.PostIt;
 import model.User;
@@ -12,6 +12,8 @@ import static ui.PostItApp.invalidInput;
 // A two-buttoned display allowing the user to input a username and password
 // and register an account on the forum if they are valid
 public class RegisterDisplay extends UsernamePasswordInput {
+
+    // METHODS
 
     // EFFECTS: creates a new dialog, initialises its elements
     //          sets the forum to the given value

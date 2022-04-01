@@ -26,6 +26,7 @@ public class CommentsDisplay extends TwoButtonDisplay {
     // METHODS
 
     // Constructor
+    // REQUIRES: given post is a valid post made on PostIt and is non-null
     // EFFECTS: creates a new dialog, initialises its elements
     //          sets the forum and the post to the given values
     //          sets the list of comments to the given value
